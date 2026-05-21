@@ -1,5 +1,9 @@
+import { ROUTES, type PathParams } from "@/shared/model/routes";
+import { useParams } from "react-router-dom";
+
 function BoardPage() {
-    return <div>Board page</div>
+    const params = useParams<PathParams[typeof ROUTES.BOARD]>();
+    return <div>Board page {params.boardId}</div>
 }
 
 export const Component = BoardPage;
