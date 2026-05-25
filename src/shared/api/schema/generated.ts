@@ -66,7 +66,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/boards/{BoardId}": {
+    "/boards/{boardId}": {
         parameters: {
             query?: never;
             header?: never;

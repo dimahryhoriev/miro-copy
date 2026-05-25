@@ -11,6 +11,6 @@ paths:
     post:
       $ref: './endpoints/boards.yaml#/createBoard'
 
-  /boards/{BoardId}:
+  /boards/{boardId}:
     delete:
       $ref: './endpoints/boards.yaml#/deleteBoard'
