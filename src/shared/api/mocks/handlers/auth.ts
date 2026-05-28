@@ -2,7 +2,7 @@ import type { ApiSchemas } from "../../schema";
 import { http } from '../http';
 import { HttpResponse } from "msw";
 
-const userPasswords = new Map<string, string>();
+const mockTokens = new Map<string, string>();
 const mockUsers: ApiSchemas['User'][] = [
     {
         id: '1',
@@ -10,13 +10,13 @@ const mockUsers: ApiSchemas['User'][] = [
     },
 ];
 
+const userPasswords = new Map<string, string>();
 userPasswords.set('admin@gmail.com', '123456');
 
-const mockTokens = new Map<string, string>();
 
 export const authHandlers = [
     http.post('/auth/login', async ({ request }) => {
-        const body = (await request.json()) as ApiSchemas['LoginRequest'];
+        const body = await request.json();
 
         const user = mockUsers.find((u) => u.email === body.email);
         const storedPassword = userPasswords.get(body.email)
@@ -46,7 +46,7 @@ export const authHandlers = [
     }),
 
     http.post('/auth/register', async ({ request }) => {
-        const body = (await request.json()) as ApiSchemas['RegisterRequest'];
+        const body = await request.json();
 
         if (mockUsers.some((u) => u.email === body.email)) {
             return HttpResponse.json(
