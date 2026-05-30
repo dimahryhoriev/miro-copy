@@ -5,7 +5,7 @@ import { Input } from "@/shared/ui/kit/input";
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-const loginSchema = z.object({
+const registerSchema = z.object({
     email: z
         .string()
         .min(1, 'Email is required')
@@ -14,12 +14,21 @@ const loginSchema = z.object({
         .string()
         .min(1, 'Password is required')
         .min(6, 'Password must be at least 6 characters.')
-        .max(32, 'Password must be at most 32 characters.')
-})
+        .max(32, 'Password must be at most 32 characters.'),
+    confirmPassword: z
+        .string()
+        .optional(),
+}).refine(
+    (data) => data.password === data.confirmPassword,
+    {
+        path: ['confirmPassword'],
+        message: 'Passwords don\'t match',
+    }
+)
 
-export function LoginForm() {
+export function RegisterForm() {
     const form = useForm({
-        resolver: zodResolver(loginSchema),
+        resolver: zodResolver(registerSchema),
         defaultValues: {
             email: '',
             password: '',
@@ -67,7 +76,24 @@ export function LoginForm() {
                     </Field>
                 )}
             />
-            <Button type="submit">Log In</Button>
+            <Controller
+                name="confirmPassword"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                        <FieldLabel htmlFor={field.name}>Confirm password</FieldLabel>
+                        <Input
+                            {...field}
+                            id={field.name}
+                            aria-invalid={fieldState.invalid}
+                            autoComplete="off"
+                            type="password"
+                        />
+                        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                    </Field>
+                )}
+            />
+            <Button type="submit">Sign Up</Button>
         </form>
     )
 }
