@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { Input } from "@/shared/ui/kit/input";
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
+import { useLogin } from "../model/use-login";
 
 const loginSchema = z.object({
     email: z
@@ -26,9 +27,9 @@ export function LoginForm() {
         }
     })
 
-    const onSubmit = form.handleSubmit((data) => {
-        console.log(data);
-    })
+    const { errorMessage, isPending, login } = useLogin();
+
+    const onSubmit = form.handleSubmit(login);
 
     return (
         <form className="flex flex-col gap-4" onSubmit={onSubmit}>
@@ -67,7 +68,12 @@ export function LoginForm() {
                     </Field>
                 )}
             />
-            <Button type="submit">Log In</Button>
+
+            {errorMessage && <p className="text-destructive text-sm">{errorMessage}</p>}
+
+            <Button disabled={isPending} type="submit">
+                Log In
+            </Button>
         </form>
     )
 }

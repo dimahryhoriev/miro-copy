@@ -23,6 +23,6 @@ export function useLogin() {
     return {
         login,
         isPending: loginMutation.isPending,
-        error: errorMessage,
+        errorMessage,
     };
 }

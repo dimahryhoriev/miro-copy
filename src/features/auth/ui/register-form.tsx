@@ -4,6 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { Input } from "@/shared/ui/kit/input";
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
+import { useRegister } from "../model/use-register";
+
 
 const registerSchema = z.object({
     email: z
@@ -35,9 +37,9 @@ export function RegisterForm() {
         }
     })
 
-    const onSubmit = form.handleSubmit((data) => {
-        console.log(data);
-    })
+    const { errorMessage, isPending, register } = useRegister();
+
+    const onSubmit = form.handleSubmit(register);
 
     return (
         <form className="flex flex-col gap-4" onSubmit={onSubmit}>
@@ -93,7 +95,12 @@ export function RegisterForm() {
                     </Field>
                 )}
             />
-            <Button type="submit">Sign Up</Button>
+
+            {errorMessage && <p className="text-destructive text-sm">{errorMessage}</p>}
+
+            <Button disabled={isPending} type="submit">
+                Sign Up
+            </Button>
         </form>
     )
 }
