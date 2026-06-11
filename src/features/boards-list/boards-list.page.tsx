@@ -8,7 +8,13 @@ import { Link, href } from "react-router-dom";
 
 function BoardsListPage() {
     const queryClient = useQueryClient();
-    const boardsQuery = rqClient.useQuery('get', '/boards');
+    const boardsQuery = rqClient.useQuery('get', '/boards', {
+        params: {
+            query: {
+                limit: 100,
+            },
+        }
+    });
 
     const createBoardMutation = rqClient.useMutation(
         'post',
@@ -40,10 +46,7 @@ function BoardsListPage() {
 
             <form onSubmit={(e) => {
                 e.preventDefault();
-                const formData = new FormData(e.target as HTMLFormElement);
-                createBoardMutation.mutate({
-                    body: { name: formData.get('name') as string },
-                });
+                createBoardMutation.mutate({});
             }}>
                 <input name="name" />
                 <button
@@ -55,7 +58,7 @@ function BoardsListPage() {
             </form>
 
             <div className="grid grid-cols-3 gap-4">
-                {boardsQuery.data?.map((board) => (
+                {boardsQuery.data?.list?.map((board) => (
                     <Card key={board.id}>
                         <CardHeader>
                             <Button asChild variant={"link"}>
