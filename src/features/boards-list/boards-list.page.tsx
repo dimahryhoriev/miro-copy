@@ -37,20 +37,7 @@ function BoardsListPage() {
     const observer = useRef<IntersectionObserver | null>(null);
     const loadMoreRef = useRef<HTMLDivElement>(null);
 
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setDebouncedSearch(search);
-            setPage(1);
-            setBoards([]);
-        }, 300);
-
-        return () => clearTimeout(timer);
-    }, [search]);
-
-    useEffect(() => {
-        setPage(1);
-        setBoards([]);
-    }, [sort, showFavorites]);
+    const boardsQuery = useBoardsList({});
 
     // useEffect(() => {
     //     if (boardsQuery.data?.list) {
@@ -70,28 +57,6 @@ function BoardsListPage() {
     //         setPage((prevPage) => prevPage + 1);
     //     }
     // }, [isLoadingMore, hasMore, boardsQuery.isPending]);
-
-    useEffect(() => {
-        observer.current = new IntersectionObserver(
-            (entries) => {
-                if (entries[0].isIntersecting && hasMore) {
-                    // loadMore()
-                    ;
-                }
-            },
-            { threshold: 0.5 }
-        );
-
-        if (loadMoreRef.current) {
-            observer.current.observe(loadMoreRef.current);
-        }
-
-        return () => {
-            if (observer.current) {
-                observer.current.disconnect();
-            }
-        };
-    }, [hasMore]);
 
     const createBoardMutation = rqClient.useMutation("post", "/boards", {
         onSettled: async () => {
@@ -202,12 +167,12 @@ function BoardsListPage() {
                 </form>
             </div>
 
-            {false ? (
+            {boardsQuery.isPending ? (
                 <div className="text-center py-10">Loading...</div>
             ) : (
                 <>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {boards.map((board) => (
+                        {boardsQuery.boards.map((board) => (
                             <Card key={board.id} className="relative">
                                 <div className="absolute top-2 right-2 flex items-center gap-2">
                                     <Switch
@@ -257,13 +222,13 @@ function BoardsListPage() {
                         ))}
                     </div>
 
-                    {boards.length === 0 && (
+                    {boardsQuery.boards.length === 0 && !boardsQuery.isPending && (
                         <div className="text-center py-10">No boards found</div>
                     )}
 
-                    {hasMore && (
-                        <div ref={loadMoreRef} className="text-center py-8">
-                            {isLoadingMore && "Loading more boards..."}
+                    {boardsQuery.hasNextPage && (
+                        <div ref={(el) => boardsQuery.cursorRef(el)} className="text-center py-8">
+                            {boardsQuery.isFetchingNextPage && "Loading more boards..."}
                         </div>
                     )}
                 </>
