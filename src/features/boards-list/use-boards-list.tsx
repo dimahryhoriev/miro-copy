@@ -14,7 +14,13 @@ export function useBoardsList({
     search,
     sort,
 }: useBoardsListParams) {
-    const { fetchNextPage } = rqClient.useInfiniteQuery(
+    const {
+        fetchNextPage,
+        data,
+        isFetchingNextPage,
+        isPending,
+        hasNextPage,
+    } = rqClient.useInfiniteQuery(
         'get',
         '/boards',
         {
@@ -57,8 +63,13 @@ export function useBoardsList({
         }
     }, [fetchNextPage]);
 
+    const boards = data?.pages.flatMap((page) => page.list) ?? [];
+
     return {
-        fetchNextPage,
+        isPending,
+        isFetchingNextPage,
+        hasNextPage,
+        boards,
         cursorRef,
     };
 }
