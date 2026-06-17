@@ -20,6 +20,7 @@ import type { ApiSchemas } from "@/shared/api/schema";
 import { useBoardsList } from "./use-boards-list";
 import { useBoardsFilters } from "./use-boards-filters";
 import { useDebouncedValue } from "@/shared/lib/react";
+import { useCreateBoard } from "./use-create-board";
 
 type BoardsSortOption = "createdAt" | "updatedAt" | "lastOpenedAt" | "name";
 
@@ -31,6 +32,8 @@ function BoardsListPage() {
         sort: boardsFilters.sort,
         search: useDebouncedValue(boardsFilters.search, 300),
     });
+
+    const createBoard = useCreateBoard();
 
     // useEffect(() => {
     //     if (boardsQuery.data?.list) {
@@ -50,14 +53,6 @@ function BoardsListPage() {
     //         setPage((prevPage) => prevPage + 1);
     //     }
     // }, [isLoadingMore, hasMore, boardsQuery.isPending]);
-
-    const createBoardMutation = rqClient.useMutation("post", "/boards", {
-        onSettled: async () => {
-            await queryClient.invalidateQueries(
-                rqClient.queryOptions("get", "/boards")
-            );
-        },
-    });
 
     const deleteBoardMutation = rqClient.useMutation(
         "delete",
@@ -137,26 +132,12 @@ function BoardsListPage() {
             </Tabs>
 
             <div className="mb-8">
-                <form
-                    className="flex gap-4 items-end"
-                    onSubmit={(e) => {
-                        e.preventDefault();
-                        createBoardMutation.mutate({});
-                        e.currentTarget.reset();
-                    }}
+                <Button
+                    disabled={createBoard.isPending}
+                    onClick={createBoard.createBoard}
                 >
-                    <div className="flex-grow">
-                        <Label htmlFor="board-name">New board name</Label>
-                        <Input
-                            id="board-name"
-                            name="name"
-                            placeholder="Enter name..."
-                        />
-                    </div>
-                    <Button type="submit" disabled={createBoardMutation.isPending}>
-                        Create board
-                    </Button>
-                </form>
+                    Create board
+                </Button>
             </div>
 
             {boardsQuery.isPending ? (
