@@ -1,4 +1,3 @@
-import { useState, useEffect, useRef, useCallback } from "react";
 import { rqClient } from "@/shared/api/instance";
 import { CONFIG } from "@/shared/model/config";
 import { ROUTES } from "@/shared/model/routes";
@@ -16,28 +15,22 @@ import {
     SelectValue,
 } from "@/shared/ui/kit/select";
 import { Switch } from "@/shared/ui/kit/switch";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/kit/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/shared/ui/kit/tabs";
 import type { ApiSchemas } from "@/shared/api/schema";
 import { useBoardsList } from "./use-boards-list";
+import { useBoardsFilters } from "./use-boards-filters";
+import { useDebouncedValue } from "@/shared/lib/react";
 
 type BoardsSortOption = "createdAt" | "updatedAt" | "lastOpenedAt" | "name";
 
 function BoardsListPage() {
-    useBoardsList({});
-
     const queryClient = useQueryClient();
-    const [page, setPage] = useState(1);
-    const [search, setSearch] = useState("");
-    const [debouncedSearch, setDebouncedSearch] = useState("");
-    const [sort, setSort] = useState<BoardsSortOption>("lastOpenedAt");
-    const [showFavorites, setShowFavorites] = useState<boolean | null>(null);
-    const [boards, setBoards] = useState<ApiSchemas["Board"][]>([]);
-    const [hasMore, setHasMore] = useState(true);
-    const [isLoadingMore, setIsLoadingMore] = useState(false);
-    const observer = useRef<IntersectionObserver | null>(null);
-    const loadMoreRef = useRef<HTMLDivElement>(null);
 
-    const boardsQuery = useBoardsList({});
+    const boardsFilters = useBoardsFilters();
+    const boardsQuery = useBoardsList({
+        sort: boardsFilters.sort,
+        search: useDebouncedValue(boardsFilters.search, 300),
+    });
 
     // useEffect(() => {
     //     if (boardsQuery.data?.list) {
@@ -63,7 +56,6 @@ function BoardsListPage() {
             await queryClient.invalidateQueries(
                 rqClient.queryOptions("get", "/boards")
             );
-            setPage(1);
         },
     });
 
@@ -108,8 +100,8 @@ function BoardsListPage() {
                     <Input
                         id="search"
                         placeholder="Enter board name..."
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
+                        value={boardsFilters.search}
+                        onChange={(e) => boardsFilters.setSearch(e.target.value)}
                         className="w-full"
                     />
                 </div>
@@ -117,8 +109,8 @@ function BoardsListPage() {
                 <div className="flex flex-col">
                     <Label htmlFor="sort">Sorting</Label>
                     <Select
-                        value={sort}
-                        onValueChange={(value) => setSort(value as BoardsSortOption)}
+                        value={boardsFilters.sort}
+                        onValueChange={(value) => boardsFilters.setSort(value as BoardsSortOption)}
                     >
                         <SelectTrigger id="sort" className="w-full">
                             <SelectValue placeholder="Sorting" />
@@ -135,10 +127,10 @@ function BoardsListPage() {
 
             <Tabs defaultValue="all" className="mb-6">
                 <TabsList>
-                    <TabsTrigger value="all" onClick={() => setShowFavorites(null)}>
+                    <TabsTrigger value="all">
                         All boards
                     </TabsTrigger>
-                    <TabsTrigger value="favorites" onClick={() => setShowFavorites(true)}>
+                    <TabsTrigger value="favorites">
                         Favorites
                     </TabsTrigger>
                 </TabsList>
