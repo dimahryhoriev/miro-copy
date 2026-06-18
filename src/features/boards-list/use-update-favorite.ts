@@ -1,41 +1,31 @@
 import { rqClient } from "@/shared/api/instance";
-import { useQueryClient, type InfiniteData } from "@tanstack/react-query";
-import type { ApiSchemas } from "@/shared/api/schema";
+import { useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 
 export function useUpdateFavorite() {
     const queryClient = useQueryClient();
+
+    const [favorite, setFavorite] = useState<Record<string, boolean>>({});
 
     const updateFavoriteMutation = rqClient.useMutation(
         'put',
         '/boards/{boardId}/favorite',
         {
             onMutate: async ({ params, body }) => {
-                await queryClient.cancelQueries(
-                    rqClient.queryOptions('get', '/boards'),
-                );
-
-                queryClient.setQueriesData(
-                    rqClient.queryOptions('get', '/boards'),
-                    (data: InfiniteData<ApiSchemas['BoardsList']>) => {
-                        console.log(data);
-                        return {
-                            ...data,
-                            pages: data.pages.map((page) => ({
-                                ...page,
-                                list: page.list.map((board) =>
-                                    board.id === params.path.boardId
-                                        ? { ...board, isFavorite: body.isFavorite }
-                                        : board
-                                )
-                            }))
-                        };
-                    },
-                );
+                setFavorite((prev) => ({
+                    ...prev,
+                    [params.path.boardId]: body.isFavorite,
+                }));
             },
-            onSettled: async () => {
+
+            onSettled: async (data, _, { params }) => {
                 await queryClient.invalidateQueries(
                     rqClient.queryOptions('get', '/boards'),
                 );
+                setFavorite((prev) => ({
+                    ...prev,
+                    [params.path.boardId]: data?.isFavorite ?? false,
+                }));
             },
         },
     );
@@ -54,7 +44,11 @@ export function useUpdateFavorite() {
             },
         });
 
+    const isOptimisticFavorite = (board: { id: string, isFavorite: boolean }) =>
+        favorite[board.id] ?? board.isFavorite;
+
     return {
         toggle,
+        isOptimisticFavorite,
     };
 };

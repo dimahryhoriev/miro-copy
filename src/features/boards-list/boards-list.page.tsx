@@ -102,7 +102,7 @@ function BoardsListPage() {
                                         <StarIcon />
                                     </span>
                                     <Switch
-                                        checked={board.isFavorite}
+                                        checked={updateFavorite.isOptimisticFavorite(board)}
                                         onCheckedChange={() => updateFavorite.toggle(board)}
                                     />
                                 </div>
