@@ -20,7 +20,10 @@ import { useDebouncedValue } from "@/shared/lib/react";
 import { useCreateBoard } from "./use-create-board";
 import { useDeleteBoard } from "./use-delete-board";
 import { useUpdateFavorite } from "./use-update-favorite";
-import { StarIcon } from "lucide-react";
+import { StarIcon, PlusIcon } from "lucide-react";
+import { BoardsListLayout, BoardsListLayoutHeader } from "./boards-list-layout";
+import { ViewModeToggle, type ViewMode } from "./view-mode-toggle";
+import { useState } from "react";
 
 type BoardsSortOption = "createdAt" | "updatedAt" | "lastOpenedAt" | "name";
 
@@ -35,10 +38,31 @@ function BoardsListPage() {
     const deleteBoard = useDeleteBoard();
     const updateFavorite = useUpdateFavorite();
 
-    return (
-        <div className="container mx-auto p-4">
-            <h1 className="text-2xl font-bold mb-6">Boards {CONFIG.API_BASE_URL}</h1>
+    const [viewMode, setViewMode] = useState<ViewMode>('list');
 
+    return (
+        <BoardsListLayout
+            header={
+                <BoardsListLayoutHeader
+                    title='Boards'
+                    description='Here you can view and manage your boards'
+                    actions={
+                        <ViewModeToggle
+                            value={viewMode}
+                            onChange={(value) => setViewMode(value)}
+                        />
+
+                        // <Button
+                        //     disabled={createBoard.isPending}
+                        //     onClick={createBoard.createBoard}
+                        // >
+                        //     <PlusIcon />
+                        //     Create board
+                        // </Button>
+                    }
+                />
+            }
+        >
             <div className="mb-8 grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div className="md:col-span-3">
                     <Label htmlFor="search">Search</Label>
@@ -82,10 +106,7 @@ function BoardsListPage() {
             </Tabs>
 
             <div className="mb-8">
-                <Button
-                    disabled={createBoard.isPending}
-                    onClick={createBoard.createBoard}
-                >
+                <Button>
                     Create board
                 </Button>
             </div>
@@ -154,8 +175,8 @@ function BoardsListPage() {
                     )}
                 </>
             )}
-        </div>
-    );
+        </BoardsListLayout>
+    )
 }
 
 export const Component = BoardsListPage;
