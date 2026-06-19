@@ -21,7 +21,7 @@ import { useCreateBoard } from "./use-create-board";
 import { useDeleteBoard } from "./use-delete-board";
 import { useUpdateFavorite } from "./use-update-favorite";
 import { StarIcon, PlusIcon } from "lucide-react";
-import { BoardsListLayout, BoardsListLayoutHeader } from "./boards-list-layout";
+import { BoardsListLayout, BoardsListLayoutFilters, BoardsListLayoutHeader } from "./boards-list-layout";
 import { ViewModeToggle, type ViewMode } from "./view-mode-toggle";
 import { useState } from "react";
 
@@ -62,54 +62,37 @@ function BoardsListPage() {
                     }
                 />
             }
+            filters={
+                <BoardsListLayoutFilters
+                    sort={
+                        <Select
+                            value={boardsFilters.sort}
+                            onValueChange={(value) => boardsFilters.setSort(value as BoardsSortOption)}
+                        >
+                            <SelectTrigger id="sort" className="w-full">
+                                <SelectValue placeholder="Sorting" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="lastOpenedAt">By last opened</SelectItem>
+                                <SelectItem value="createdAt">By creation date</SelectItem>
+                                <SelectItem value="updatedAt">By last updated</SelectItem>
+                                <SelectItem value="name">By name</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    }
+                    filters={
+                        <Input
+                            id="search"
+                            placeholder="Enter board name..."
+                            value={boardsFilters.search}
+                            onChange={(e) => boardsFilters.setSearch(e.target.value)}
+                            className="w-full"
+                        />
+                    }
+                >
+                </BoardsListLayoutFilters>
+            }
         >
-            <div className="mb-8 grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div className="md:col-span-3">
-                    <Label htmlFor="search">Search</Label>
-                    <Input
-                        id="search"
-                        placeholder="Enter board name..."
-                        value={boardsFilters.search}
-                        onChange={(e) => boardsFilters.setSearch(e.target.value)}
-                        className="w-full"
-                    />
-                </div>
-
-                <div className="flex flex-col">
-                    <Label htmlFor="sort">Sorting</Label>
-                    <Select
-                        value={boardsFilters.sort}
-                        onValueChange={(value) => boardsFilters.setSort(value as BoardsSortOption)}
-                    >
-                        <SelectTrigger id="sort" className="w-full">
-                            <SelectValue placeholder="Sorting" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="lastOpenedAt">By last opened</SelectItem>
-                            <SelectItem value="createdAt">By creation date</SelectItem>
-                            <SelectItem value="updatedAt">By last updated</SelectItem>
-                            <SelectItem value="name">By name</SelectItem>
-                        </SelectContent>
-                    </Select>
-                </div>
-            </div>
-
-            <Tabs defaultValue="all" className="mb-6">
-                <TabsList>
-                    <TabsTrigger value="all">
-                        All boards
-                    </TabsTrigger>
-                    <TabsTrigger value="favorites">
-                        Favorites
-                    </TabsTrigger>
-                </TabsList>
-            </Tabs>
-
-            <div className="mb-8">
-                <Button>
-                    Create board
-                </Button>
-            </div>
 
             {boardsQuery.isPending ? (
                 <div className="text-center py-10">Loading...</div>
