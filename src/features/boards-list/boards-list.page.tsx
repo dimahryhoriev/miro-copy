@@ -1,19 +1,8 @@
-import { CONFIG } from "@/shared/model/config";
 import { ROUTES } from "@/shared/model/routes";
 import { Button } from "@/shared/ui/kit/button";
 import { Card, CardFooter, CardHeader } from "@/shared/ui/kit/card";
 import { Link, href } from "react-router-dom";
-import { Input } from "@/shared/ui/kit/input";
-import { Label } from "@/shared/ui/kit/label";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/shared/ui/kit/select";
 import { Switch } from "@/shared/ui/kit/switch";
-import { Tabs, TabsList, TabsTrigger } from "@/shared/ui/kit/tabs";
 import { useBoardsList } from "./use-boards-list";
 import { useBoardsFilters } from "./use-boards-filters";
 import { useDebouncedValue } from "@/shared/lib/react";
@@ -21,11 +10,15 @@ import { useCreateBoard } from "./use-create-board";
 import { useDeleteBoard } from "./use-delete-board";
 import { useUpdateFavorite } from "./use-update-favorite";
 import { StarIcon, PlusIcon } from "lucide-react";
-import { BoardsListLayout, BoardsListLayoutFilters, BoardsListLayoutHeader } from "./boards-list-layout";
+import {
+    BoardsListLayout,
+    BoardsListLayoutFilters,
+    BoardsListLayoutHeader
+} from "./boards-list-layout";
 import { ViewModeToggle, type ViewMode } from "./view-mode-toggle";
 import { useState } from "react";
-
-type BoardsSortOption = "createdAt" | "updatedAt" | "lastOpenedAt" | "name";
+import { BoardsSortSelect } from "./boards-sort-select";
+import { BoardsSearchInput } from "./boards-search-input";
 
 function BoardsListPage() {
     const boardsFilters = useBoardsFilters();
@@ -47,50 +40,37 @@ function BoardsListPage() {
                     title='Boards'
                     description='Here you can view and manage your boards'
                     actions={
-                        <ViewModeToggle
-                            value={viewMode}
-                            onChange={(value) => setViewMode(value)}
-                        />
-
-                        // <Button
-                        //     disabled={createBoard.isPending}
-                        //     onClick={createBoard.createBoard}
-                        // >
-                        //     <PlusIcon />
-                        //     Create board
-                        // </Button>
+                        <Button
+                            disabled={createBoard.isPending}
+                            onClick={createBoard.createBoard}
+                        >
+                            <PlusIcon />
+                            Create board
+                        </Button>
                     }
                 />
             }
             filters={
                 <BoardsListLayoutFilters
                     sort={
-                        <Select
+                        <BoardsSortSelect
                             value={boardsFilters.sort}
-                            onValueChange={(value) => boardsFilters.setSort(value as BoardsSortOption)}
-                        >
-                            <SelectTrigger id="sort" className="w-full">
-                                <SelectValue placeholder="Sorting" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="lastOpenedAt">By last opened</SelectItem>
-                                <SelectItem value="createdAt">By creation date</SelectItem>
-                                <SelectItem value="updatedAt">By last updated</SelectItem>
-                                <SelectItem value="name">By name</SelectItem>
-                            </SelectContent>
-                        </Select>
-                    }
-                    filters={
-                        <Input
-                            id="search"
-                            placeholder="Enter board name..."
-                            value={boardsFilters.search}
-                            onChange={(e) => boardsFilters.setSearch(e.target.value)}
-                            className="w-full"
+                            onValueChange={boardsFilters.setSort}
                         />
                     }
-                >
-                </BoardsListLayoutFilters>
+                    filters={
+                        <BoardsSearchInput
+                            value={boardsFilters.search}
+                            onChange={boardsFilters.setSearch}
+                        />
+                    }
+                    actions={
+                        <ViewModeToggle
+                            value={viewMode}
+                            onChange={(value) => setViewMode(value)}
+                        />
+                    }
+                />
             }
         >
 
