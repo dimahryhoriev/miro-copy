@@ -64,3 +64,37 @@ export function BoardsListLayoutFilters({
         </div>
     );
 }
+
+export function BoardsListLayoutContent({
+    children,
+    isEmpty,
+    isPending,
+    isPendingNext,
+    cursorRef,
+    hasCursor,
+}: {
+    children?: React.ReactNode;
+    isEmpty?: boolean;
+    isPending?: boolean;
+    isPendingNext?: boolean;
+    cursorRef?: React.RefObject<HTMLDivElement>;
+    hasCursor?: boolean;
+}) {
+    return (
+        <div>
+            {isPending && <div className="text-center py-10">Loading...</div>}
+
+            {!isPending && children}
+
+            {isEmpty && !isPending && (
+                <div className="text-center py-10">No boards found</div>
+            )}
+
+            {hasCursor && (
+                <div ref={cursorRef} className="text-center py-8">
+                    {isPendingNext && "Loading more boards..."}
+                </div>
+            )}
+        </div>
+    )
+}

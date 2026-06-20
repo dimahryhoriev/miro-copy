@@ -3,22 +3,23 @@ import { Button } from "@/shared/ui/kit/button";
 import { Card, CardFooter, CardHeader } from "@/shared/ui/kit/card";
 import { Link, href } from "react-router-dom";
 import { Switch } from "@/shared/ui/kit/switch";
-import { useBoardsList } from "./use-boards-list";
-import { useBoardsFilters } from "./use-boards-filters";
+import { useBoardsList } from "./model/use-boards-list";
+import { useBoardsFilters } from "./model/use-boards-filters";
 import { useDebouncedValue } from "@/shared/lib/react";
-import { useCreateBoard } from "./use-create-board";
-import { useDeleteBoard } from "./use-delete-board";
-import { useUpdateFavorite } from "./use-update-favorite";
+import { useCreateBoard } from "./model/use-create-board";
+import { useDeleteBoard } from "./model/use-delete-board";
+import { useUpdateFavorite } from "./model/use-update-favorite";
 import { StarIcon, PlusIcon } from "lucide-react";
 import {
     BoardsListLayout,
     BoardsListLayoutFilters,
-    BoardsListLayoutHeader
-} from "./boards-list-layout";
-import { ViewModeToggle, type ViewMode } from "./view-mode-toggle";
+    BoardsListLayoutHeader,
+    BoardsListLayoutContent,
+} from "./ui/boards-list-layout";
+import { ViewModeToggle, type ViewMode } from "./ui/view-mode-toggle";
 import { useState } from "react";
-import { BoardsSortSelect } from "./boards-sort-select";
-import { BoardsSearchInput } from "./boards-search-input";
+import { BoardsSortSelect } from "./ui/boards-sort-select";
+import { BoardsSearchInput } from "./ui/boards-search-input";
 
 function BoardsListPage() {
     const boardsFilters = useBoardsFilters();
@@ -73,7 +74,14 @@ function BoardsListPage() {
                 />
             }
         >
+            <BoardsListLayoutContent
+                isPending={boardsQuery.isPending}
+                isEmpty={boardsQuery.boards.length === 0}
+                hasCursor={boardsQuery.hasNextPage}
+                isPendingNext={boardsQuery.isFetchingNextPage}
+            >
 
+            </BoardsListLayoutContent>
             {boardsQuery.isPending ? (
                 <div className="text-center py-10">Loading...</div>
             ) : (
