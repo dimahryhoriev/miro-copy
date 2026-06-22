@@ -77,7 +77,7 @@ export function BoardsListLayoutContent({
     isEmpty?: boolean;
     isPending?: boolean;
     isPendingNext?: boolean;
-    cursorRef?: React.RefObject<HTMLDivElement>;
+    cursorRef?: React.Ref<HTMLDivElement>;
     hasCursor?: boolean;
 }) {
     return (
