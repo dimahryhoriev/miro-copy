@@ -4,7 +4,7 @@ export function BoardsListLayout({
     children,
 }: {
     header: React.ReactNode;
-    filters: React.ReactNode;
+    filters?: React.ReactNode;
     children: React.ReactNode;
 }) {
     return (
