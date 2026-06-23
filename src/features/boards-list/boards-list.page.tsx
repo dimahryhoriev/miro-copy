@@ -19,6 +19,7 @@ import { useState } from "react";
 import { BoardsSortSelect } from "./ui/boards-sort-select";
 import { BoardsSearchInput } from "./ui/boards-search-input";
 import { BoardsListCard } from "./ui/boards-list-card";
+import { BoardsFavoriteToggle } from "./ui/boards-favorite-toggle";
 
 function BoardsListPage() {
     const boardsFilters = useBoardsFilters();
@@ -86,10 +87,21 @@ function BoardsListPage() {
                             <BoardsListCard
                                 key={board.id}
                                 board={board}
-                                isFavorite={updateFavorite.isOptimisticFavorite(board)}
-                                onFavoriteToggle={() => updateFavorite.toggle(board)}
-                                onDelete={() => deleteBoard.deleteBoard(board.id)}
-                                isDeletePending={deleteBoard.getIsPending(board.id)}
+                                rightTopActions={
+                                    <BoardsFavoriteToggle
+                                        isFavorite={updateFavorite.isOptimisticFavorite(board)}
+                                        onToggle={() => updateFavorite.toggle(board)}
+                                    />
+                                }
+                                bottomActions={
+                                    <Button
+                                        variant='destructive'
+                                        disabled={deleteBoard.getIsPending(board.id)}
+                                        onClick={() => deleteBoard.deleteBoard(board.id)}
+                                    >
+                                        Delete
+                                    </Button>
+                                }
                             />
                         ))}
                     </BoardsListListLayout>
@@ -99,10 +111,21 @@ function BoardsListPage() {
                             <BoardsListCard
                                 key={board.id}
                                 board={board}
-                                isFavorite={updateFavorite.isOptimisticFavorite(board)}
-                                onFavoriteToggle={() => updateFavorite.toggle(board)}
-                                onDelete={() => deleteBoard.deleteBoard(board.id)}
-                                isDeletePending={deleteBoard.getIsPending(board.id)}
+                                rightTopActions={
+                                    <BoardsFavoriteToggle
+                                        isFavorite={updateFavorite.isOptimisticFavorite(board)}
+                                        onToggle={() => updateFavorite.toggle(board)}
+                                    />
+                                }
+                                bottomActions={
+                                    <Button
+                                        variant='destructive'
+                                        disabled={deleteBoard.getIsPending(board.id)}
+                                        onClick={() => deleteBoard.deleteBoard(board.id)}
+                                    >
+                                        Delete
+                                    </Button>
+                                }
                             />
                         ))}
                     </BoardsListCardsLayout>
