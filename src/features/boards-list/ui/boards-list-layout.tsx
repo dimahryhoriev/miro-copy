@@ -1,4 +1,5 @@
 import { Skeleton } from "@/shared/ui/kit/skeleton";
+import type { ViewMode } from "./view-mode-toggle";
 
 export function BoardsListLayout({
     header,
@@ -84,7 +85,7 @@ export function BoardsListLayoutContent({
     isPendingNext?: boolean;
     cursorRef?: React.Ref<HTMLDivElement>;
     hasCursor?: boolean;
-    mode: 'list' | 'grid';
+    mode: ViewMode;
     renderList: () => React.ReactNode;
     renderGrid: () => React.ReactNode;
 }) {
@@ -98,7 +99,7 @@ export function BoardsListLayoutContent({
                 </div>
             )}
 
-            {mode === 'grid' && (
+            {mode === 'cards' && (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {renderGrid()}
                 </div>
@@ -120,7 +121,7 @@ export function BoardsListLayoutContent({
                                     <Skeleton className="h-10 w-full" />
                                 </div>
                             ),
-                            grid: (
+                            cards: (
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                     <Skeleton className="h-40 w-full" />
                                     <Skeleton className="h-40 w-full" />

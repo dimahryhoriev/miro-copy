@@ -5,8 +5,6 @@ import {
     BoardsListLayout,
     BoardsListLayoutHeader,
     BoardsListLayoutContent,
-    BoardsListListLayout,
-    BoardsListCardsLayout,
 } from "./ui/boards-list-layout";
 import { ViewModeToggle, type ViewMode } from "./ui/view-mode-toggle";
 import { useState } from "react";
@@ -45,10 +43,11 @@ function BoardsListPage() {
                 isPendingNext={boardsQuery.isFetchingNextPage}
                 cursorRef={boardsQuery.cursorRef}
                 hasCursor={boardsQuery.hasNextPage}
-            >
-                {viewMode === 'list' ? (
-                    <BoardsListListLayout>
-                        {boardsQuery.boards.map((board) => (
+                mode={viewMode}
+                renderList={() => (
+                    boardsQuery.boards
+                        .filter((board) => updateFavorite.isOptimisticFavorite(board))
+                        .map((board) => (
                             <BoardsListCard
                                 key={board.id}
                                 board={board}
@@ -68,35 +67,34 @@ function BoardsListPage() {
                                     </Button>
                                 }
                             />
-                        ))}
-                    </BoardsListListLayout>
-                ) : (
-                    <BoardsListCardsLayout>
-                        {boardsQuery.boards.map((board) => (
-                            updateFavorite.isOptimisticFavorite(board) && (
-                                <BoardsListCard
-                                    key={board.id}
-                                    board={board}
-                                    rightTopActions={
-                                        <BoardsFavoriteToggle
-                                            isFavorite={updateFavorite.isOptimisticFavorite(board)}
-                                            onToggle={() => updateFavorite.toggle(board)}
-                                        />
-                                    }
-                                    bottomActions={
-                                        <Button
-                                            variant='destructive'
-                                            disabled={deleteBoard.getIsPending(board.id)}
-                                            onClick={() => deleteBoard.deleteBoard(board.id)}
-                                        >
-                                            Delete
-                                        </Button>
-                                    }
-                                />
-                            )
-                        ))}
-                    </BoardsListCardsLayout>
+                        ))
                 )}
+                renderGrid={() => (
+                    boardsQuery.boards
+                        .filter((board) => updateFavorite.isOptimisticFavorite(board))
+                        .map((board) => (
+                            <BoardsListCard
+                                key={board.id}
+                                board={board}
+                                rightTopActions={
+                                    <BoardsFavoriteToggle
+                                        isFavorite={updateFavorite.isOptimisticFavorite(board)}
+                                        onToggle={() => updateFavorite.toggle(board)}
+                                    />
+                                }
+                                bottomActions={
+                                    <Button
+                                        variant='destructive'
+                                        disabled={deleteBoard.getIsPending(board.id)}
+                                        onClick={() => deleteBoard.deleteBoard(board.id)}
+                                    >
+                                        Delete
+                                    </Button>
+                                }
+                            />
+                        ))
+                )}
+            >
             </BoardsListLayoutContent>
         </BoardsListLayout>
     )
