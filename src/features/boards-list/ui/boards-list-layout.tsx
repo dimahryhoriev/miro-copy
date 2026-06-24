@@ -1,3 +1,5 @@
+import { Skeleton } from "@/shared/ui/kit/skeleton";
+
 export function BoardsListLayout({
     header,
     filters,
@@ -72,6 +74,9 @@ export function BoardsListLayoutContent({
     isPendingNext,
     cursorRef,
     hasCursor,
+    mode,
+    renderList,
+    renderGrid,
 }: {
     children?: React.ReactNode;
     isEmpty?: boolean;
@@ -79,10 +84,25 @@ export function BoardsListLayoutContent({
     isPendingNext?: boolean;
     cursorRef?: React.Ref<HTMLDivElement>;
     hasCursor?: boolean;
+    mode: 'list' | 'grid';
+    renderList: () => React.ReactNode;
+    renderGrid: () => React.ReactNode;
 }) {
     return (
         <div>
             {isPending && <div className="text-center py-10">Loading...</div>}
+
+            {mode === 'list' && (
+                <div className="flex flex-col gap-2">
+                    {renderList()}
+                </div>
+            )}
+
+            {mode === 'grid' && (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {renderGrid()}
+                </div>
+            )}
 
             {!isPending && children}
 
@@ -92,33 +112,24 @@ export function BoardsListLayoutContent({
 
             {hasCursor && (
                 <div ref={cursorRef} className="text-center py-8">
-                    {isPendingNext && "Loading more boards..."}
+                    {isPendingNext &&
+                        {
+                            list: (
+                                <div className="flex flex-col gap-2">
+                                    <Skeleton className="h-10 w-full" />
+                                    <Skeleton className="h-10 w-full" />
+                                </div>
+                            ),
+                            grid: (
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    <Skeleton className="h-40 w-full" />
+                                    <Skeleton className="h-40 w-full" />
+                                    <Skeleton className="h-40 w-full" />
+                                </div>
+                            ),
+                        }[mode]}
                 </div>
             )}
         </div>
     )
-}
-
-export function BoardsListCardsLayout({
-    children,
-}: {
-    children: React.ReactNode;
-}) {
-    return (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {children}
-        </div>
-    );
-}
-
-export function BoardsListListLayout({
-    children,
-}: {
-    children: React.ReactNode;
-}) {
-    return (
-        <div className="flex flex-col gap-2">
-            {children}
-        </div>
-    );
 }
