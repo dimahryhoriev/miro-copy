@@ -18,6 +18,8 @@ import { BoardsSortSelect } from "./ui/boards-sort-select";
 import { BoardsSearchInput } from "./ui/boards-search-input";
 import { BoardsListCard } from "./ui/boards-list-card";
 import { BoardsFavoriteToggle } from "./ui/boards-favorite-toggle";
+import { BoardsListItem } from "./ui/boards-list-item";
+import { DropdownMenuItem } from "@/shared/ui/kit/dropdown-menu";
 
 function BoardsListPage() {
     const boardsFilters = useBoardsFilters();
@@ -81,23 +83,23 @@ function BoardsListPage() {
                 mode={viewMode}
                 renderList={() => (
                     boardsQuery.boards.map((board) => (
-                        <BoardsListCard
+                        <BoardsListItem
                             key={board.id}
                             board={board}
-                            rightTopActions={
+                            rightActions={
                                 <BoardsFavoriteToggle
                                     isFavorite={updateFavorite.isOptimisticFavorite(board)}
                                     onToggle={() => updateFavorite.toggle(board)}
                                 />
                             }
-                            bottomActions={
-                                <Button
+                            menuActions={
+                                <DropdownMenuItem
                                     variant='destructive'
                                     disabled={deleteBoard.getIsPending(board.id)}
                                     onClick={() => deleteBoard.deleteBoard(board.id)}
                                 >
                                     Delete
-                                </Button>
+                                </DropdownMenuItem>
                             }
                         />
                     ))

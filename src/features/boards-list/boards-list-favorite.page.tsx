@@ -11,6 +11,8 @@ import { useState } from "react";
 import { BoardsListCard } from "./ui/boards-list-card";
 import { Button } from "@/shared/ui/kit/button";
 import { BoardsFavoriteToggle } from "./ui/boards-favorite-toggle";
+import { DropdownMenuItem } from "@/shared/ui/kit/dropdown-menu";
+import { BoardsListItem } from "./ui/boards-list-item";
 
 function BoardsListPage() {
     const boardsQuery = useBoardsList({
@@ -21,6 +23,9 @@ function BoardsListPage() {
     const updateFavorite = useUpdateFavorite();
 
     const [viewMode, setViewMode] = useState<ViewMode>('list');
+
+    const boards = boardsQuery.boards
+        .filter((board) => updateFavorite.isOptimisticFavorite(board));
 
     return (
         <BoardsListLayout
@@ -45,54 +50,50 @@ function BoardsListPage() {
                 hasCursor={boardsQuery.hasNextPage}
                 mode={viewMode}
                 renderList={() => (
-                    boardsQuery.boards
-                        .filter((board) => updateFavorite.isOptimisticFavorite(board))
-                        .map((board) => (
-                            <BoardsListCard
-                                key={board.id}
-                                board={board}
-                                rightTopActions={
-                                    <BoardsFavoriteToggle
-                                        isFavorite={updateFavorite.isOptimisticFavorite(board)}
-                                        onToggle={() => updateFavorite.toggle(board)}
-                                    />
-                                }
-                                bottomActions={
-                                    <Button
-                                        variant='destructive'
-                                        disabled={deleteBoard.getIsPending(board.id)}
-                                        onClick={() => deleteBoard.deleteBoard(board.id)}
-                                    >
-                                        Delete
-                                    </Button>
-                                }
-                            />
-                        ))
+                    boards.map((board) => (
+                        <BoardsListItem
+                            key={board.id}
+                            board={board}
+                            rightActions={
+                                <BoardsFavoriteToggle
+                                    isFavorite={updateFavorite.isOptimisticFavorite(board)}
+                                    onToggle={() => updateFavorite.toggle(board)}
+                                />
+                            }
+                            menuActions={
+                                <DropdownMenuItem
+                                    variant='destructive'
+                                    disabled={deleteBoard.getIsPending(board.id)}
+                                    onClick={() => deleteBoard.deleteBoard(board.id)}
+                                >
+                                    Delete
+                                </DropdownMenuItem>
+                            }
+                        />
+                    ))
                 )}
                 renderGrid={() => (
-                    boardsQuery.boards
-                        .filter((board) => updateFavorite.isOptimisticFavorite(board))
-                        .map((board) => (
-                            <BoardsListCard
-                                key={board.id}
-                                board={board}
-                                rightTopActions={
-                                    <BoardsFavoriteToggle
-                                        isFavorite={updateFavorite.isOptimisticFavorite(board)}
-                                        onToggle={() => updateFavorite.toggle(board)}
-                                    />
-                                }
-                                bottomActions={
-                                    <Button
-                                        variant='destructive'
-                                        disabled={deleteBoard.getIsPending(board.id)}
-                                        onClick={() => deleteBoard.deleteBoard(board.id)}
-                                    >
-                                        Delete
-                                    </Button>
-                                }
-                            />
-                        ))
+                    boards.map((board) => (
+                        <BoardsListCard
+                            key={board.id}
+                            board={board}
+                            rightTopActions={
+                                <BoardsFavoriteToggle
+                                    isFavorite={updateFavorite.isOptimisticFavorite(board)}
+                                    onToggle={() => updateFavorite.toggle(board)}
+                                />
+                            }
+                            bottomActions={
+                                <Button
+                                    variant='destructive'
+                                    disabled={deleteBoard.getIsPending(board.id)}
+                                    onClick={() => deleteBoard.deleteBoard(board.id)}
+                                >
+                                    Delete
+                                </Button>
+                            }
+                        />
+                    ))
                 )}
             >
             </BoardsListLayoutContent>
