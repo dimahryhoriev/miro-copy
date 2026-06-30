@@ -2,7 +2,7 @@ import { Button } from "@/shared/ui/kit/button";
 import { useDeleteBoard } from "../model/use-delete-board";
 import { useUpdateFavorite } from "../model/use-update-favorite";
 import { BoardsFavoriteToggle } from "../ui/boards-favorite-toggle";
-import { BoardsListCard } from "../ui/boards-list-card";
+import { BoardsListCard } from "../ui/boards-list-card-view";
 import type { ApiSchemas } from "@/shared/api/schema";
 
 export function BoardCard({

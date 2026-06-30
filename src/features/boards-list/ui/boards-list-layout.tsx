@@ -172,7 +172,7 @@ export function BoardsLayoutContentGroups({
     }[];
 }) {
     return (
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-10">
             {groups.map((group) => (
                 <div key={group.title}>
                     <div className="text-lg font-bold mb-2">

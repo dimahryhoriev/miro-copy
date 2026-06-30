@@ -19,15 +19,15 @@ export function useRecentGroups(
 
     const groups = boards.reduce<BoardsGroup[]>(
         (acc, board) => {
-            const updatedAt = new Date(board.updatedAt);
-            updatedAt.setHours(0, 0, 0, 0);
+            const lastOpenedAt = new Date(board.lastOpenedAt);
+            lastOpenedAt.setHours(0, 0, 0, 0);
 
             let groupTitle: string;
-            if (updatedAt.getTime() === today.getTime()) {
+            if (lastOpenedAt.getTime() === today.getTime()) {
                 groupTitle = 'Today';
-            } else if (updatedAt.getTime() === yesterday.getTime()) {
+            } else if (lastOpenedAt.getTime() === yesterday.getTime()) {
                 groupTitle = 'Yesterday';
-            } else if (updatedAt >= lastMonth) {
+            } else if (lastOpenedAt >= lastMonth) {
                 groupTitle = 'Last month';
             } else {
                 groupTitle = 'Earlier';

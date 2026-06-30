@@ -88,11 +88,17 @@ function generateRandomBoards(count: number): ApiSchemas['Board'][] {
         const createdAt = randomDate();
 
         const updatedAt = new Date(
-            new Date(createdAt).getTime() + Math.random() * 86400000 * 10,
+            Math.min(
+                new Date(createdAt).getTime() + Math.random() * 86400000 * 10,
+                new Date().getTime(),
+            )
         ).toISOString();
 
         const lastOpenedAt = new Date(
-            new Date(updatedAt).getTime() + Math.random() * 86400000 * 5,
+            Math.min(
+                new Date(updatedAt).getTime() + Math.random() * 86400000 * 5,
+                new Date().getTime(),
+            )
         ).toISOString();
 
         result.push({

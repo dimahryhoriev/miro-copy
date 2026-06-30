@@ -4,6 +4,8 @@ import {
     BoardsListLayoutHeader,
     BoardsListLayoutContent,
     BoardsLayoutContentGroups,
+    BoardsListLayoutList,
+    BoardsListLayoutCards,
 } from "./ui/boards-list-layout";
 import { ViewModeToggle, type ViewMode } from "./ui/view-mode-toggle";
 import { useState } from "react";
@@ -47,10 +49,26 @@ function BoardsListPage() {
                     groups={
                         recentGroups.map((group) => ({
                             items: {
-                                list: group.items
-                                    .map((board) => <BoardItem board={board} />),
-                                cards: group.items
-                                    .map((board) => <BoardCard board={board} />),
+                                list: (
+                                    <BoardsListLayoutList>
+                                        {
+                                            group.items
+                                                .map(
+                                                    (board) => <BoardItem key={board.id} board={board} />
+                                                )
+                                        }
+                                    </BoardsListLayoutList>
+                                ),
+                                cards: (
+                                    <BoardsListLayoutCards>
+                                        {
+                                            group.items
+                                                .map(
+                                                    (board) => <BoardCard key={board.id} board={board} />
+                                                )
+                                        }
+                                    </BoardsListLayoutCards>
+                                )
                             }[viewMode],
                             title: group.title,
                         }))

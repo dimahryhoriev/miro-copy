@@ -1,6 +1,6 @@
 import { DropdownMenuItem } from "@/shared/ui/kit/dropdown-menu";
 import { BoardsFavoriteToggle } from "../ui/boards-favorite-toggle";
-import { BoardsListItem } from "../ui/boards-list-item";
+import { BoardsListItem } from "../ui/boards-list-item-view";
 import type { ApiSchemas } from "@/shared/api/schema";
 import { useDeleteBoard } from "../model/use-delete-board";
 import { useUpdateFavorite } from "../model/use-update-favorite";
