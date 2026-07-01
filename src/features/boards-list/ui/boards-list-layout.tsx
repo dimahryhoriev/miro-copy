@@ -5,16 +5,23 @@ export function BoardsListLayout({
     header,
     filters,
     children,
+    sidebar,
 }: {
     header: React.ReactNode;
     filters?: React.ReactNode;
     children: React.ReactNode;
+    sidebar?: React.ReactNode;
 }) {
     return (
         <div className="container mx-auto p-4 flex flex-col gap-6">
-            {header}
-            {filters}
-            {children}
+            <div className="flex gap-4">
+                {sidebar}
+                <div className="flex-1">
+                    {header}
+                    {filters}
+                    {children}
+                </div>
+            </div>
         </div>
     )
 }

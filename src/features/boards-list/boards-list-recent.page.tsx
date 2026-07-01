@@ -12,6 +12,7 @@ import { useState } from "react";
 import { useRecentGroups } from "./model/use-recent-groups";
 import { BoardItem } from "./compose/board-item";
 import { BoardCard } from "./compose/board-card";
+import { BoardsSidebar } from "./ui/boards-sidebar";
 
 function BoardsListPage() {
     const boardsQuery = useBoardsList({
@@ -24,6 +25,7 @@ function BoardsListPage() {
 
     return (
         <BoardsListLayout
+            sidebar={<BoardsSidebar />}
             header={
                 <BoardsListLayoutHeader
                     title='Recent boards'
