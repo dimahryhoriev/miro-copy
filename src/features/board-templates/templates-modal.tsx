@@ -53,7 +53,26 @@ export function TemplatesModal({
                                 className="group relative rounded-lg border p-4"
                                 onClick={() => onSelect(template)}
                             >
-
+                                <div className="aspect-video rounded-md bg-gray-100">
+                                    <img
+                                        src={template.thumbnail}
+                                        alt={template.name}
+                                        className="w-full h-full object-cover"
+                                    />
+                                </div>
+                                <h3 className="font-medium mb-1">
+                                    {template.name}
+                                </h3>
+                                <p className="text-sm text-gray-500">
+                                    {template.description}
+                                </p>
+                                <Button
+                                    size='sm'
+                                    className="absolute top-4 right-4 opacity-0"
+                                >
+                                    <PlusIcon className="h-4 w-4 mr-2" />
+                                    Use
+                                </Button>
                             </div>
                         ))}
                     </div>
