@@ -29,7 +29,6 @@ export function TemplatesModal({
     onClose,
     onSelect,
     templates,
-    isLoading,
 }: TemplatesModalProps) {
     return (
         <Dialog
