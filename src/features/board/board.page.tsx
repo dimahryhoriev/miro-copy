@@ -5,12 +5,34 @@ import {
     type PathParams,
     ROUTES
 } from "@/shared/model/routes";
+import {
+    ArrowRightIcon,
+    StickerIcon
+} from "lucide-react";
 
 function BoardPage() {
     const params = useParams<PathParams[typeof ROUTES.BOARD]>();
     return (
         <Layout>
-            
+            <Dots />
+            <Canvas>
+                <Sticker text="Hello" x={100} y={100} />
+                <Sticker text="Hello" x={200} y={200} />
+            </Canvas>
+            <Actions>
+                <ActionButton
+                    isActive={false}
+                    onClick={() => { }}
+                >
+                    <StickerIcon />
+                </ActionButton>
+                <ActionButton
+                    isActive={false}
+                    onClick={() => { }}
+                >
+                    <ArrowRightIcon />
+                </ActionButton>
+            </Actions>
         </Layout>
     )
 }
@@ -23,7 +45,10 @@ function Layout({
     children: React.ReactNode;
 }) {
     return (
-        <div className="grow relative">
+        <div
+            className="grow relative"
+            tabIndex={0}
+        >
             {children}
         </div>
     )
