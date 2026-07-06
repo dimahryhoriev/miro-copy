@@ -1,52 +1,46 @@
 import { ScrollArea } from "@/shared/ui/kit/scroll-area";
 import { TemplateCard } from './template-card'
-import { Skeleton } from "@/shared/ui/kit/skeleton";
 
-interface Template {
-    id: string;
-    name: string;
-    description: string;
-    thumbnail: string;
-}
-
-interface TemplatesGalleryProps {
-    templates: Template[];
-    onSelect: (template: Template) => void;
-    isLoading?: boolean;
-    className?: string;
-}
+const templates = [
+    {
+        id: '1',
+        name: 'Template 1',
+        description: 'Template 1 description',
+        thumbnail: 'https://via.placeholder.com/150'
+    },
+    {
+        id: '2',
+        name: 'Template 2',
+        description: 'Template 2 description',
+        thumbnail: 'https://via.placeholder.com/150'
+    },
+    {
+        id: '3',
+        name: 'Template 3',
+        description: 'Template 3 description',
+        thumbnail: 'https://via.placeholder.com/150'
+    },
+    {
+        id: '4',
+        name: 'Template 4',
+        description: 'Template 4 description',
+        thumbnail: 'https://via.placeholder.com/150'
+    },
+]
 
 export function TemplatesGallery({
-    templates,
-    onSelect,
-    isLoading,
-    className,
-}: TemplatesGalleryProps) {
-    if (isLoading) {
-        return (
-            <div className="grid grid-cols-2 gap-4">
-                {Array.from(
-                    { length: 4 },
-                    (_, index) => (
-                        <div key={index} className="space-y-4">
-                            <Skeleton className="aspect-video w-full" />
-                            <Skeleton className="h-4 w-2/3" />
-                            <Skeleton className="h-4 w-full" />
-                        </div>
-                    ))
-                }
-            </div>
-        )
-    }
-
+    className
+}: {
+    className?: string;
+}) {
     return (
         <ScrollArea className={className}>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-4 gap-4">
                 {templates.map((template) => (
                     <TemplateCard
                         key={template.id}
                         template={template}
-                        onSelect={onSelect}
+                        onSelect={() => { }}
                     />
                 ))}
             </div>

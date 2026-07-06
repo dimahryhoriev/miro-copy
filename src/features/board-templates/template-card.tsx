@@ -60,7 +60,7 @@ export function TemplateCard({
                     cn(
                         'absolute top-4 right-4',
                         'opacity-0 group-hover:opacity-100',
-                        'transition opacity',
+                        'transition-opacity',
                     )
                 }
             >

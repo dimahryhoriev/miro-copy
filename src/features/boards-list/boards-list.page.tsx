@@ -17,8 +17,11 @@ import { BoardsSearchInput } from "./ui/boards-search-input";
 import { BoardItem } from "./compose/board-item";
 import { BoardCard } from "./compose/board-card";
 import { BoardsSidebar } from "./ui/boards-sidebar";
-
-
+import {
+    TemplatesGallery,
+    TemplatesModal,
+    useTemplatesModal
+} from "@/features/board-templates";
 
 function BoardsListPage() {
     const boardsFilters = useBoardsFilters();
@@ -27,71 +30,87 @@ function BoardsListPage() {
         search: useDebouncedValue(boardsFilters.search, 300),
     });
 
+    const templatesModal = useTemplatesModal();
+
     const createBoard = useCreateBoard();
 
     const [viewMode, setViewMode] = useState<ViewMode>('list');
 
     return (
-        <BoardsListLayout
-            sidebar={<BoardsSidebar />}
-            header={
-                <BoardsListLayoutHeader
-                    title='Boards'
-                    description='Here you can view and manage your boards'
-                    actions={
-                        <Button
-                            disabled={createBoard.isPending}
-                            onClick={createBoard.createBoard}
-                        >
-                            <PlusIcon />
-                            Create board
-                        </Button>
-                    }
-                />
-            }
-            filters={
-                <BoardsListLayoutFilters
-                    sort={
-                        <BoardsSortSelect
-                            value={boardsFilters.sort}
-                            onValueChange={boardsFilters.setSort}
-                        />
-                    }
-                    filters={
-                        <BoardsSearchInput
-                            value={boardsFilters.search}
-                            onChange={boardsFilters.setSearch}
-                        />
-                    }
-                    actions={
-                        <ViewModeToggle
-                            value={viewMode}
-                            onChange={(value) => setViewMode(value)}
-                        />
-                    }
-                />
-            }
-        >
-            <BoardsListLayoutContent
-                isEmpty={boardsQuery.boards.length === 0}
-                isPending={boardsQuery.isPending}
-                isPendingNext={boardsQuery.isFetchingNextPage}
-                cursorRef={boardsQuery.cursorRef}
-                hasCursor={boardsQuery.hasNextPage}
-                mode={viewMode}
-                renderList={() => (
-                    boardsQuery.boards.map((board) => (
-                        <BoardItem key={board.id} board={board} />
-                    ))
-                )}
-                renderGrid={() => (
-                    boardsQuery.boards.map((board) => (
-                        <BoardCard key={board.id} board={board} />
-                    ))
-                )}
+        <>
+            <TemplatesModal />
+            <BoardsListLayout
+                templates={<TemplatesGallery />}
+                sidebar={<BoardsSidebar />}
+                header={
+                    <BoardsListLayoutHeader
+                        title='Boards'
+                        description='Here you can view and manage your boards'
+                        actions={
+                            <>
+                                <Button
+                                    variant='outline'
+                                    onClick={
+                                        () => templatesModal.open()
+                                    }
+                                >
+                                    Choose a template
+                                </Button>
+                                <Button
+                                    disabled={createBoard.isPending}
+                                    onClick={createBoard.createBoard}
+                                >
+                                    <PlusIcon />
+                                    Create board
+                                </Button>
+                            </>
+                        }
+                    />
+                }
+                filters={
+                    <BoardsListLayoutFilters
+                        sort={
+                            <BoardsSortSelect
+                                value={boardsFilters.sort}
+                                onValueChange={boardsFilters.setSort}
+                            />
+                        }
+                        filters={
+                            <BoardsSearchInput
+                                value={boardsFilters.search}
+                                onChange={boardsFilters.setSearch}
+                            />
+                        }
+                        actions={
+                            <ViewModeToggle
+                                value={viewMode}
+                                onChange={(value) => setViewMode(value)}
+                            />
+                        }
+                    />
+                }
             >
-            </BoardsListLayoutContent>
-        </BoardsListLayout>
+                <BoardsListLayoutContent
+                    isEmpty={boardsQuery.boards.length === 0}
+                    isPending={boardsQuery.isPending}
+                    isPendingNext={boardsQuery.isFetchingNextPage}
+                    cursorRef={boardsQuery.cursorRef}
+                    hasCursor={boardsQuery.hasNextPage}
+                    mode={viewMode}
+                    renderList={() => (
+                        boardsQuery.boards.map((board) => (
+                            <BoardItem key={board.id} board={board} />
+                        ))
+                    )}
+                    renderGrid={() => (
+                        boardsQuery.boards.map((board) => (
+                            <BoardCard key={board.id} board={board} />
+                        ))
+                    )}
+                >
+                </BoardsListLayoutContent>
+            </BoardsListLayout>
+        </>
     )
 }
 
