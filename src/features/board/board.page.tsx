@@ -1,23 +1,81 @@
 import { cn } from "@/shared/lib/css";
 import { Button } from "@/shared/ui/kit/button";
-import { useParams } from "react-router-dom";
-import {
-    type PathParams,
-    ROUTES
-} from "@/shared/model/routes";
 import {
     ArrowRightIcon,
     StickerIcon
 } from "lucide-react";
+import { useState } from "react";
+
+type NodeBase = {
+    id: string;
+    type: string;
+}
+
+type StickerNode = {
+    type: 'sticker';
+    text: string;
+    x: number;
+    y: number;
+} & NodeBase;
+
+type Node = StickerNode;
+
+function useNodes() {
+    const [nodes, setNodes] = useState<Node[]>([
+        {
+            id: '1',
+            type: 'sticker',
+            text: 'Hello 1',
+            x: 100,
+            y: 100,
+        },
+        {
+            id: '2',
+            type: 'sticker',
+            text: 'Hello 2',
+            x: 200,
+            y: 200,
+        },
+    ]);
+
+    const addSticker = (data: {
+        text: string;
+        x: number;
+        y: number;
+    }) => {
+        setNodes((prevNodes: Node[]) => [
+            ...prevNodes,
+            {
+                id: crypto.randomUUID(),
+                type: 'sticker',
+                ...data,
+            }
+        ])
+    }
+
+    return {
+        nodes,
+        addSticker,
+    };
+}
 
 function BoardPage() {
-    const params = useParams<PathParams[typeof ROUTES.BOARD]>();
+    const { nodes } = useNodes();
+
     return (
         <Layout>
             <Dots />
             <Canvas>
-                <Sticker text="Hello" x={100} y={100} />
-                <Sticker text="Hello" x={200} y={200} />
+                {
+                    nodes.map((node) => (
+                        <Sticker
+                            text={node.text}
+                            x={node.x}
+                            y={node.y}
+                            key={node.id}
+                        />
+                    ))
+                }
             </Canvas>
             <Actions>
                 <ActionButton
