@@ -9,12 +9,26 @@ import { useBoardViewState } from "./view-state";
 
 function BoardPage() {
     const { nodes, addSticker } = useNodes();
-    const { viewState } = useBoardViewState();
+    const {
+        viewState,
+        goToIdle,
+        goToAddSticker,
+    } = useBoardViewState();
 
     return (
         <Layout>
             <Dots />
-            <Canvas>
+            <Canvas
+                onClick={(e) => {
+                    if (viewState.type === 'add-sticker') {
+                        addSticker({
+                            text: 'Default',
+                            x: e.clientX,
+                            y: e.clientY,
+                        });
+                    }
+                }}
+            >
                 {
                     nodes.map((node) => (
                         <Sticker
@@ -28,8 +42,16 @@ function BoardPage() {
             </Canvas>
             <Actions>
                 <ActionButton
-                    isActive={false}
-                    onClick={() => { }}
+                    isActive={viewState.type === 'add-sticker'}
+                    onClick={
+                        () => {
+                            if (viewState.type === 'add-sticker') {
+                                goToIdle();
+                            } else {
+                                goToAddSticker();
+                            }
+                        }
+                    }
                 >
                     <StickerIcon />
                 </ActionButton>
