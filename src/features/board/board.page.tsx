@@ -6,6 +6,57 @@ import {
 } from "lucide-react";
 import { useNodes } from "./nodes";
 import { useBoardViewState } from "./view-state";
+import {
+    useCallback,
+    useState,
+    type Ref,
+    type RefCallback
+} from "react";
+
+type CanvasRect = {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+}
+
+const useCanvasRect = () => {
+    const [canvasRect, setCanvasRect] = useState<CanvasRect>();
+    const canvasRef: RefCallback<HTMLDivElement> =
+        useCallback((el) => {
+            const observer = new ResizeObserver(
+                (entries) => {
+                    for (const entry of entries) {
+                        const {
+                            x,
+                            y,
+                            width,
+                            height,
+                        } = entry.contentRect;
+                        setCanvasRect({
+                            x,
+                            y,
+                            width,
+                            height,
+                        })
+                    }
+                }
+            )
+
+            if (el) {
+                observer.observe(el);
+                return () => {
+                    observer.disconnect();
+                }
+            }
+
+            return () => { };
+        }, [])
+    return {
+        canvasRef,
+        canvasRect,
+    };
+}
 
 function BoardPage() {
     const { nodes, addSticker } = useNodes();
@@ -14,11 +65,13 @@ function BoardPage() {
         goToIdle,
         goToAddSticker,
     } = useBoardViewState();
+    const { canvasRef } = useCanvasRect();
 
     return (
         <Layout>
             <Dots />
             <Canvas
+                ref={canvasRef}
                 onClick={(e) => {
                     if (viewState.type === 'add-sticker') {
                         addSticker({
@@ -26,6 +79,7 @@ function BoardPage() {
                             x: e.clientX,
                             y: e.clientY,
                         });
+                        goToIdle();
                     }
                 }}
             >
@@ -99,13 +153,16 @@ function Dots() {
 
 function Canvas({
     children,
+    ref,
     ...props
 }: {
-    children: React.ReactNode
+    children: React.ReactNode;
+    ref: Ref<HTMLDivElement>;
 } & React.HTMLAttributes<HTMLDivElement>) {
     return (
         <div
             className="absolute inset-0"
+            ref={ref}
             {...props}
         >
             {children}
