@@ -6,22 +6,58 @@ import {
 } from "lucide-react";
 import { useNodes } from "./nodes";
 import { useBoardViewState } from "./view-state";
-import { type Ref } from "react";
+import {
+    useEffect,
+    useRef,
+    type Ref
+} from "react";
 import { useCanvasRect } from "./use-canvas-rect";
+
+function useLayoutFocus() {
+    const layoutRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        if (layoutRef.current) {
+            layoutRef.current.focus();
+        }
+
+        const handleVisibilityChange = () => {
+            if (document.visibilityState === 'visible') {
+                layoutRef.current?.focus();
+            }
+        }
+
+        window.addEventListener(
+            'visibilitychange',
+            handleVisibilityChange,
+        );
+
+        return () => {
+            window.removeEventListener(
+                'visibilitychange',
+                handleVisibilityChange,
+            )
+        }
+    }, [layoutRef]);
+
+    return layoutRef;
+}
 
 function BoardPage() {
     const { nodes, addSticker } = useNodes();
+    const { canvasRef, canvasRect } = useCanvasRect();
+    const focusLayoutRef = useLayoutFocus();
     const {
         viewState,
         goToIdle,
         goToAddSticker,
     } = useBoardViewState();
-    const { canvasRef, canvasRect } = useCanvasRect();
 
     console.log(canvasRect);
 
     return (
         <Layout
+            ref={focusLayoutRef}
             onKeyDown={
                 (e) => {
                     if (viewState.type === 'add-sticker') {
@@ -95,13 +131,16 @@ export const Component = BoardPage;
 
 function Layout({
     children,
+    ref,
     ...props
 }: {
     children: React.ReactNode;
+    ref: Ref<HTMLDivElement>;
 } & React.HTMLAttributes<HTMLDivElement>
 ) {
     return (
         <div
+            ref={ref}
             className="grow relative"
             tabIndex={0}
             {...props}
