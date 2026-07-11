@@ -7,56 +7,9 @@ import {
 import { useNodes } from "./nodes";
 import { useBoardViewState } from "./view-state";
 import {
-    useCallback,
-    useState,
     type Ref,
-    type RefCallback
 } from "react";
-
-type CanvasRect = {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-}
-
-const useCanvasRect = () => {
-    const [canvasRect, setCanvasRect] = useState<CanvasRect>();
-    const canvasRef: RefCallback<HTMLDivElement> =
-        useCallback((el) => {
-            const observer = new ResizeObserver(
-                (entries) => {
-                    for (const entry of entries) {
-                        const {
-                            x,
-                            y,
-                            width,
-                            height,
-                        } = entry.contentRect;
-                        setCanvasRect({
-                            x,
-                            y,
-                            width,
-                            height,
-                        })
-                    }
-                }
-            )
-
-            if (el) {
-                observer.observe(el);
-                return () => {
-                    observer.disconnect();
-                }
-            }
-
-            return () => { };
-        }, [])
-    return {
-        canvasRef,
-        canvasRect,
-    };
-}
+import { useCanvasRect } from "./use-canvas-rect";
 
 function BoardPage() {
     const { nodes, addSticker } = useNodes();
@@ -65,7 +18,7 @@ function BoardPage() {
         goToIdle,
         goToAddSticker,
     } = useBoardViewState();
-    const { canvasRef } = useCanvasRect();
+    const { canvasRef, canvasRect } = useCanvasRect();
 
     return (
         <Layout>
@@ -73,11 +26,14 @@ function BoardPage() {
             <Canvas
                 ref={canvasRef}
                 onClick={(e) => {
-                    if (viewState.type === 'add-sticker') {
+                    if (
+                        viewState.type === 'add-sticker'
+                        && canvasRect
+                    ) {
                         addSticker({
                             text: 'Default',
-                            x: e.clientX,
-                            y: e.clientY,
+                            x: e.clientX - canvasRect.x,
+                            y: e.clientY - canvasRect.y,
                         });
                         goToIdle();
                     }
