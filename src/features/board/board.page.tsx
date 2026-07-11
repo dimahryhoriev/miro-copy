@@ -6,9 +6,7 @@ import {
 } from "lucide-react";
 import { useNodes } from "./nodes";
 import { useBoardViewState } from "./view-state";
-import {
-    type Ref,
-} from "react";
+import { type Ref } from "react";
 import { useCanvasRect } from "./use-canvas-rect";
 
 function BoardPage() {
@@ -20,8 +18,25 @@ function BoardPage() {
     } = useBoardViewState();
     const { canvasRef, canvasRect } = useCanvasRect();
 
+    console.log(canvasRect);
+
     return (
-        <Layout>
+        <Layout
+            onKeyDown={
+                (e) => {
+                    if (viewState.type === 'add-sticker') {
+                        if (e.key === 'Escape') {
+                            goToIdle();
+                        }
+                    }
+                    if (viewState.type === 'idle') {
+                        if (e.key === 's') {
+                            goToAddSticker();
+                        }
+                    }
+                }
+            }
+        >
             <Dots />
             <Canvas
                 ref={canvasRef}
@@ -79,14 +94,17 @@ function BoardPage() {
 export const Component = BoardPage;
 
 function Layout({
-    children
+    children,
+    ...props
 }: {
     children: React.ReactNode;
-}) {
+} & React.HTMLAttributes<HTMLDivElement>
+) {
     return (
         <div
             className="grow relative"
             tabIndex={0}
+            {...props}
         >
             {children}
         </div>
