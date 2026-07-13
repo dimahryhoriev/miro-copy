@@ -5,7 +5,7 @@ import {
     StickerIcon
 } from "lucide-react";
 import { useNodes } from "./nodes";
-import { useBoardViewState } from "./view-state";
+import { useViewModel } from "./view-model";
 import { type Ref } from "react";
 import { useCanvasRect } from "./use-canvas-rect";
 import { useLayoutFocus } from "./use-layout-focus";
@@ -14,25 +14,21 @@ function BoardPage() {
     const { nodes, addSticker } = useNodes();
     const { canvasRef, canvasRect } = useCanvasRect();
     const focusLayoutRef = useLayoutFocus();
-    const {
-        viewState,
-        goToIdle,
-        goToAddSticker,
-    } = useBoardViewState();
+    const viewModel = useViewModel();
 
     return (
         <Layout
             ref={focusLayoutRef}
             onKeyDown={
                 (e) => {
-                    if (viewState.type === 'add-sticker') {
+                    if (viewModel.viewState.type === 'add-sticker') {
                         if (e.key === 'Escape') {
-                            goToIdle();
+                            viewModel.goToIdle();
                         }
                     }
-                    if (viewState.type === 'idle') {
+                    if (viewModel.viewState.type === 'idle') {
                         if (e.key === 's') {
-                            goToAddSticker();
+                            viewModel.goToAddSticker();
                         }
                     }
                 }
@@ -43,7 +39,7 @@ function BoardPage() {
                 ref={canvasRef}
                 onClick={(e) => {
                     if (
-                        viewState.type === 'add-sticker'
+                        viewModel.viewState.type === 'add-sticker'
                         && canvasRect
                     ) {
                         addSticker({
@@ -51,7 +47,7 @@ function BoardPage() {
                             x: e.clientX - canvasRect.x,
                             y: e.clientY - canvasRect.y,
                         });
-                        goToIdle();
+                        viewModel.goToIdle();
                     }
                 }}
             >
@@ -62,19 +58,41 @@ function BoardPage() {
                             x={node.x}
                             y={node.y}
                             key={node.id}
+                            selected={
+                                viewModel.viewState.type === 'idle'
+                                && viewModel.viewState.selectedIds
+                                    .has(node.id)
+                            }
+                            onClick={
+                                (e) => {
+                                    if (viewModel.viewState.type === 'idle') {
+                                        if (e.ctrlKey || e.shiftKey || e.metaKey) {
+                                            viewModel.selection(
+                                                [node.id],
+                                                'toggle',
+                                            )
+                                        } else {
+                                            viewModel.selection(
+                                                [node.id],
+                                                'replace',
+                                            )
+                                        }
+                                    }
+                                }
+                            }
                         />
                     ))
                 }
             </Canvas>
             <Actions>
                 <ActionButton
-                    isActive={viewState.type === 'add-sticker'}
+                    isActive={viewModel.viewState.type === 'add-sticker'}
                     onClick={
                         () => {
-                            if (viewState.type === 'add-sticker') {
-                                goToIdle();
+                            if (viewModel.viewState.type === 'add-sticker') {
+                                viewModel.goToIdle();
                             } else {
-                                goToAddSticker();
+                                viewModel.goToAddSticker();
                             }
                         }
                     }
@@ -152,25 +170,33 @@ function Sticker({
     text,
     x,
     y,
+    onClick,
+    selected,
 }: {
     text: string;
     x: number;
     y: number;
+    onClick: (
+        e: React.MouseEvent<HTMLButtonElement>
+    ) => void;
+    selected: boolean;
 }) {
     return (
-        <div
+        <button
             className={
                 cn(
                     'absolute bg-yellow-300 px-2 py-4',
                     'rounded-xs shadow-md',
+                    selected && 'outline outline-2 outline-blue-500',
                 )
             }
             style={{
                 transform: `translate(${x}px, ${y}px)`
             }}
+            onClick={onClick}
         >
             {text}
-        </div>
+        </button>
     )
 }
 

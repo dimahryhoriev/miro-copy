@@ -6,21 +6,21 @@ type AddStickerViewState = {
 
 type IdleViewState = {
     type: 'idle';
-    selectedIds: string[];
+    selectedIds: Set<string>;
 }
 
 type ViewState = AddStickerViewState | IdleViewState;
 
-export function useBoardViewState() {
+export function useViewModel() {
     const [viewState, setViewState] = useState<ViewState>({
         type: 'idle',
-        selectedIds: [],
+        selectedIds: new Set(),
     });
 
     const goToIdle = () => {
         setViewState({
             type: 'idle',
-            selectedIds: [],
+            selectedIds: new Set(),
         });
     };
 
@@ -68,20 +68,17 @@ export function selectItems(
     if (modif === 'replace') {
         return {
             ...viewState,
-            selectedIds: ids,
+            selectedIds: new Set(ids),
         }
     }
 
     if (modif === 'add') {
         return {
             ...viewState,
-            selectedIds: Array
-                .from(
-                    new Set([
-                        ...viewState.selectedIds,
-                        ...ids
-                    ]),
-                )
+            selectedIds: new Set([
+                ...viewState.selectedIds,
+                ...ids
+            ]),
         }
     }
 
@@ -89,7 +86,7 @@ export function selectItems(
         const currentIds = new Set(viewState.selectedIds);
         const newIds = new Set(ids);
 
-        const base = viewState.selectedIds
+        const base = Array.from(viewState.selectedIds)
             .filter(
                 (id) => !newIds.has(id),
             )
@@ -100,7 +97,7 @@ export function selectItems(
 
         return {
             ...viewState,
-            selectedIds: [...base, ...added],
+            selectedIds: new Set([...base, ...added]),
         };
     }
 
