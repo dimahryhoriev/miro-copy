@@ -6,42 +6,9 @@ import {
 } from "lucide-react";
 import { useNodes } from "./nodes";
 import { useBoardViewState } from "./view-state";
-import {
-    useEffect,
-    useRef,
-    type Ref
-} from "react";
+import { type Ref } from "react";
 import { useCanvasRect } from "./use-canvas-rect";
-
-function useLayoutFocus() {
-    const layoutRef = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        if (layoutRef.current) {
-            layoutRef.current.focus();
-        }
-
-        const handleVisibilityChange = () => {
-            if (document.visibilityState === 'visible') {
-                layoutRef.current?.focus();
-            }
-        }
-
-        window.addEventListener(
-            'visibilitychange',
-            handleVisibilityChange,
-        );
-
-        return () => {
-            window.removeEventListener(
-                'visibilitychange',
-                handleVisibilityChange,
-            )
-        }
-    }, [layoutRef]);
-
-    return layoutRef;
-}
+import { useLayoutFocus } from "./use-layout-focus";
 
 function BoardPage() {
     const { nodes, addSticker } = useNodes();
@@ -52,8 +19,6 @@ function BoardPage() {
         goToIdle,
         goToAddSticker,
     } = useBoardViewState();
-
-    console.log(canvasRect);
 
     return (
         <Layout
