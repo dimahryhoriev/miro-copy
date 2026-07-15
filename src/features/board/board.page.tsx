@@ -10,92 +10,153 @@ import { type Ref } from "react";
 import { useCanvasRect } from "./use-canvas-rect";
 import { useLayoutFocus } from "./use-layout-focus";
 
+type ViewModelNode = {
+    id: string;
+    text: string;
+    x: number;
+    y: number;
+    isSelected?: boolean;
+    onClick?: (
+        e: React.MouseEvent<HTMLButtonElement>
+    ) => void;
+}
+
+type ViewModel = {
+    nodes: ViewModelNode[];
+    layout?: {
+        onKeyDown?: (
+            e: React.KeyboardEvent<HTMLDivElement>
+        ) => void;
+    };
+    canvas?: {
+        onClick?: (
+            e: React.MouseEvent<HTMLDivElement>
+        ) => void;
+    };
+    actions?: {
+        addSticker?: {
+            onClick?: (
+                e: React.MouseEvent<HTMLButtonElement>
+            ) => void;
+            isActive?: boolean;
+        }
+    }
+};
+
 function BoardPage() {
     const { nodes, addSticker } = useNodes();
     const { canvasRef, canvasRect } = useCanvasRect();
     const focusLayoutRef = useLayoutFocus();
-    const viewModel = useViewModel();
+    const viewModelLast = useViewModel();
 
-    return (
-        <Layout
-            ref={focusLayoutRef}
-            onKeyDown={
-                (e) => {
-                    if (viewModel.viewState.type === 'add-sticker') {
+    let viewModel: ViewModel;
+
+    switch (viewModelLast.viewState.type) {
+        case 'add-sticker':
+            viewModel = {
+                nodes: nodes,
+                layout: {
+                    onKeyDown: (e) => {
                         if (e.key === 'Escape') {
-                            viewModel.goToIdle();
+                            viewModelLast.goToIdle();
                         }
                     }
-                    if (viewModel.viewState.type === 'idle') {
-                        if (e.key === 's') {
-                            viewModel.goToAddSticker();
-                        }
-                    }
-                }
-            }
-        >
-            <Dots />
-            <Canvas
-                ref={canvasRef}
-                onClick={(e) => {
-                    if (
-                        viewModel.viewState.type === 'add-sticker'
-                        && canvasRect
-                    ) {
+                },
+                canvas: {
+                    onClick: (e) => {
+                        if (!canvasRect) return;
                         addSticker({
                             text: 'Default',
                             x: e.clientX - canvasRect.x,
                             y: e.clientY - canvasRect.y,
                         });
-                        viewModel.goToIdle();
+                        viewModelLast.goToIdle();
                     }
-                }}
+                },
+                actions: {
+                    addSticker: {
+                        isActive: true,
+                        onClick: () => {
+                            viewModelLast.goToIdle();
+                        }
+                    },
+                },
+            };
+            break;
+        case 'idle': {
+            const viewState = viewModelLast.viewState;
+            viewModel = {
+                nodes: nodes.map(node => ({
+                    ...node,
+                    isSelected: viewState.selectedIds
+                        .has(node.id),
+                    onClick: (e) => {
+                        if (viewModelLast.viewState.type === 'idle') {
+                            if (e.ctrlKey || e.shiftKey || e.metaKey) {
+                                viewModelLast.selection(
+                                    [node.id],
+                                    'toggle',
+                                )
+                            } else {
+                                viewModelLast.selection(
+                                    [node.id],
+                                    'replace',
+                                )
+                            }
+                        }
+                    }
+                })),
+                layout: {
+                    onKeyDown: (e) => {
+                        if (e.key === 's') {
+                            viewModelLast.goToAddSticker();
+                        }
+                    }
+                },
+                actions: {
+                    addSticker: {
+                        isActive: false,
+                        onClick: () => {
+                            viewModelLast.goToAddSticker();
+                        }
+                    },
+                },
+            };
+            break;
+        }
+        default:
+            throw new Error('Invalid view state');
+    }
+
+    return (
+        <Layout
+            ref={focusLayoutRef}
+            onKeyDown={viewModel.layout?.onKeyDown}
+        >
+            <Dots />
+            <Canvas
+                ref={canvasRef}
+                onClick={
+                    viewModel.canvas?.onClick
+                }
             >
                 {
-                    nodes.map((node) => (
+                    viewModel.nodes.map((node) => (
                         <Sticker
+                            key={node.id}
                             text={node.text}
                             x={node.x}
                             y={node.y}
-                            key={node.id}
-                            selected={
-                                viewModel.viewState.type === 'idle'
-                                && viewModel.viewState.selectedIds
-                                    .has(node.id)
-                            }
-                            onClick={
-                                (e) => {
-                                    if (viewModel.viewState.type === 'idle') {
-                                        if (e.ctrlKey || e.shiftKey || e.metaKey) {
-                                            viewModel.selection(
-                                                [node.id],
-                                                'toggle',
-                                            )
-                                        } else {
-                                            viewModel.selection(
-                                                [node.id],
-                                                'replace',
-                                            )
-                                        }
-                                    }
-                                }
-                            }
+                            selected={node.isSelected}
+                            onClick={node.onClick}
                         />
                     ))
                 }
             </Canvas>
             <Actions>
                 <ActionButton
-                    isActive={viewModel.viewState.type === 'add-sticker'}
-                    onClick={
-                        () => {
-                            if (viewModel.viewState.type === 'add-sticker') {
-                                viewModel.goToIdle();
-                            } else {
-                                viewModel.goToAddSticker();
-                            }
-                        }
-                    }
+                    isActive={viewModel.actions?.addSticker?.isActive}
+                    onClick={viewModel.actions?.addSticker?.onClick}
                 >
                     <StickerIcon />
                 </ActionButton>
@@ -106,7 +167,7 @@ function BoardPage() {
                     <ArrowRightIcon />
                 </ActionButton>
             </Actions>
-        </Layout>
+        </Layout >
     )
 }
 
@@ -176,10 +237,10 @@ function Sticker({
     text: string;
     x: number;
     y: number;
-    onClick: (
+    onClick?: (
         e: React.MouseEvent<HTMLButtonElement>
     ) => void;
-    selected: boolean;
+    selected?: boolean;
 }) {
     return (
         <button
@@ -226,8 +287,10 @@ function ActionButton({
     onClick,
 }: {
     children: React.ReactNode;
-    isActive: boolean;
-    onClick: () => void;
+    isActive?: boolean;
+    onClick?: (
+        e: React.MouseEvent<HTMLButtonElement>
+    ) => void;
 }) {
     return (
         <Button
