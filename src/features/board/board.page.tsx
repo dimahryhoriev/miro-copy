@@ -5,128 +5,23 @@ import {
     StickerIcon
 } from "lucide-react";
 import { useNodes } from "./nodes";
-import { useViewModel } from "./view-model";
+import { useViewStateModel } from "./view-state-model";
 import { type Ref } from "react";
 import { useCanvasRect } from "./use-canvas-rect";
 import { useLayoutFocus } from "./use-layout-focus";
-
-type ViewModelNode = {
-    id: string;
-    text: string;
-    x: number;
-    y: number;
-    isSelected?: boolean;
-    onClick?: (
-        e: React.MouseEvent<HTMLButtonElement>
-    ) => void;
-}
-
-type ViewModel = {
-    nodes: ViewModelNode[];
-    layout?: {
-        onKeyDown?: (
-            e: React.KeyboardEvent<HTMLDivElement>
-        ) => void;
-    };
-    canvas?: {
-        onClick?: (
-            e: React.MouseEvent<HTMLDivElement>
-        ) => void;
-    };
-    actions?: {
-        addSticker?: {
-            onClick?: (
-                e: React.MouseEvent<HTMLButtonElement>
-            ) => void;
-            isActive?: boolean;
-        }
-    }
-};
+import { useViewModel } from "./view-model";
 
 function BoardPage() {
-    const { nodes, addSticker } = useNodes();
+    const nodesModel = useNodes();
     const { canvasRef, canvasRect } = useCanvasRect();
     const focusLayoutRef = useLayoutFocus();
-    const viewModelLast = useViewModel();
+    const viewStateModel = useViewStateModel();
 
-    let viewModel: ViewModel;
-
-    switch (viewModelLast.viewState.type) {
-        case 'add-sticker':
-            viewModel = {
-                nodes: nodes,
-                layout: {
-                    onKeyDown: (e) => {
-                        if (e.key === 'Escape') {
-                            viewModelLast.goToIdle();
-                        }
-                    }
-                },
-                canvas: {
-                    onClick: (e) => {
-                        if (!canvasRect) return;
-                        addSticker({
-                            text: 'Default',
-                            x: e.clientX - canvasRect.x,
-                            y: e.clientY - canvasRect.y,
-                        });
-                        viewModelLast.goToIdle();
-                    }
-                },
-                actions: {
-                    addSticker: {
-                        isActive: true,
-                        onClick: () => {
-                            viewModelLast.goToIdle();
-                        }
-                    },
-                },
-            };
-            break;
-        case 'idle': {
-            const viewState = viewModelLast.viewState;
-            viewModel = {
-                nodes: nodes.map(node => ({
-                    ...node,
-                    isSelected: viewState.selectedIds
-                        .has(node.id),
-                    onClick: (e) => {
-                        if (viewModelLast.viewState.type === 'idle') {
-                            if (e.ctrlKey || e.shiftKey || e.metaKey) {
-                                viewModelLast.selection(
-                                    [node.id],
-                                    'toggle',
-                                )
-                            } else {
-                                viewModelLast.selection(
-                                    [node.id],
-                                    'replace',
-                                )
-                            }
-                        }
-                    }
-                })),
-                layout: {
-                    onKeyDown: (e) => {
-                        if (e.key === 's') {
-                            viewModelLast.goToAddSticker();
-                        }
-                    }
-                },
-                actions: {
-                    addSticker: {
-                        isActive: false,
-                        onClick: () => {
-                            viewModelLast.goToAddSticker();
-                        }
-                    },
-                },
-            };
-            break;
-        }
-        default:
-            throw new Error('Invalid view state');
-    }
+    const viewModel = useViewModel({
+        viewStateModel,
+        nodesModel,
+        canvasRect,
+    })
 
     return (
         <Layout
