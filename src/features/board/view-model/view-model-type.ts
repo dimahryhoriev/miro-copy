@@ -11,6 +11,7 @@ type ViewModelNode = {
 
 export type ViewModel = {
     nodes: ViewModelNode[];
+    // selectionWindow?: {};
     layout?: {
         onKeyDown?: (
             e: React.KeyboardEvent<HTMLDivElement>
