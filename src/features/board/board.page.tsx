@@ -5,23 +5,24 @@ import {
     StickerIcon
 } from "lucide-react";
 import { useNodes } from "./model/nodes";
-import { useViewState } from "./model/view-state";
 import { type Ref } from "react";
 import { useCanvasRect } from "./hooks/use-canvas-rect";
 import { useLayoutFocus } from "./hooks/use-layout-focus";
 import { useViewModel } from "./view-model/use-view-model";
+import type { Rect } from "./domain/rect";
+import { useWindowEvents } from "./hooks/use-window-events";
 
 function BoardPage() {
     const nodesModel = useNodes();
     const { canvasRef, canvasRect } = useCanvasRect();
     const focusLayoutRef = useLayoutFocus();
-    const viewStateModel = useViewState();
 
     const viewModel = useViewModel({
-        viewStateModel,
         nodesModel,
         canvasRect,
-    })
+    });
+
+    useWindowEvents(viewModel);
 
     return (
         <Layout
@@ -53,6 +54,11 @@ function BoardPage() {
                     ))
                 }
             </Canvas>
+            {viewModel.selectionWindow && (
+                <SelectionWindow
+                    {...viewModel.selectionWindow}
+                />
+            )}
             <Actions>
                 <ActionButton
                     isActive={viewModel.actions?.addSticker?.isActive}
@@ -72,6 +78,30 @@ function BoardPage() {
 }
 
 export const Component = BoardPage;
+
+function SelectionWindow({
+    x,
+    y,
+    width,
+    height,
+}: Rect) {
+    return (
+        <div
+            className={
+                cn(
+                    'absolute inset-0',
+                    'bg-blue-500/30',
+                    'border-2 border-blue-500',
+                )
+            }
+            style={{
+                transform: `translate(${x}px, ${y}px)`,
+                width: width,
+                height: height,
+            }}
+        />
+    )
+}
 
 function Overlay({
     onClick,
