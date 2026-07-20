@@ -5,6 +5,7 @@ import {
 import type { ViewModelParams } from "../view-model-params";
 import type { ViewModel } from "../view-model-type";
 import { goToAddSticker } from "./add-sticker";
+import { type CanvasRect } from "../../hooks/use-canvas-rect";
 
 export type IdleViewState = {
     type: 'idle';
@@ -18,6 +19,7 @@ export type IdleViewState = {
 export function useIdleViewModel({
     nodesModel,
     setViewState,
+    canvasRect,
 }: ViewModelParams) {
     const select = (
         lastState: IdleViewState,
@@ -73,15 +75,30 @@ export function useIdleViewModel({
                 select(idleState, [], 'replace')
             },
             onMouseDown: (e) => {
-                console.log('onMouseDown', e);
+                if (!canvasRect) return;
+                setViewState({
+                    ...idleState,
+                    mouseDown: {
+                        x: e.clientX,
+                        y: e.clientY,
+                    }
+                })
             },
         },
         window: {
             onMouseMove: (e) => {
-                console.log('onMouseMove', e);
+                if (idleState.mouseDown) {
+                    const currentPoint = {
+                        x: e.clientX,
+                        y: e.clientY,
+                    }
+                }
             },
-            onMouseUp: (e) => {
-                console.log('onMouseUp', e);
+            onMouseUp: () => {
+                setViewState({
+                    ...idleState,
+                    mouseDown: undefined,
+                })
             },
         },
         actions: {
@@ -95,11 +112,23 @@ export function useIdleViewModel({
     })
 }
 
-export function goToIdle(
-
-): IdleViewState {
+export function goToIdle(): IdleViewState {
     return {
         type: 'idle',
         selectedIds: new Set(),
     }
+}
+
+export function pointOnScreenToCanvas(
+    point: {
+        x: number,
+        y: number,
+    },
+    canvasRect?: CanvasRect,
+) {
+    if (!canvasRect) return point;
+    return {
+        x: point.x - canvasRect.x,
+        y: point.y - canvasRect.y,
+    };
 }
