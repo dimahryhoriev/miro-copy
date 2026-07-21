@@ -1,5 +1,5 @@
 import type { Point } from "../../domain/point";
-import { createRectFromPoints } from "../../domain/rect";
+import { createRectFromPoints, isPointInRect } from "../../domain/rect";
 import { pointOnScreenToCanvas } from "../../domain/screen-to-canvas";
 import type { ViewModelParams } from "../view-model-params";
 import type { ViewModel } from "../view-model-type";
@@ -25,6 +25,12 @@ export function useSelectionWindowViewModel({
         );
         return {
             selectionWindow: rect,
+            nodes: nodesModel.nodes.map(
+                (node) => ({
+                    ...node,
+                    isSelected: isPointInRect(node, rect),
+                })
+            ),
             window: {
                 onMouseMove: (e) => {
                     const currentPoint
@@ -44,7 +50,6 @@ export function useSelectionWindowViewModel({
                     setViewState(goToIdle())
                 }
             },
-            nodes: nodesModel.nodes,
         }
     }
 }
