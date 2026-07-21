@@ -5,7 +5,9 @@ import {
 import type { ViewModelParams } from "../view-model-params";
 import type { ViewModel } from "../view-model-type";
 import { goToAddSticker } from "./add-sticker";
-import { type CanvasRect } from "../../hooks/use-canvas-rect";
+import { distanceFromPoints } from "../../domain/point";
+import { goToSelectionWindow } from "./selection-window";
+import { pointOnScreenToCanvas } from "../../domain/screen-to-canvas";
 
 export type IdleViewState = {
     type: 'idle';
@@ -37,12 +39,6 @@ export function useIdleViewModel({
     }
 
     return (idleState: IdleViewState): ViewModel => ({
-        selectionWindow: {
-            x: 100,
-            y: 100,
-            width: 1000,
-            height: 100,
-        },
         nodes: nodesModel.nodes.map(node => ({
             ...node,
             isSelected: idleState.selectedIds
@@ -75,24 +71,45 @@ export function useIdleViewModel({
                 select(idleState, [], 'replace')
             },
             onMouseDown: (e) => {
-                if (!canvasRect) return;
                 setViewState({
                     ...idleState,
-                    mouseDown: {
-                        x: e.clientX,
-                        y: e.clientY,
-                    }
-                })
+                    mouseDown: pointOnScreenToCanvas(
+                        {
+                            x: e.clientX,
+                            y: e.clientY,
+                        },
+                        canvasRect,
+                    ),
+                });
             },
         },
         window: {
             onMouseMove: (e) => {
                 if (idleState.mouseDown) {
-                    const currentPoint = {
-                        x: e.clientX,
-                        y: e.clientY,
-                    }
-                }
+                    const currentPoint
+                        = pointOnScreenToCanvas(
+                            {
+                                x: e.clientX,
+                                y: e.clientY,
+                            },
+                            canvasRect,
+                        )
+                    if (
+                        distanceFromPoints(
+                            idleState.mouseDown,
+                            currentPoint,
+                        )
+                        >
+                        5
+                    ) {
+                        setViewState(
+                            goToSelectionWindow(
+                                idleState.mouseDown,
+                                currentPoint,
+                            ),
+                        );
+                    };
+                };
             },
             onMouseUp: () => {
                 setViewState({
@@ -117,18 +134,4 @@ export function goToIdle(): IdleViewState {
         type: 'idle',
         selectedIds: new Set(),
     }
-}
-
-export function pointOnScreenToCanvas(
-    point: {
-        x: number,
-        y: number,
-    },
-    canvasRect?: CanvasRect,
-) {
-    if (!canvasRect) return point;
-    return {
-        x: point.x - canvasRect.x,
-        y: point.y - canvasRect.y,
-    };
 }
