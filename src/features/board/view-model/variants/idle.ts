@@ -88,10 +88,10 @@ export function useIdleViewModel({
                             idleState.selectedIds,
                             [],
                             'replace',
-                        ),
-                    });
-                };
-            },
+                        )
+                    })
+                }
+            }
         },
         window: {
             onMouseMove: (e) => {
@@ -113,10 +113,14 @@ export function useIdleViewModel({
                         5
                     ) {
                         setViewState(
-                            goToSelectionWindow(
-                                idleState.mouseDown,
-                                currentPoint,
-                            ),
+                            goToSelectionWindow({
+                                startPoint: idleState.mouseDown,
+                                endPoint: currentPoint,
+                                initialSelectedIds:
+                                    e.shiftKey
+                                        ? idleState.selectedIds
+                                        : undefined
+                            }),
                         );
                     };
                 };

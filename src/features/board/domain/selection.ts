@@ -15,7 +15,7 @@ export function selectItems(
     };
 
     if (modif === 'add') {
-        return new Set(...initialSelected, ...ids);
+        return new Set([...initialSelected, ...ids]);
     }
 
     if (modif === 'toggle') {

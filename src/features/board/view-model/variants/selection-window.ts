@@ -10,6 +10,7 @@ export type SelectionWindowViewState = {
     type: 'selection-window';
     startPoint: Point;
     endPoint: Point;
+    initialSelectedIds: Set<string>;
 };
 
 export function useSelectionWindowViewModel({
@@ -29,7 +30,9 @@ export function useSelectionWindowViewModel({
             nodes: nodesModel.nodes.map(
                 (node) => ({
                     ...node,
-                    isSelected: isPointInRect(node, rect),
+                    isSelected:
+                        isPointInRect(node, rect)
+                        || state.initialSelectedIds.has(node.id),
                 })
             ),
             window: {
@@ -55,13 +58,15 @@ export function useSelectionWindowViewModel({
                             ).map(
                                 node => node.id
                             );
-                    setViewState(goToIdle({
-                        selectedIds: selectItems(
-                            new Set(),
-                            nodesIdsInRect,
-                            'replace',
-                        ),
-                    }));
+                    setViewState(
+                        goToIdle({
+                            selectedIds: selectItems(
+                                state.initialSelectedIds,
+                                nodesIdsInRect,
+                                'add',
+                            ),
+                        })
+                    );
                 },
             },
         };
@@ -69,13 +74,20 @@ export function useSelectionWindowViewModel({
 };
 
 
-export function goToSelectionWindow(
+export function goToSelectionWindow({
+    startPoint,
+    endPoint,
+    initialSelectedIds,
+}: {
     startPoint: { x: number, y: number },
     endPoint: { x: number, y: number },
-): SelectionWindowViewState {
+    initialSelectedIds?: Set<string>,
+}): SelectionWindowViewState {
     return {
         type: 'selection-window',
         startPoint,
         endPoint,
+        initialSelectedIds:
+            initialSelectedIds ?? new Set(),
     }
 }
