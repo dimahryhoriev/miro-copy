@@ -31,6 +31,9 @@ export type ViewModel = {
         onMouseDown?: (
             e: React.MouseEvent<HTMLDivElement>
         ) => void;
+        onMouseUp?: (
+            e: React.MouseEvent<HTMLDivElement>
+        ) => void;
     };
     window?: {
         onMouseUp?: (e: MouseEvent) => void;

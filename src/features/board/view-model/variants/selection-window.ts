@@ -1,6 +1,7 @@
 import type { Point } from "../../domain/point";
 import { createRectFromPoints, isPointInRect } from "../../domain/rect";
 import { pointOnScreenToCanvas } from "../../domain/screen-to-canvas";
+import { selectItems } from "../../domain/selection";
 import type { ViewModelParams } from "../view-model-params";
 import type { ViewModel } from "../view-model-type";
 import { goToIdle } from "./idle";
@@ -47,12 +48,25 @@ export function useSelectionWindowViewModel({
                     });
                 },
                 onMouseUp: () => {
-                    setViewState(goToIdle())
-                }
+                    const nodesIdsInRect
+                        = nodesModel.nodes
+                            .filter(
+                                node => isPointInRect(node, rect)
+                            ).map(
+                                node => node.id
+                            );
+                    setViewState(goToIdle({
+                        selectedIds: selectItems(
+                            new Set(),
+                            nodesIdsInRect,
+                            'replace',
+                        ),
+                    }));
+                },
             },
-        }
-    }
-}
+        };
+    };
+};
 
 
 export function goToSelectionWindow(

@@ -1,5 +1,6 @@
 import {
     selectItems,
+    type Selection,
     type SelectionModifier,
 } from "../../domain/selection";
 import type { ViewModelParams } from "../view-model-params";
@@ -67,9 +68,6 @@ export function useIdleViewModel({
             }
         },
         overlay: {
-            onClick: () => {
-                select(idleState, [], 'replace')
-            },
             onMouseDown: (e) => {
                 setViewState({
                     ...idleState,
@@ -81,6 +79,18 @@ export function useIdleViewModel({
                         canvasRect,
                     ),
                 });
+            },
+            onMouseUp: () => {
+                if (idleState.mouseDown) {
+                    setViewState({
+                        ...idleState,
+                        selectedIds: selectItems(
+                            idleState.selectedIds,
+                            [],
+                            'replace',
+                        ),
+                    });
+                };
             },
         },
         window: {
@@ -129,9 +139,13 @@ export function useIdleViewModel({
     })
 }
 
-export function goToIdle(): IdleViewState {
+export function goToIdle({
+    selectedIds,
+}: {
+    selectedIds?: Selection;
+} = {}): IdleViewState {
     return {
         type: 'idle',
-        selectedIds: new Set(),
+        selectedIds: selectedIds ?? new Set(),
     }
 }
