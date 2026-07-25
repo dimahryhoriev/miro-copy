@@ -10,7 +10,7 @@ export function Canvas({
 } & React.HTMLAttributes<HTMLDivElement>) {
     return (
         <div
-            className="absolute inset-0"
+            className="absolute inset-0 select-none"
             ref={ref}
             {...props}
         >

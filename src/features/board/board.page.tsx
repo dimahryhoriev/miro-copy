@@ -8,18 +8,20 @@ import { useLayoutFocus } from "./hooks/use-layout-focus";
 import { useViewModel } from "./view-model/use-view-model";
 import { useWindowEvents } from "./hooks/use-window-events";
 import { ActionButton } from "./ui/action-button";
-import { Actions } from "./ui/Actions";
-import { Canvas } from "./ui/Canvas";
-import { Dots } from "./ui/Dots";
-import { Layout } from "./ui/Layout";
-import { Overlay } from "./ui/Overlay";
 import { SelectionWindow } from "./ui/selection-window";
-import { Sticker } from "./ui/Sticker";
+import { Actions } from "./ui/actions";
+import { Canvas } from "./ui/canvas";
+import { Dots } from "./ui/dots";
+import { Layout } from "./ui/layout";
+import { Overlay } from "./ui/overlay";
+import { Sticker } from "./ui/sticker";
+import { useNodesRects } from "./hooks/use-nodes-rects";
 
 function BoardPage() {
     const nodesModel = useNodes();
     const { canvasRef, canvasRect } = useCanvasRect();
     const focusLayoutRef = useLayoutFocus();
+    const { nodeRef } = useNodesRects();
 
     const viewModel = useViewModel({
         nodesModel,
@@ -48,12 +50,14 @@ function BoardPage() {
                 {
                     viewModel.nodes.map((node) => (
                         <Sticker
+                            id={node.id}
                             key={node.id}
                             text={node.text}
                             x={node.x}
                             y={node.y}
                             selected={node.isSelected}
                             onClick={node.onClick}
+                            ref={nodeRef}
                         />
                     ))
                 }

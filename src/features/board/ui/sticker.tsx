@@ -1,12 +1,16 @@
 import { cn } from "@/shared/lib/css";
+import { type Ref } from "react";
 
 export function Sticker({
+    id,
     text,
     x,
     y,
     onClick,
     selected,
+    ref,
 }: {
+    id: string;
     text: string;
     x: number;
     y: number;
@@ -14,9 +18,12 @@ export function Sticker({
         e: React.MouseEvent<HTMLButtonElement>
     ) => void;
     selected?: boolean;
+    ref: Ref<HTMLButtonElement>;
 }) {
     return (
         <button
+            data-id={id}
+            ref={ref}
             className={
                 cn(
                     'absolute bg-yellow-300 px-2 py-4',

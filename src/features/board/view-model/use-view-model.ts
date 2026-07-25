@@ -48,7 +48,6 @@ export function useViewModel(
             viewModel = addStickerViewModel();
             break;
         case 'idle':
-            console.log('idle', viewState);
             viewModel = idleViewModel(viewState);
             break;
         case 'selection-window':
