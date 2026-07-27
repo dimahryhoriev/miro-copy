@@ -15,17 +15,18 @@ import { Dots } from "./ui/dots";
 import { Layout } from "./ui/layout";
 import { Overlay } from "./ui/overlay";
 import { Sticker } from "./ui/sticker";
-import { useNodesRects } from "./hooks/use-nodes-rects";
+import { useNodesDimensions } from "./hooks/use-nodes-dimensions";
 
 function BoardPage() {
     const nodesModel = useNodes();
     const { canvasRef, canvasRect } = useCanvasRect();
     const focusLayoutRef = useLayoutFocus();
-    const { nodeRef } = useNodesRects();
+    const { nodeRef, nodesDimensions } = useNodesDimensions();
 
     const viewModel = useViewModel({
         nodesModel,
         canvasRect,
+        nodesDimensions,
     });
 
     useWindowEvents(viewModel);

@@ -39,6 +39,19 @@ export function useIdleViewModel({
         })
     }
 
+    const deleteSelected = (
+        viewState: IdleViewState,
+    ) => {
+        if (viewState.selectedIds.size > 0) {
+            const ids = Array.from(viewState.selectedIds);
+            nodesModel.deleteNodes(ids);
+            setViewState({
+                ...viewState,
+                selectedIds: new Set(),
+            });
+        };
+    }
+
     return (idleState: IdleViewState): ViewModel => ({
         nodes: nodesModel.nodes.map(node => ({
             ...node,
@@ -70,14 +83,7 @@ export function useIdleViewModel({
                     ||
                     e.key === 'Backspace'
                 ) {
-                    if (idleState.selectedIds.size > 0) {
-                        const ids = Array.from(idleState.selectedIds);
-                        nodesModel.deleteNodes(ids);
-                        setViewState({
-                            ...idleState,
-                            selectedIds: new Set(),
-                        });
-                    };
+                    deleteSelected(idleState);
                 };
             },
         },

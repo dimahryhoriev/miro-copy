@@ -1,5 +1,10 @@
 import type { Point } from "../../domain/point";
-import { createRectFromPoints, isPointInRect } from "../../domain/rect";
+import {
+    createRectFromDimensions,
+    createRectFromPoints,
+    isRectsIntersecting,
+    type Rect,
+} from "../../domain/rect";
 import { pointOnScreenToCanvas } from "../../domain/screen-to-canvas";
 import { selectItems } from "../../domain/selection";
 import type { ViewModelParams } from "../view-model-params";
@@ -17,7 +22,30 @@ export function useSelectionWindowViewModel({
     setViewState,
     nodesModel,
     canvasRect,
+    nodesDimensions,
 }: ViewModelParams) {
+    const getNodes = (
+        state: SelectionWindowViewState,
+        selectionRect: Rect,
+    ) => (
+        nodesModel.nodes.map(
+            (node) => {
+                const nodeDimensions = nodesDimensions[node.id];
+                const nodeRect = createRectFromDimensions(
+                    node,
+                    nodeDimensions,
+                );
+                return {
+                    ...node,
+                    isSelected:
+                        isRectsIntersecting(nodeRect, selectionRect)
+                        ||
+                        state.initialSelectedIds.has(node.id),
+                };
+            },
+        )
+    );
+
     return (
         state: SelectionWindowViewState,
     ): ViewModel => {
@@ -25,16 +53,11 @@ export function useSelectionWindowViewModel({
             state.startPoint,
             state.endPoint,
         );
+        const nodes = getNodes(state, rect);
+
         return {
             selectionWindow: rect,
-            nodes: nodesModel.nodes.map(
-                (node) => ({
-                    ...node,
-                    isSelected:
-                        isPointInRect(node, rect)
-                        || state.initialSelectedIds.has(node.id),
-                })
-            ),
+            nodes: nodes,
             window: {
                 onMouseMove: (e) => {
                     const currentPoint
@@ -52,9 +75,9 @@ export function useSelectionWindowViewModel({
                 },
                 onMouseUp: () => {
                     const nodesIdsInRect
-                        = nodesModel.nodes
+                        = nodes
                             .filter(
-                                node => isPointInRect(node, rect)
+                                node => node.isSelected
                             ).map(
                                 node => node.id
                             );
