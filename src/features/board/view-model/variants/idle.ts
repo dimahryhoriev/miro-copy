@@ -9,6 +9,7 @@ import { goToAddSticker } from "./add-sticker";
 import { distanceFromPoints } from "../../domain/point";
 import { goToSelectionWindow } from "./selection-window";
 import { pointOnScreenToCanvas } from "../../domain/screen-to-canvas";
+import { goToEditSticker } from "./edit-sticker";
 
 export type IdleViewState = {
     type: 'idle';
@@ -58,6 +59,17 @@ export function useIdleViewModel({
             isSelected: idleState.selectedIds
                 .has(node.id),
             onClick: (e) => {
+                if (
+                    idleState.selectedIds.size === 1
+                    && idleState.selectedIds.has(node.id)
+                    && !e.ctrlKey
+                    && !e.shiftKey
+                    && !e.metaKey
+                ) {
+                    setViewState(goToEditSticker(node.id));
+                    return;
+                }
+
                 if (e.ctrlKey || e.shiftKey || e.metaKey) {
                     select(
                         idleState,
@@ -75,6 +87,18 @@ export function useIdleViewModel({
         })),
         layout: {
             onKeyDown: (e) => {
+                if (
+                    idleState.selectedIds.size === 1
+                    && !e.shiftKey
+                    && !e.altKey
+                    && !e.metaKey
+                    && !e.ctrlKey
+                ) {
+                    const [id] = idleState.selectedIds.values();
+                    setViewState(goToEditSticker(id));
+                    return;
+                }
+
                 if (e.key === 's') {
                     setViewState(goToAddSticker());
                 }

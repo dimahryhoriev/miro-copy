@@ -3,22 +3,26 @@ import { type Ref } from "react";
 
 export function Sticker({
     id,
-    text,
+    ref,
     x,
     y,
+    text,
+    isSelected,
+    isEditing,
     onClick,
-    selected,
-    ref,
+    onTextChange,
 }: {
     id: string;
-    text: string;
+    ref: Ref<HTMLButtonElement>;
     x: number;
     y: number;
+    text: string;
+    isSelected?: boolean;
+    isEditing?: boolean;
     onClick?: (
         e: React.MouseEvent<HTMLButtonElement>
     ) => void;
-    selected?: boolean;
-    ref: Ref<HTMLButtonElement>;
+    onTextChange?: (text: string) => void;
 }) {
     return (
         <button
@@ -28,7 +32,7 @@ export function Sticker({
                 cn(
                     'absolute bg-yellow-300 px-2 py-4',
                     'rounded-xs shadow-md',
-                    selected && 'outline outline-2 outline-blue-500',
+                    isSelected && 'outline outline-2 outline-blue-500',
                 )
             }
             style={{
@@ -36,7 +40,25 @@ export function Sticker({
             }}
             onClick={onClick}
         >
-            {text}
+            {
+                isEditing
+                    ?
+                    (
+                        <input
+                            value={text}
+                            className="w-full h-full"
+                            onChange={
+                                (e) => onTextChange?.(
+                                    e.target.value
+                                )
+                            }
+                        />
+                    )
+                    :
+                    (
+                        text
+                    )
+            }
         </button>
     )
 }
