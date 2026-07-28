@@ -39,6 +39,15 @@ export function useEditStickerViewModel({
                 if (e.key === 'Escape') {
                     setViewState(goToIdle());
                 };
+                if (e.key === 'Enter') {
+                    if (viewState.newText) {
+                        nodesModel.updateStickerText(
+                            viewState.stickerId,
+                            viewState.newText,
+                        );
+                    }
+                    setViewState(goToIdle());
+                };
             },
         },
         overlay: {

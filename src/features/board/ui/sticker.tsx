@@ -47,6 +47,7 @@ export function Sticker({
                         <input
                             value={text}
                             className="w-full h-full"
+                            autoFocus
                             onChange={
                                 (e) => onTextChange?.(
                                     e.target.value
