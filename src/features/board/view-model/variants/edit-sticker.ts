@@ -52,6 +52,12 @@ export function useEditStickerViewModel({
         },
         overlay: {
             onClick: () => {
+                if (viewState.newText) {
+                    nodesModel.updateStickerText(
+                        viewState.stickerId,
+                        viewState.newText,
+                    );
+                }
                 setViewState(goToIdle());
             },
         },

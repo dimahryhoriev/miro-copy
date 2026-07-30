@@ -1,5 +1,5 @@
 import { cn } from "@/shared/lib/css";
-import { type Ref } from "react";
+import { useLayoutEffect, useRef, useState, type Ref } from "react";
 
 export function Sticker({
     id,
@@ -44,14 +44,10 @@ export function Sticker({
                 isEditing
                     ?
                     (
-                        <input
+                        <TextareaAutoSize
                             value={text}
-                            className="w-full h-full"
-                            autoFocus
                             onChange={
-                                (e) => onTextChange?.(
-                                    e.target.value
-                                )
+                                (value) => onTextChange?.(value)
                             }
                         />
                     )
@@ -61,5 +57,50 @@ export function Sticker({
                     )
             }
         </button>
+    )
+}
+
+function TextareaAutoSize({
+    value,
+    onChange,
+}: {
+    value: string;
+    onChange?: (value: string) => void;
+}) {
+    const ref = useRef<HTMLDivElement>(null);
+    const [height, setHeight] = useState(0);
+    const [width, setWidth] = useState(0);
+
+    useLayoutEffect(() => {
+        if (!ref.current) return;
+        const { scrollWidth, scrollHeight } = ref.current;
+        setHeight(scrollHeight);
+        setWidth(scrollWidth);
+    }, [value])
+    return (
+        <div className="relative">
+            <div
+                className="whitespace-pre-wrap opacity-0"
+                ref={ref}
+            >
+                {value}
+            </div>
+            <textarea
+                className={
+                    cn(
+                        'absolute left-0 top-0',
+                        'resize-none overflow-hidden'
+                    )
+                }
+                value={value}
+                onChange={
+                    (e) => onChange?.(e.target.value)
+                }
+                style={{
+                    width: width + 2,
+                    height: height + 2,
+                }}
+            />
+        </div>
     )
 }
