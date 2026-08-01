@@ -26,6 +26,7 @@ function BoardPage() {
     const viewModel = useViewModel({
         nodesModel,
         canvasRect,
+        canvasRef: focusLayoutRef,
         nodesDimensions,
     });
 

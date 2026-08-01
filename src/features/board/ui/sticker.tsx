@@ -1,5 +1,10 @@
 import { cn } from "@/shared/lib/css";
-import { useLayoutEffect, useRef, useState, type Ref } from "react";
+import {
+    useLayoutEffect,
+    useRef,
+    useState,
+    type Ref,
+} from "react";
 
 export function Sticker({
     id,
@@ -31,7 +36,7 @@ export function Sticker({
             className={
                 cn(
                     'absolute bg-yellow-300 px-2 py-4',
-                    'rounded-xs shadow-md',
+                    'rounded-xs shadow-md text-left',
                     isSelected && 'outline outline-2 outline-blue-500',
                 )
             }
@@ -40,22 +45,13 @@ export function Sticker({
             }}
             onClick={onClick}
         >
-            {
-                isEditing
-                    ?
-                    (
-                        <TextareaAutoSize
-                            value={text}
-                            onChange={
-                                (value) => onTextChange?.(value)
-                            }
-                        />
-                    )
-                    :
-                    (
-                        text
-                    )
-            }
+            <TextareaAutoSize
+                isEditing={isEditing ?? false}
+                value={text}
+                onChange={
+                    (value) => onTextChange?.(value)
+                }
+            />
         </button>
     )
 }
@@ -63,9 +59,11 @@ export function Sticker({
 function TextareaAutoSize({
     value,
     onChange,
+    isEditing,
 }: {
     value: string;
     onChange?: (value: string) => void;
+    isEditing: boolean;
 }) {
     const ref = useRef<HTMLDivElement>(null);
     const [height, setHeight] = useState(0);
@@ -73,34 +71,45 @@ function TextareaAutoSize({
 
     useLayoutEffect(() => {
         if (!ref.current) return;
-        const { scrollWidth, scrollHeight } = ref.current;
-        setHeight(scrollHeight);
+        const { scrollWidth, clientHeight } = ref.current;
+        setHeight(clientHeight);
         setWidth(scrollWidth);
     }, [value])
     return (
         <div className="relative">
             <div
-                className="whitespace-pre-wrap opacity-0"
                 ref={ref}
+                className={
+                    cn(
+                        'whitespace-pre-wrap',
+                        isEditing && 'opacity-0',
+                    )
+                }
             >
                 {value}
             </div>
-            <textarea
-                className={
-                    cn(
-                        'absolute left-0 top-0',
-                        'resize-none overflow-hidden'
-                    )
-                }
-                value={value}
-                onChange={
-                    (e) => onChange?.(e.target.value)
-                }
-                style={{
-                    width: width + 2,
-                    height: height + 2,
-                }}
-            />
+            {
+                isEditing && (
+                    <textarea
+                        value={value}
+                        autoFocus
+                        className={
+                            cn(
+                                'absolute left-0 top-0',
+                                'resize-none overflow-hidden',
+                                'focus:outline-none',
+                            )
+                        }
+                        onChange={
+                            (e) => onChange?.(e.target.value)
+                        }
+                        style={{
+                            width: width + 2,
+                            height: height + 2,
+                        }}
+                    />
+                )
+            }
         </div>
     )
 }

@@ -24,6 +24,7 @@ export function useIdleViewModel({
     nodesModel,
     setViewState,
     canvasRect,
+    canvasRef,
 }: ViewModelParams) {
     const select = (
         lastState: IdleViewState,
@@ -69,7 +70,6 @@ export function useIdleViewModel({
                     setViewState(goToEditSticker(node.id));
                     return;
                 }
-
                 if (e.ctrlKey || e.shiftKey || e.metaKey) {
                     select(
                         idleState,
@@ -89,6 +89,7 @@ export function useIdleViewModel({
             onKeyDown: (e) => {
                 if (
                     idleState.selectedIds.size === 1
+                    && e.key !== 'Backspace'
                     && !e.shiftKey
                     && !e.altKey
                     && !e.metaKey
@@ -98,7 +99,6 @@ export function useIdleViewModel({
                     setViewState(goToEditSticker(id));
                     return;
                 }
-
                 if (e.key === 's') {
                     setViewState(goToAddSticker());
                 }
@@ -107,6 +107,9 @@ export function useIdleViewModel({
                     ||
                     e.key === 'Backspace'
                 ) {
+                    if (canvasRef.current) {
+                        canvasRef.current.focus();
+                    };
                     deleteSelected(idleState);
                 };
             },

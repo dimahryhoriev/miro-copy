@@ -53,7 +53,6 @@ export function useViewModel(
             viewModel = addStickerViewModel();
             break;
         case 'edit-sticker':
-            console.log('edit-sticker', viewState);
             viewModel = editStickerViewModel(viewState);
             break;
         case 'idle':
