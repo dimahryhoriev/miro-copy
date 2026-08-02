@@ -12,9 +12,18 @@ import { useMouseDown } from "./use-mouse-down";
 export type IdleViewState = {
     type: 'idle';
     selectedIds: Set<string>;
-    mouseDown?: {
-        x: number,
-        y: number,
+    mouseDown?:
+    {
+        type: 'overlay';
+        x: number;
+        y: number;
+    }
+    |
+    {
+        type: 'node';
+        nodeId: string;
+        x: number;
+        y: number;
     };
 };
 
@@ -37,13 +46,28 @@ export function useIdleViewModel(
         nodes: nodesModel.nodes.map(node => ({
             ...node,
             isSelected: selection.isSelected(idleState, node.id),
-            onClick: (e) => {
+            onMouseDown: (e) => (
+                mouseDown.handleNodeMouseDown(
+                    idleState,
+                    e,
+                    node.id,
+                )
+            ),
+            onMouseUp: (e) => {
+                if (
+                    !mouseDown.getIsStickerMouseDown(
+                        idleState,
+                        node.id,
+                    )
+                ) return;
+
                 const clickResult =
                     goToEditSticker.handleNodeClick(
                         idleState,
                         node.id,
                         e,
                     );
+
                 if (clickResult.preventNext) return;
                 selection.handleNodeClick(
                     idleState,

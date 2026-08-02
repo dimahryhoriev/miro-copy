@@ -10,17 +10,58 @@ export function useMouseDown({
         idleState: IdleViewState,
         e: React.MouseEvent<HTMLDivElement>,
     ) => {
+        const point = pointOnScreenToCanvas(
+            {
+                x: e.clientX,
+                y: e.clientY,
+            },
+            canvasRect,
+        );
+
         setViewState({
             ...idleState,
-            mouseDown: pointOnScreenToCanvas(
-                {
-                    x: e.clientX,
-                    y: e.clientY,
-                },
-                canvasRect,
-            ),
+            mouseDown: {
+                type: 'overlay',
+                x: point.x,
+                y: point.y,
+            },
         });
     };
+
+    const getIsStickerMouseDown = (
+        idleState: IdleViewState,
+        nodeId: string,
+    ) => {
+        return (
+            idleState.mouseDown?.type === 'node'
+            &&
+            idleState.mouseDown.nodeId === nodeId
+        )
+    };
+
+    const handleNodeMouseDown = (
+        idleState: IdleViewState,
+        e: React.MouseEvent<HTMLButtonElement>,
+        nodeId: string,
+    ) => {
+        const point = pointOnScreenToCanvas(
+            {
+                x: e.clientX,
+                y: e.clientY,
+            },
+            canvasRect,
+        );
+
+        setViewState({
+            ...idleState,
+            mouseDown: {
+                type: 'node',
+                nodeId: nodeId,
+                x: point.x,
+                y: point.y,
+            }
+        })
+    }
 
     const handleWindowMouseUp = (
         idleState: IdleViewState,
@@ -36,5 +77,7 @@ export function useMouseDown({
     return {
         handleOverlayMouseDown,
         handleWindowMouseUp,
+        handleNodeMouseDown,
+        getIsStickerMouseDown,
     };
 };

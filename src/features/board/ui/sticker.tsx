@@ -16,6 +16,8 @@ export function Sticker({
     isEditing,
     onClick,
     onTextChange,
+    onMouseDown,
+    onMouseUp,
 }: {
     id: string;
     ref: Ref<HTMLButtonElement>;
@@ -28,6 +30,12 @@ export function Sticker({
         e: React.MouseEvent<HTMLButtonElement>
     ) => void;
     onTextChange?: (text: string) => void;
+    onMouseDown?: (
+        e: React.MouseEvent<HTMLButtonElement>
+    ) => void;
+    onMouseUp?: (
+        e: React.MouseEvent<HTMLButtonElement>
+    ) => void;
 }) {
     return (
         <button
@@ -44,6 +52,8 @@ export function Sticker({
                 transform: `translate(${x}px, ${y}px)`
             }}
             onClick={onClick}
+            onMouseDown={onMouseDown}
+            onMouseUp={onMouseUp}
         >
             <TextareaAutoSize
                 isEditing={isEditing ?? false}
