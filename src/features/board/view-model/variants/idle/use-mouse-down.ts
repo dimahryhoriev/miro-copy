@@ -24,6 +24,7 @@ export function useMouseDown({
                 type: 'overlay',
                 x: point.x,
                 y: point.y,
+                isRightClick: e.button === 2,
             },
         });
     };
@@ -59,6 +60,7 @@ export function useMouseDown({
                 nodeId: nodeId,
                 x: point.x,
                 y: point.y,
+                isRightClick: e.button === 2,
             }
         })
     }

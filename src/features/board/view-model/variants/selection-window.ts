@@ -112,5 +112,5 @@ export function goToSelectionWindow({
         endPoint,
         initialSelectedIds:
             initialSelectedIds ?? new Set(),
-    }
-}
+    };
+};

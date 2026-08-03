@@ -16,9 +16,11 @@ import { Layout } from "./ui/layout";
 import { Overlay } from "./ui/overlay";
 import { Sticker } from "./ui/sticker";
 import { useNodesDimensions } from "./hooks/use-nodes-dimensions";
+import { useWindowPositionModel } from "./model/window-position";
 
 function BoardPage() {
     const nodesModel = useNodes();
+    const windowPositionModel = useWindowPositionModel();
     const { canvasRef, canvasRect } = useCanvasRect();
     const focusLayoutRef = useLayoutFocus();
     const { nodeRef, nodesDimensions } = useNodesDimensions();
@@ -28,6 +30,7 @@ function BoardPage() {
         canvasRect,
         canvasRef: focusLayoutRef,
         nodesDimensions,
+        windowPositionModel,
     });
 
     useWindowEvents(viewModel);
@@ -40,15 +43,22 @@ function BoardPage() {
             <Dots />
             <Canvas
                 ref={canvasRef}
+                overlay={
+                    <Overlay
+                        onClick={viewModel.overlay?.onClick}
+                        onMouseDown={viewModel.overlay?.onMouseDown}
+                        onMouseUp={viewModel.overlay?.onMouseUp}
+                    />
+                }
+                windowPosition={
+                    viewModel.windowPosition
+                    ??
+                    windowPositionModel.position
+                }
                 onClick={
                     viewModel.canvas?.onClick
                 }
             >
-                <Overlay
-                    onClick={viewModel.overlay?.onClick}
-                    onMouseDown={viewModel.overlay?.onMouseDown}
-                    onMouseUp={viewModel.overlay?.onMouseUp}
-                />
                 {
                     viewModel.nodes.map((node) => (
                         <Sticker

@@ -93,5 +93,5 @@ export function goToNodesDragging({
         startPoint,
         endPoint,
         nodesToMove,
-    }
-}
+    };
+};

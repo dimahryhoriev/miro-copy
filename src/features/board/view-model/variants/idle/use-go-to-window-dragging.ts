@@ -2,9 +2,9 @@ import { distanceFromPoints } from "@/features/board/domain/point";
 import { pointOnScreenToCanvas } from "@/features/board/domain/screen-to-canvas";
 import { type IdleViewState } from ".";
 import { type ViewModelParams } from "../../view-model-params";
-import { goToNodesDragging } from "../nodes-dragging";
+import { goToWindowDragging } from "../window-dragging";
 
-export function useGoToNodesDragging({
+export function useGoToWindowDragging({
     canvasRect,
     setViewState,
 }: ViewModelParams) {
@@ -15,9 +15,7 @@ export function useGoToNodesDragging({
         if (
             idleState.mouseDown
             &&
-            idleState.mouseDown.type === 'node'
-            &&
-            !idleState.mouseDown.isRightClick
+            idleState.mouseDown.isRightClick
         ) {
             const currentPoint = pointOnScreenToCanvas(
                 {
@@ -35,13 +33,9 @@ export function useGoToNodesDragging({
                 5
             ) {
                 setViewState(
-                    goToNodesDragging({
+                    goToWindowDragging({
                         startPoint: idleState.mouseDown,
                         endPoint: currentPoint,
-                        nodesToMove: new Set([
-                            ...idleState.selectedIds,
-                            idleState.mouseDown.nodeId,
-                        ]),
                     }),
                 );
             };

@@ -8,6 +8,7 @@ import { useGoToAddSticker } from "./use-go-to-add-sticker";
 import { useGoToSelectionWindow } from "./use-go-to-selection-window.ts";
 import { useMouseDown } from "./use-mouse-down";
 import { useGoToNodesDragging } from "./use-go-to-nodes-dragging.ts";
+import { useGoToWindowDragging } from "./use-go-to-window-dragging.ts";
 
 
 export type IdleViewState = {
@@ -18,6 +19,7 @@ export type IdleViewState = {
         type: 'overlay';
         x: number;
         y: number;
+        isRightClick: boolean;
     }
     |
     {
@@ -25,6 +27,7 @@ export type IdleViewState = {
         nodeId: string;
         x: number;
         y: number;
+        isRightClick: boolean;
     };
 };
 
@@ -41,6 +44,7 @@ export function useIdleViewModel(
     const goToAddSticker = useGoToAddSticker(params);
     const goToSelectionWindow = useGoToSelectionWindow(params);
     const goToNodesDragging = useGoToNodesDragging(params);
+    const goToWindowDragging = useGoToWindowDragging(params);
     const mouseDown = useMouseDown(params);
     const selection = useSelection(params);
 
@@ -105,6 +109,10 @@ export function useIdleViewModel(
                     e,
                 );
                 goToSelectionWindow.handleWindowMouseMove(
+                    idleState,
+                    e,
+                );
+                goToWindowDragging.handleWindowMouseMove(
                     idleState,
                     e,
                 );

@@ -16,6 +16,8 @@ export function useGoToSelectionWindow({
             idleState.mouseDown
             &&
             idleState.mouseDown.type === 'overlay'
+            &&
+            !idleState.mouseDown.isRightClick
         ) {
             const currentPoint = pointOnScreenToCanvas(
                 {

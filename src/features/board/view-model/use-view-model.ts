@@ -22,6 +22,10 @@ import {
     useNodesDraggingViewModel,
     type NodesDraggingViewState,
 } from "./variants/nodes-dragging";
+import {
+    useWindowDraggingViewModel,
+    type WindowDraggingViewState,
+} from "./variants/window-dragging";
 
 export type ViewState =
     | AddStickerViewState
@@ -29,6 +33,7 @@ export type ViewState =
     | IdleViewState
     | SelectionWindowViewState
     | NodesDraggingViewState
+    | WindowDraggingViewState
 
 export function useViewModel(
     params: Omit<ViewModelParams, 'setViewState'>,
@@ -57,6 +62,9 @@ export function useViewModel(
     const nodesDraggingViewModel
         = useNodesDraggingViewModel(newParams);
 
+    const windowDraggingViewModel
+        = useWindowDraggingViewModel(newParams)
+
     let viewModel: ViewModel;
 
     switch (viewState.type) {
@@ -73,8 +81,10 @@ export function useViewModel(
             viewModel = selectionWindowViewModel(viewState);
             break;
         case 'nodes-dragging':
-            console.log('nodes-dragging', viewState);
             viewModel = nodesDraggingViewModel(viewState);
+            break;
+        case 'window-dragging':
+            viewModel = windowDraggingViewModel(viewState);
             break;
         default:
             throw new Error('Invalid view state');

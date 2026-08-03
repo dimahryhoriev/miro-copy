@@ -1,8 +1,13 @@
-import type { NodesModel } from "../model/nodes";
-import type { CanvasRect } from "../hooks/use-canvas-rect";
-import type { Dispatch, RefObject, SetStateAction } from "react";
-import type { ViewState } from "./use-view-model";
-import type { NodesDimensionsMap } from "../hooks/use-nodes-dimensions";
+import { type NodesModel } from "../model/nodes";
+import { type CanvasRect } from "../hooks/use-canvas-rect";
+import {
+    type Dispatch,
+    type RefObject,
+    type SetStateAction,
+} from "react";
+import { type ViewState } from "./use-view-model";
+import { type NodesDimensionsMap } from "../hooks/use-nodes-dimensions";
+import { type WindowPositionModel } from "../model/window-position";
 
 export type ViewModelParams = {
     setViewState: Dispatch<SetStateAction<ViewState>>;
@@ -10,4 +15,5 @@ export type ViewModelParams = {
     canvasRect: CanvasRect | undefined;
     canvasRef: RefObject<HTMLDivElement | null>;
     nodesDimensions: NodesDimensionsMap;
+    windowPositionModel: WindowPositionModel;
 }
