@@ -7,6 +7,7 @@ import { useGoToEditSticker } from "./use-go-to-edit-sticker";
 import { useGoToAddSticker } from "./use-go-to-add-sticker";
 import { useGoToSelectionWindow } from "./use-go-to-selection-window.ts";
 import { useMouseDown } from "./use-mouse-down";
+import { useGoToNodesDragging } from "./use-go-to-nodes-dragging.ts";
 
 
 export type IdleViewState = {
@@ -39,6 +40,7 @@ export function useIdleViewModel(
     const goToEditSticker = useGoToEditSticker(params);
     const goToAddSticker = useGoToAddSticker(params);
     const goToSelectionWindow = useGoToSelectionWindow(params);
+    const goToNodesDragging = useGoToNodesDragging(params);
     const mouseDown = useMouseDown(params);
     const selection = useSelection(params);
 
@@ -81,14 +83,6 @@ export function useIdleViewModel(
                 if (canvasRef.current) {
                     canvasRef.current.focus();
                 };
-
-                const keyDownResult =
-                    goToEditSticker.handleKeyDown(
-                        idleState,
-                        e,
-                    );
-                if (keyDownResult.preventNext) return;
-
                 deleteSelected.handleKeyDown(idleState, e);
                 goToAddSticker.handleKeyDown(e);
             },
@@ -105,12 +99,16 @@ export function useIdleViewModel(
             ),
         },
         window: {
-            onMouseMove: (e) => (
+            onMouseMove: (e) => {
+                goToNodesDragging.handleWindowMouseMove(
+                    idleState,
+                    e,
+                );
                 goToSelectionWindow.handleWindowMouseMove(
                     idleState,
                     e,
-                )
-            ),
+                );
+            },
             onMouseUp: () => {
                 mouseDown.handleWindowMouseUp(idleState);
             },

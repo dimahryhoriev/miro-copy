@@ -1,12 +1,12 @@
+import { distanceFromPoints } from "@/features/board/domain/point";
+import { pointOnScreenToCanvas } from "@/features/board/domain/screen-to-canvas";
+import { type IdleViewState } from ".";
 import { type ViewModelParams } from "../../view-model-params";
-import { type IdleViewState } from '.';
-import { distanceFromPoints } from "../../../domain/point";
-import { pointOnScreenToCanvas } from "../../../domain/screen-to-canvas";
-import { goToSelectionWindow } from "../selection-window";
+import { goToNodesDragging } from "../nodes-dragging";
 
-export function useGoToSelectionWindow({
-    setViewState,
+export function useGoToNodesDragging({
     canvasRect,
+    setViewState,
 }: ViewModelParams) {
     const handleWindowMouseMove = (
         idleState: IdleViewState,
@@ -15,7 +15,7 @@ export function useGoToSelectionWindow({
         if (
             idleState.mouseDown
             &&
-            idleState.mouseDown.type === 'overlay'
+            idleState.mouseDown.type === 'node'
         ) {
             const currentPoint = pointOnScreenToCanvas(
                 {
@@ -33,13 +33,13 @@ export function useGoToSelectionWindow({
                 5
             ) {
                 setViewState(
-                    goToSelectionWindow({
+                    goToNodesDragging({
                         startPoint: idleState.mouseDown,
                         endPoint: currentPoint,
-                        initialSelectedIds:
-                            e.shiftKey
-                                ? idleState.selectedIds
-                                : undefined
+                        nodesToMove: new Set([
+                            ...idleState.selectedIds,
+                            idleState.mouseDown.nodeId,
+                        ]),
                     }),
                 );
             };
