@@ -5,6 +5,7 @@ import { type ViewModelParams } from "../../view-model-params";
 import { goToWindowDragging } from "../window-dragging";
 
 export function useGoToWindowDragging({
+    windowPositionModel,
     canvasRect,
     setViewState,
 }: ViewModelParams) {
@@ -18,6 +19,7 @@ export function useGoToWindowDragging({
             idleState.mouseDown.isRightClick
         ) {
             const currentPoint = pointOnScreenToCanvas(
+                windowPositionModel.position,
                 {
                     x: e.clientX,
                     y: e.clientY,

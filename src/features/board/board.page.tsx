@@ -68,12 +68,12 @@ function BoardPage() {
                         />
                     ))
                 }
+                {viewModel.selectionWindow && (
+                    <SelectionWindow
+                        {...viewModel.selectionWindow}
+                    />
+                )}
             </Canvas>
-            {viewModel.selectionWindow && (
-                <SelectionWindow
-                    {...viewModel.selectionWindow}
-                />
-            )}
             <Actions>
                 <ActionButton
                     isActive={viewModel.actions?.addSticker?.isActive}

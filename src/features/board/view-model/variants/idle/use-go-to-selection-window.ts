@@ -5,6 +5,7 @@ import { pointOnScreenToCanvas } from "../../../domain/screen-to-canvas";
 import { goToSelectionWindow } from "../selection-window";
 
 export function useGoToSelectionWindow({
+    windowPositionModel,
     setViewState,
     canvasRect,
 }: ViewModelParams) {
@@ -20,6 +21,7 @@ export function useGoToSelectionWindow({
             !idleState.mouseDown.isRightClick
         ) {
             const currentPoint = pointOnScreenToCanvas(
+                windowPositionModel.position,
                 {
                     x: e.clientX,
                     y: e.clientY,

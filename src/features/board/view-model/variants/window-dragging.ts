@@ -13,8 +13,8 @@ export type WindowDraggingViewState = {
 export function useWindowDraggingViewModel({
     setViewState,
     nodesModel,
-    windowPositionModel,
     canvasRect,
+    windowPositionModel,
 }: ViewModelParams) {
     return (
         state: WindowDraggingViewState,
@@ -34,6 +34,7 @@ export function useWindowDraggingViewModel({
                 onMouseMove: (e) => {
                     const currentPoint
                         = pointOnScreenToCanvas(
+                            windowPositionModel.position,
                             {
                                 x: e.clientX,
                                 y: e.clientY,

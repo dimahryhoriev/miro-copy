@@ -5,6 +5,7 @@ import { type ViewModelParams } from "../../view-model-params";
 import { goToNodesDragging } from "../nodes-dragging";
 
 export function useGoToNodesDragging({
+    windowPositionModel,
     canvasRect,
     setViewState,
 }: ViewModelParams) {
@@ -20,6 +21,7 @@ export function useGoToNodesDragging({
             !idleState.mouseDown.isRightClick
         ) {
             const currentPoint = pointOnScreenToCanvas(
+                windowPositionModel.position,
                 {
                     x: e.clientX,
                     y: e.clientY,

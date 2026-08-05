@@ -1,5 +1,5 @@
 import { type Ref } from "react";
-import type { WindowPosition } from "../view-model/view-model-type";
+import type { WindowPosition } from "../model/window-position";
 
 export function Canvas({
     children,

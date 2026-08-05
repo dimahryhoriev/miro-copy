@@ -15,6 +15,7 @@ export function useNodesDraggingViewModel({
     setViewState,
     nodesModel,
     canvasRect,
+    windowPositionModel,
 }: ViewModelParams) {
     const getNodes = (
         state: NodesDraggingViewState,
@@ -49,6 +50,7 @@ export function useNodesDraggingViewModel({
                 onMouseMove: (e) => {
                     const currentPoint
                         = pointOnScreenToCanvas(
+                            windowPositionModel.position,
                             {
                                 x: e.clientX,
                                 y: e.clientY,

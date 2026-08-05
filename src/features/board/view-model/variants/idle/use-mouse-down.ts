@@ -3,6 +3,7 @@ import { type IdleViewState } from ".";
 import { type ViewModelParams } from "../../view-model-params";
 
 export function useMouseDown({
+    windowPositionModel,
     setViewState,
     canvasRect,
 }: ViewModelParams) {
@@ -11,6 +12,7 @@ export function useMouseDown({
         e: React.MouseEvent<HTMLDivElement>,
     ) => {
         const point = pointOnScreenToCanvas(
+            windowPositionModel.position,
             {
                 x: e.clientX,
                 y: e.clientY,
@@ -46,6 +48,7 @@ export function useMouseDown({
         nodeId: string,
     ) => {
         const point = pointOnScreenToCanvas(
+            windowPositionModel.position,
             {
                 x: e.clientX,
                 y: e.clientY,
