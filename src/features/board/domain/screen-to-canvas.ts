@@ -12,10 +12,12 @@ export function pointOnScreenToCanvas(
     },
 ) {
     if (!canvasRect) return point;
-    console.log(point.x, canvasRect.x, windowPosition.x)
-    console.log(point.x - canvasRect.x - windowPosition.x)
     return {
-        x: point.x - canvasRect.x - windowPosition.x,
-        y: point.y - canvasRect.y - windowPosition.y,
+        x: (point.x - canvasRect.x)
+            / windowPosition.zoom
+            + windowPosition.x,
+        y: (point.y - canvasRect.y)
+            / windowPosition.zoom
+            + windowPosition.y,
     };
-}
+};

@@ -26,6 +26,7 @@ import {
     useWindowDraggingViewModel,
     type WindowDraggingViewState,
 } from "./variants/window-dragging";
+import { useZoomDecorator } from "./decorator/zoom";
 
 export type ViewState =
     | AddStickerViewState
@@ -63,7 +64,10 @@ export function useViewModel(
         = useNodesDraggingViewModel(newParams);
 
     const windowDraggingViewModel
-        = useWindowDraggingViewModel(newParams)
+        = useWindowDraggingViewModel(newParams);
+
+    const zoomDecorator
+        = useZoomDecorator(newParams);
 
     let viewModel: ViewModel;
 
@@ -90,5 +94,5 @@ export function useViewModel(
             throw new Error('Invalid view state');
     }
 
-    return viewModel;
+    return zoomDecorator(viewModel);
 }

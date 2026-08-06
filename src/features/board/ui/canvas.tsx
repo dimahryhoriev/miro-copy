@@ -1,5 +1,5 @@
 import { type Ref } from "react";
-import type { WindowPosition } from "../model/window-position";
+import { type WindowPosition } from "../model/window-position";
 
 export function Canvas({
     children,
@@ -25,8 +25,15 @@ export function Canvas({
             {overlay}
             <div
                 style={{
+                    transformOrigin: 'left top',
                     transform:
-                        `translate(${windowPosition.x}px, ${windowPosition.y}px) scale(${windowPosition.zoom})`
+                        `
+                        scale(${windowPosition.zoom})
+                        translate(
+                        ${-windowPosition.x}px,
+                        ${-windowPosition.y}px
+                        )
+                        `
                 }}
             >
                 {children}
