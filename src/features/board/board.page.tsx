@@ -35,12 +35,19 @@ function BoardPage() {
 
     useWindowEvents(viewModel);
 
+    const windowPosition =
+        viewModel.windowPosition ?? windowPositionModel.position
+
     return (
         <Layout
             ref={focusLayoutRef}
             onKeyDown={viewModel.layout?.onKeyDown}
         >
-            <Dots />
+            <Dots
+                windowPosition={
+                    windowPosition
+                }
+            />
             <Canvas
                 ref={canvasRef}
                 overlay={

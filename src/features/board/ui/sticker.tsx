@@ -103,13 +103,11 @@ function TextareaAutoSize({
                     <textarea
                         value={value}
                         autoFocus
-                        className={
-                            cn(
-                                'absolute left-0 top-0',
-                                'resize-none overflow-hidden',
-                                'focus:outline-none',
-                            )
-                        }
+                        className="
+                                absolute left-0 top-0
+                                resize-none overflow-hidden
+                                focus:outline-none
+                            "
                         onChange={
                             (e) => onChange?.(e.target.value)
                         }

@@ -35,12 +35,10 @@ export function TemplateCard({
             }
         >
             <div
-                className={
-                    cn(
-                        'aspect-video rounded-md bg-gray-100',
-                        'mb-4 overflow-hidden',
-                    )
-                }
+                className="
+                        aspect-video rounded-md bg-gray-100
+                        mb-4 overflow-hidden
+                    "
             >
                 <img
                     src={template.thumbnail}
@@ -56,13 +54,11 @@ export function TemplateCard({
             </p>
             <Button
                 size='sm'
-                className={
-                    cn(
-                        'absolute top-4 right-4',
-                        'opacity-0 group-hover:opacity-100',
-                        'transition-opacity',
-                    )
-                }
+                className="
+                        absolute top-4 right-4
+                        opacity-0 group-hover:opacity-100
+                        transition-opacity
+                    "
             >
                 <PlusIcon className="size-4 mr-2" />
                 Use
