@@ -1,4 +1,4 @@
-import { vectorFromPoints, type Point } from "../../domain/point";
+import { addPoints, vectorFromPoints, type Point } from "../../domain/point";
 import { pointOnScreenToCanvas } from "../../domain/screen-to-canvas";
 import { type ViewModelParams } from "../view-model-params";
 import { type ViewModel } from "../view-model-type";
@@ -27,12 +27,22 @@ export function useNodesDraggingViewModel({
                         state.startPoint,
                         state.endPoint,
                     );
-                    return {
-                        ...node,
-                        x: node.x + diff.x,
-                        y: node.y + diff.y,
-                        isSelected: true,
+                    if (node.type === 'sticker') {
+                        return {
+                            ...node,
+                            ...addPoints(node, diff),
+                            isSelected: true,
+                        };
                     };
+                    if (node.type === 'arrow') {
+                        return {
+                            ...node,
+                            start: addPoints(node.start, diff),
+                            end: addPoints(node.end, diff),
+                            isSelected: true,
+                        };
+                    };
+                    return node;
                 };
                 return node;
             },
@@ -63,9 +73,38 @@ export function useNodesDraggingViewModel({
                     });
                 },
                 onMouseUp: () => {
-                    const nodesToMove = nodes.filter(
-                        (node) => state.nodesToMove.has(node.id),
-                    );
+                    const nodesToMove = nodes
+                        .filter(
+                            (node) => state.nodesToMove.has(node.id),
+                        ).flatMap(
+                            (node) => {
+                                switch (node.type) {
+                                    case 'sticker':
+                                        return [
+                                            {
+                                                id: node.id,
+                                                x: node.x,
+                                                y: node.y,
+                                            },
+                                        ];
+                                    case 'arrow':
+                                        return [
+                                            {
+                                                id: node.id,
+                                                x: node.start.x,
+                                                y: node.start.y,
+                                                type: 'start' as const,
+                                            },
+                                            {
+                                                id: node.id,
+                                                x: node.end.x,
+                                                y: node.end.y,
+                                                type: 'end' as const,
+                                            },
+                                        ]
+                                }
+                            }
+                        );
 
                     nodesModel.updateNodesPositions(nodesToMove);
 

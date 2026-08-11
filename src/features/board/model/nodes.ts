@@ -112,7 +112,7 @@ export function useNodes() {
         const record = Object.fromEntries(
             positions.map(
                 (p) => [
-                    `${p.id}${p.type}`,
+                    `${p.id}${p.type ?? ''}`,
                     p,
                 ],
             ),

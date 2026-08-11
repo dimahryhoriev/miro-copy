@@ -1,4 +1,4 @@
-import type { Point } from "../../domain/point";
+import { type Point } from "../../domain/point";
 import {
     createRectFromDimensions,
     createRectFromPoints,
@@ -32,10 +32,16 @@ export function useSelectionWindowViewModel({
         nodesModel.nodes.map(
             (node) => {
                 const nodeDimensions = nodesDimensions[node.id];
-                const nodeRect = createRectFromDimensions(
-                    node,
-                    nodeDimensions,
-                );
+                const nodeRect =
+                    node.type === 'sticker'
+                        ? createRectFromDimensions(
+                            node,
+                            nodeDimensions,
+                        )
+                        : createRectFromPoints(
+                            node.start,
+                            node.end,
+                        )
                 return {
                     ...node,
                     isSelected:

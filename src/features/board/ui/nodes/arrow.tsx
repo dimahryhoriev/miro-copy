@@ -3,11 +3,13 @@ import {
     type Point,
     vectorFromPoints,
 } from "../../domain/point";
+import { cn } from "@/shared/lib/css";
 
 export function Arrow({
     start,
     end,
     ref,
+    isSelected,
     onClick,
     onMouseDown,
     onMouseUp,
@@ -15,6 +17,7 @@ export function Arrow({
     start: Point;
     end: Point;
     ref: Ref<SVGPathElement>;
+    isSelected?: boolean;
     onClick?: (
         e: React.MouseEvent<SVGPathElement>
     ) => void;
@@ -54,13 +57,12 @@ export function Arrow({
         >
             <path
                 ref={ref}
-                className="
-                    pointer-events-auto
-                    hover:stroke-blue-500
-                    hover:fill-blue-500
-                    transition-[stroke,fill]
-                    duration-300
-                "
+                className={
+                    cn(
+                        'pointer-events-auto',
+                        isSelected && 'stroke-2 stroke-blue-500 fill-blue-500',
+                    )
+                }
                 stroke="black"
                 strokeWidth={2}
                 strokeLinecap="round"
