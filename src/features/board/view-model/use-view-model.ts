@@ -31,6 +31,7 @@ import {
     useAddArrowViewModel,
     type AddArrowViewState,
 } from "./variants/add-arrow";
+import { useCommonActionsDecorator } from "./decorator/common-actions";
 
 export type ViewState =
     | AddArrowViewState
@@ -77,20 +78,29 @@ export function useViewModel(
     const zoomDecorator
         = useZoomDecorator(newParams);
 
+    const commonActionsDecorator
+        = useCommonActionsDecorator(newParams);
+
     let viewModel: ViewModel;
 
     switch (viewState.type) {
+        case 'idle':
+            viewModel = commonActionsDecorator(
+                idleViewModel(viewState),
+            );
+            break;
         case 'add-arrow':
-            viewModel = addArrowViewModel();
+            viewModel = commonActionsDecorator(
+                addArrowViewModel(),
+            );
             break;
         case 'add-sticker':
-            viewModel = addStickerViewModel();
+            viewModel = commonActionsDecorator(
+                addStickerViewModel(),
+            );
             break;
         case 'edit-sticker':
             viewModel = editStickerViewModel(viewState);
-            break;
-        case 'idle':
-            viewModel = idleViewModel(viewState);
             break;
         case 'selection-window':
             viewModel = selectionWindowViewModel(viewState);
