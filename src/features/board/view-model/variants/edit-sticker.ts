@@ -17,7 +17,11 @@ export function useEditStickerViewModel({
     ): ViewModel => ({
         nodes: nodesModel.nodes.map(
             (node) => {
-                if (node.id === viewState.stickerId) {
+                if (
+                    node.id === viewState.stickerId
+                    &&
+                    node.type === 'sticker'
+                ) {
                     return {
                         ...node,
                         isSelected: true,

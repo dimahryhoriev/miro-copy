@@ -52,14 +52,14 @@ export function useIdleViewModel(
         nodes: nodesModel.nodes.map(node => ({
             ...node,
             isSelected: selection.isSelected(idleState, node.id),
-            onMouseDown: (e) => (
+            onMouseDown: (e: React.MouseEvent) => (
                 mouseDown.handleNodeMouseDown(
                     idleState,
                     e,
                     node.id,
                 )
             ),
-            onMouseUp: (e) => {
+            onMouseUp: (e: React.MouseEvent) => {
                 if (
                     !mouseDown.getIsStickerMouseDown(
                         idleState,

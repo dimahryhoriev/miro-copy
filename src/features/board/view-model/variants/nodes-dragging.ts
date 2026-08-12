@@ -27,13 +27,6 @@ export function useNodesDraggingViewModel({
                         state.startPoint,
                         state.endPoint,
                     );
-                    if (node.type === 'sticker') {
-                        return {
-                            ...node,
-                            ...addPoints(node, diff),
-                            isSelected: true,
-                        };
-                    };
                     if (node.type === 'arrow') {
                         return {
                             ...node,
@@ -42,7 +35,11 @@ export function useNodesDraggingViewModel({
                             isSelected: true,
                         };
                     };
-                    return node;
+                    return {
+                        ...node,
+                        ...addPoints(node, diff),
+                        isSelected: true,
+                    };
                 };
                 return node;
             },
@@ -78,31 +75,29 @@ export function useNodesDraggingViewModel({
                             (node) => state.nodesToMove.has(node.id),
                         ).flatMap(
                             (node) => {
-                                switch (node.type) {
-                                    case 'sticker':
-                                        return [
-                                            {
-                                                id: node.id,
-                                                x: node.x,
-                                                y: node.y,
-                                            },
-                                        ];
-                                    case 'arrow':
-                                        return [
-                                            {
-                                                id: node.id,
-                                                x: node.start.x,
-                                                y: node.start.y,
-                                                type: 'start' as const,
-                                            },
-                                            {
-                                                id: node.id,
-                                                x: node.end.x,
-                                                y: node.end.y,
-                                                type: 'end' as const,
-                                            },
-                                        ]
-                                }
+                                if (node.type === 'arrow') {
+                                    return [
+                                        {
+                                            id: node.id,
+                                            x: node.start.x,
+                                            y: node.start.y,
+                                            type: 'start' as const,
+                                        },
+                                        {
+                                            id: node.id,
+                                            x: node.end.x,
+                                            y: node.end.y,
+                                            type: 'end' as const,
+                                        },
+                                    ];
+                                };
+                                return [
+                                    {
+                                        id: node.id,
+                                        x: node.x,
+                                        y: node.y,
+                                    },
+                                ];
                             }
                         );
 

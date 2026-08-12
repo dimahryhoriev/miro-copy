@@ -34,7 +34,7 @@ export function useSelection({
     const handleNodeClick = (
         idleState: IdleViewState,
         nodeId: string,
-        e: React.MouseEvent<HTMLButtonElement>,
+        e: React.MouseEvent,
     ) => {
         if (e.ctrlKey || e.shiftKey || e.metaKey) {
             select(
