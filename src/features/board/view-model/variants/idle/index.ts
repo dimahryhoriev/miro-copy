@@ -9,6 +9,7 @@ import { useGoToSelectionWindow } from "./use-go-to-selection-window.ts";
 import { useMouseDown } from "./use-mouse-down";
 import { useGoToNodesDragging } from "./use-go-to-nodes-dragging.ts";
 import { useGoToWindowDragging } from "./use-go-to-window-dragging.ts";
+import { goToAddArrow } from "../add-arrow.ts";
 
 
 export type IdleViewState = {
@@ -37,6 +38,7 @@ export function useIdleViewModel(
     const {
         nodesModel,
         canvasRef,
+        setViewState,
     } = params;
 
     const deleteSelected = useDeleteSelected(params);
@@ -125,6 +127,10 @@ export function useIdleViewModel(
             addSticker: {
                 isActive: false,
                 onClick: goToAddSticker.handleActionClick,
+            },
+            addArrow: {
+                isActive: false,
+                onClick: () => setViewState(goToAddArrow()),
             },
         },
     })

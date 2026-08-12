@@ -27,8 +27,13 @@ import {
     type WindowDraggingViewState,
 } from "./variants/window-dragging";
 import { useZoomDecorator } from "./decorator/zoom";
+import {
+    useAddArrowViewModel,
+    type AddArrowViewState,
+} from "./variants/add-arrow";
 
 export type ViewState =
+    | AddArrowViewState
     | AddStickerViewState
     | EditStickerViewState
     | IdleViewState
@@ -47,6 +52,9 @@ export function useViewModel(
         ...params,
         setViewState,
     }
+
+    const addArrowViewModel
+        = useAddArrowViewModel(newParams);
 
     const addStickerViewModel
         = useAddStickerViewModel(newParams);
@@ -72,6 +80,9 @@ export function useViewModel(
     let viewModel: ViewModel;
 
     switch (viewState.type) {
+        case 'add-arrow':
+            viewModel = addArrowViewModel();
+            break;
         case 'add-sticker':
             viewModel = addStickerViewModel();
             break;
