@@ -1,6 +1,7 @@
 export type Point = {
     x: number;
     y: number;
+    relativeTo?: string;
 };
 
 export function vectorFromPoints(
@@ -33,3 +34,26 @@ export function addPoints(
         y: point1.y + point2.y,
     };
 }
+
+export type RelativeBase = Record<string, Point>;
+
+export function resolveRelativePoint(
+    base: RelativeBase,
+    point: Point,
+): Point {
+    let relativeTo = point.relativeTo;
+    let newPoint = point;
+    while (relativeTo) {
+        const basePoint = base[relativeTo];
+
+        if (basePoint) {
+            newPoint = addPoints(
+                newPoint,
+                basePoint,
+            );
+        };
+
+        relativeTo = basePoint.relativeTo;
+    };
+    return point;
+};

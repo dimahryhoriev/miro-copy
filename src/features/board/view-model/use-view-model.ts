@@ -32,6 +32,10 @@ import {
     type AddArrowViewState,
 } from "./variants/add-arrow";
 import { useCommonActionsDecorator } from "./decorator/common-actions";
+import {
+    useDrawArrowViewModel,
+    type DrawArrowViewState,
+} from "./variants/draw-arrow";
 
 export type ViewState =
     | AddArrowViewState
@@ -41,6 +45,7 @@ export type ViewState =
     | SelectionWindowViewState
     | NodesDraggingViewState
     | WindowDraggingViewState
+    | DrawArrowViewState
 
 export function useViewModel(
     params: Omit<ViewModelParams, 'setViewState'>,
@@ -56,6 +61,9 @@ export function useViewModel(
 
     const addArrowViewModel
         = useAddArrowViewModel(newParams);
+
+    const drawArrowViewModel
+        = useDrawArrowViewModel(newParams);
 
     const addStickerViewModel
         = useAddStickerViewModel(newParams);
@@ -93,6 +101,10 @@ export function useViewModel(
             viewModel = commonActionsDecorator(
                 addArrowViewModel(),
             );
+            break;
+        case 'draw-arrow':
+            console.log('draw-arrow', viewState);
+            viewModel = drawArrowViewModel(viewState);
             break;
         case 'add-sticker':
             viewModel = commonActionsDecorator(
