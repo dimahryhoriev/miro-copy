@@ -19,7 +19,7 @@ type ArrowNode = {
     end: Point;
 } & NodeBase;
 
-type Node = StickerNode | ArrowNode;
+export type Node = StickerNode | ArrowNode;
 
 export function useNodes() {
     const [nodes, setNodes] = useState<Node[]>([
