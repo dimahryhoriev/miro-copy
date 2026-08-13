@@ -4,6 +4,10 @@ export type Point = {
     relativeTo?: string;
 };
 
+export type RelativePoint = {
+    relativeTo: string;
+} & Point;
+
 export function vectorFromPoints(
     point1: Point,
     point2: Point,
@@ -53,7 +57,13 @@ export function resolveRelativePoint(
             );
         };
 
-        relativeTo = basePoint.relativeTo;
+        relativeTo = basePoint?.relativeTo;
     };
-    return point;
+    return newPoint;
+};
+
+export function isRelativePoint(
+    point: Point,
+): point is RelativePoint {
+    return 'relativeTo' in point;
 };

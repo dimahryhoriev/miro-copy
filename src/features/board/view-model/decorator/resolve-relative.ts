@@ -1,5 +1,9 @@
-import { type RelativeBase } from "../../domain/point";
 import { type Node } from "../../model/nodes";
+import {
+    isRelativePoint,
+    resolveRelativePoint,
+    type RelativeBase,
+} from "../../domain/point";
 
 export function createRelativeBase(
     nodes: Node[],
@@ -17,6 +21,47 @@ export function createRelativeBase(
             )
     );
     return base;
+}
+
+export function resolveRelativePoints(
+    nodes: Node[],
+    relativeBase: RelativeBase,
+): Node[] {
+    return nodes.map(
+        (node) => {
+            let newNode = node;
+
+            if (
+                newNode.type === 'arrow'
+                &&
+                isRelativePoint(newNode.start)
+            ) {
+                newNode = {
+                    ...newNode,
+                    start: resolveRelativePoint(
+                        relativeBase,
+                        newNode.start,
+                    ),
+                };
+            };
+
+            if (
+                newNode.type === 'arrow'
+                &&
+                isRelativePoint(newNode.end)
+            ) {
+                newNode = {
+                    ...newNode,
+                    end: resolveRelativePoint(
+                        relativeBase,
+                        newNode.end,
+                    ),
+                };
+            };
+
+            return newNode;
+        }
+    )
 }
 
 export function useResolveRelativeDecorator() {
