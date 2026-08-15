@@ -40,9 +40,17 @@ export function useNodes() {
         {
             id: '3',
             type: 'arrow',
-            start: { x: 110, y: 110 },
-            end: { x: 210, y: 210 },
-        }
+            start: {
+                x: 50,
+                y: 50,
+                relativeTo: '1',
+            },
+            end: {
+                x: 50,
+                y: 50,
+                relativeTo: '2',
+            },
+        },
     ]);
 
     const addSticker = (data: {
