@@ -1,9 +1,11 @@
 import { type Node } from "../../model/nodes";
+import { type ViewModel } from "../view-model-type";
 import {
     isRelativePoint,
     resolveRelativePoint,
     type RelativeBase,
 } from "../../domain/point";
+import { useMemo } from "react";
 
 export function createRelativeBase(
     nodes: Node[],
@@ -64,6 +66,25 @@ export function resolveRelativePoints(
     )
 }
 
-export function useResolveRelativeDecorator() {
-
+export function useResolveRelativeStaticDecorator(
+    viewModel: ViewModel,
+): ViewModel {
+    const nodes = useMemo(
+        () => {
+            const relativeBase = createRelativeBase(
+                viewModel.nodes,
+            );
+            return (
+                resolveRelativePoints(
+                    viewModel.nodes,
+                    relativeBase,
+                )
+            );
+        },
+        [viewModel.nodes]
+    );
+    return {
+        ...viewModel,
+        nodes,
+    };
 }
