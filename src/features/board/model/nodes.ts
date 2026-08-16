@@ -112,8 +112,7 @@ export function useNodes() {
     const updateNodesPositions = (
         positions: {
             id: string;
-            x: number;
-            y: number;
+            point: Point;
             type?: 'start' | 'end';
         }[],
     ) => {
@@ -139,8 +138,8 @@ export function useNodes() {
                             ];
                             return {
                                 ...node,
-                                start: newStartPosition ?? node.start,
-                                end: newEndPosition ?? node.end,
+                                start: newStartPosition?.point ?? node.start,
+                                end: newEndPosition?.point ?? node.end,
                             };
                         };
                         if (node.type === 'sticker') {
@@ -148,8 +147,7 @@ export function useNodes() {
                             if (newPosition) {
                                 return {
                                     ...node,
-                                    x: newPosition.x,
-                                    y: newPosition.y,
+                                    ...newPosition.point,
                                 };
                             };
                         };

@@ -1,11 +1,10 @@
 import { pointOnScreenToCanvas } from "../../domain/screen-to-canvas";
-import { createRelativeBase } from "../decorator/resolve-relative";
 import { goToIdle } from "./idle";
 import { type ViewModelParams } from "../view-model-params";
 import { type ViewModel } from "../view-model-type";
 import {
     addPoints,
-    resolveRelativePoint,
+    isRelativePoint,
     vectorFromPoints,
     type Point,
 } from "../../domain/point";
@@ -26,10 +25,6 @@ export function useNodesDraggingViewModel({
     const getNodes = (
         state: NodesDraggingViewState,
     ) => {
-        const relativeBase = createRelativeBase(
-            nodesModel.nodes,
-        );
-
         return nodesModel.nodes.map(
             (node) => {
                 if (state.nodesToMove.has(node.id)) {
@@ -40,20 +35,12 @@ export function useNodesDraggingViewModel({
                     if (node.type === 'arrow') {
                         return {
                             ...node,
-                            start: addPoints(
-                                resolveRelativePoint(
-                                    relativeBase,
-                                    node.start,
-                                ),
-                                diff,
-                            ),
-                            end: addPoints(
-                                resolveRelativePoint(
-                                    relativeBase,
-                                    node.end,
-                                ),
-                                diff,
-                            ),
+                            start: isRelativePoint(node.start)
+                                ? node.start
+                                : addPoints(node.start, diff),
+                            end: isRelativePoint(node.end)
+                                ? node.end
+                                : addPoints(node.end, diff),
                             isSelected: true,
                         };
                     };
@@ -101,14 +88,12 @@ export function useNodesDraggingViewModel({
                                     return [
                                         {
                                             id: node.id,
-                                            x: node.start.x,
-                                            y: node.start.y,
+                                            point: node.start,
                                             type: 'start' as const,
                                         },
                                         {
                                             id: node.id,
-                                            x: node.end.x,
-                                            y: node.end.y,
+                                            point: node.end,
                                             type: 'end' as const,
                                         },
                                     ];
@@ -116,11 +101,13 @@ export function useNodesDraggingViewModel({
                                 return [
                                     {
                                         id: node.id,
-                                        x: node.x,
-                                        y: node.y,
+                                        point: {
+                                            x: node.x,
+                                            y: node.y,
+                                        },
                                     },
                                 ];
-                            }
+                            },
                         );
 
                     nodesModel.updateNodesPositions(nodesToMove);
