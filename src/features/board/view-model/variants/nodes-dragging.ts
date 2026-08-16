@@ -1,9 +1,11 @@
 import { pointOnScreenToCanvas } from "../../domain/screen-to-canvas";
+import { createRelativeBase } from "../decorator/resolve-relative";
+import { goToIdle } from "./idle";
 import { type ViewModelParams } from "../view-model-params";
 import { type ViewModel } from "../view-model-type";
-import { goToIdle } from "./idle";
 import {
     addPoints,
+    resolveRelativePoint,
     vectorFromPoints,
     type Point,
 } from "../../domain/point";
@@ -23,8 +25,12 @@ export function useNodesDraggingViewModel({
 }: ViewModelParams) {
     const getNodes = (
         state: NodesDraggingViewState,
-    ) => (
-        nodesModel.nodes.map(
+    ) => {
+        const relativeBase = createRelativeBase(
+            nodesModel.nodes,
+        );
+
+        return nodesModel.nodes.map(
             (node) => {
                 if (state.nodesToMove.has(node.id)) {
                     const diff = vectorFromPoints(
@@ -34,8 +40,20 @@ export function useNodesDraggingViewModel({
                     if (node.type === 'arrow') {
                         return {
                             ...node,
-                            start: addPoints(node.start, diff),
-                            end: addPoints(node.end, diff),
+                            start: addPoints(
+                                resolveRelativePoint(
+                                    relativeBase,
+                                    node.start,
+                                ),
+                                diff,
+                            ),
+                            end: addPoints(
+                                resolveRelativePoint(
+                                    relativeBase,
+                                    node.end,
+                                ),
+                                diff,
+                            ),
                             isSelected: true,
                         };
                     };
@@ -47,8 +65,8 @@ export function useNodesDraggingViewModel({
                 };
                 return node;
             },
-        )
-    );
+        );
+    };
 
     return (
         state: NodesDraggingViewState,
