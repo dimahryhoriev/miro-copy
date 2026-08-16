@@ -1,4 +1,4 @@
-import { type Point } from "../../domain/point";
+import { resolveRelativePoint, type Point } from "../../domain/point";
 import {
     createRectFromDimensions,
     createRectFromPoints,
@@ -7,6 +7,7 @@ import {
 } from "../../domain/rect";
 import { pointOnScreenToCanvas } from "../../domain/screen-to-canvas";
 import { selectItems } from "../../domain/selection";
+import { createRelativeBase } from "../decorator/resolve-relative";
 import type { ViewModelParams } from "../view-model-params";
 import type { ViewModel } from "../view-model-type";
 import { goToIdle } from "./idle";
@@ -28,8 +29,11 @@ export function useSelectionWindowViewModel({
     const getNodes = (
         state: SelectionWindowViewState,
         selectionRect: Rect,
-    ) => (
-        nodesModel.nodes.map(
+    ) => {
+        const relativeBase = createRelativeBase(
+            nodesModel.nodes,
+        );
+        return nodesModel.nodes.map(
             (node) => {
                 const nodeDimensions = nodesDimensions[node.id];
                 const nodeRect =
@@ -39,19 +43,30 @@ export function useSelectionWindowViewModel({
                             nodeDimensions,
                         )
                         : createRectFromPoints(
-                            node.start,
-                            node.end,
-                        )
+                            resolveRelativePoint(
+                                relativeBase,
+                                node.start,
+                            ),
+                            resolveRelativePoint(
+                                relativeBase,
+                                node.end,
+                            ),
+                        );
                 return {
                     ...node,
                     isSelected:
-                        isRectsIntersecting(nodeRect, selectionRect)
+                        isRectsIntersecting(
+                            nodeRect,
+                            selectionRect,
+                        )
                         ||
-                        state.initialSelectedIds.has(node.id),
+                        state.initialSelectedIds.has(
+                            node.id,
+                        )
                 };
             },
-        )
-    );
+        );
+    };
 
     return (
         state: SelectionWindowViewState,
