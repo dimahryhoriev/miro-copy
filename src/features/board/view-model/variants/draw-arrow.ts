@@ -8,7 +8,7 @@ export type DrawArrowViewState = {
     type: 'draw-arrow';
     startPoint: Point;
     endPoint: Point;
-
+    startRelativeTo?: string;
 };
 
 export function useDrawArrowViewModel({
@@ -71,10 +71,12 @@ export function useDrawArrowViewModel({
 
 export function goToDrawArrow(
     startPoint: Point,
+    startRelativeTo?: string,
 ): DrawArrowViewState {
     return {
         type: 'draw-arrow',
         startPoint,
         endPoint: startPoint,
+        startRelativeTo,
     };
 };

@@ -5,7 +5,7 @@ import { type ViewModel } from "../view-model-type";
 import {
     addPoints,
     isRelativePoint,
-    vectorFromPoints,
+    diffPoints,
     type Point,
 } from "../../domain/point";
 
@@ -28,7 +28,7 @@ export function useNodesDraggingViewModel({
         return nodesModel.nodes.map(
             (node) => {
                 if (state.nodesToMove.has(node.id)) {
-                    const diff = vectorFromPoints(
+                    const diff = diffPoints(
                         state.startPoint,
                         state.endPoint,
                     );

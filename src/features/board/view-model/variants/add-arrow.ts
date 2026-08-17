@@ -21,20 +21,22 @@ export function useAddArrowViewModel({
                     if (node.type === 'sticker') {
                         return {
                             ...node,
-                            onMouseDown: (e: React.MouseEvent) => (
+                            onMouseDown: (e: React.MouseEvent) => {
+                                const point = pointOnScreenToCanvas(
+                                    windowPositionModel.position,
+                                    {
+                                        x: e.clientX,
+                                        y: e.clientY,
+                                    },
+                                    canvasRect,
+                                );
                                 setViewState(
                                     goToDrawArrow(
-                                        pointOnScreenToCanvas(
-                                            windowPositionModel.position,
-                                            {
-                                                x: e.clientX,
-                                                y: e.clientY,
-                                            },
-                                            canvasRect,
-                                        ),
-                                    )
-                                )
-                            ),
+                                        point,
+                                        node.id,
+                                    ),
+                                );
+                            },
                         };
                     };
                     return node;

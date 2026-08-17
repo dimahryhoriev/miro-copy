@@ -8,7 +8,7 @@ export type RelativePoint = {
     relativeTo: string;
 } & Point;
 
-export function vectorFromPoints(
+export function diffPoints(
     point1: Point,
     point2: Point,
 ) {

@@ -1,4 +1,4 @@
-import { vectorFromPoints } from "../../domain/point";
+import { diffPoints } from "../../domain/point";
 import { pointOnScreenToCanvas } from "../../domain/screen-to-canvas";
 import { type ViewModelParams } from "../view-model-params";
 import { type ViewModel } from "../view-model-type";
@@ -41,7 +41,7 @@ export function useZoomDecorator({
                     canvasRect,
                 );
 
-                const mouseDiff = vectorFromPoints(
+                const mouseDiff = diffPoints(
                     currentPoint,
                     newPoint,
                 );

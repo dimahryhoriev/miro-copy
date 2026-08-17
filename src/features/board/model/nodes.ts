@@ -102,12 +102,45 @@ export function useNodes() {
     }
 
     const deleteNodes = (ids: string[]) => {
-        setNodes((prevNodes) => (
-            prevNodes.filter(
-                (node) => !ids.includes(node.id)
-            )
-        ))
-    }
+        setNodes(
+            (prevNodes) => {
+                const arrowsRelativeIds = prevNodes
+                    .filter(
+                        (node) => (
+                            (
+                                node.type === 'arrow'
+                                &&
+                                node.start.relativeTo
+                                &&
+                                ids.includes(
+                                    node.start.relativeTo
+                                )
+                            )
+                            ||
+                            (
+                                node.type === 'arrow'
+                                &&
+                                node.end.relativeTo
+                                &&
+                                ids.includes(
+                                    node.end.relativeTo
+                                )
+                            )
+                        ),
+                    )
+                    .map(
+                        (node) => node.id
+                    );
+                return prevNodes.filter(
+                    (node) => (
+                        !ids.includes(node.id)
+                        &&
+                        !arrowsRelativeIds.includes(node.id)
+                    )
+                );
+            },
+        );
+    };
 
     const updateNodesPositions = (
         positions: {

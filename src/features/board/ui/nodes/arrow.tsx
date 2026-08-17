@@ -1,7 +1,7 @@
 import { type Ref } from "react";
 import {
     type Point,
-    vectorFromPoints,
+    diffPoints,
 } from "../../domain/point";
 import { cn } from "@/shared/lib/css";
 
@@ -28,7 +28,7 @@ export function Arrow({
         e: React.MouseEvent<SVGPathElement>
     ) => void;
 }) {
-    const diff = vectorFromPoints(
+    const diff = diffPoints(
         start,
         end,
     );
