@@ -1,5 +1,6 @@
-import { type Point } from "../../domain/point";
+import { diffPoints, type Point } from "../../domain/point";
 import { pointOnScreenToCanvas } from "../../domain/screen-to-canvas";
+import { createRelativeBase } from "../decorator/resolve-relative";
 import { type ViewModelParams } from "../view-model-params";
 import { type ViewModel } from "../view-model-type";
 import { goToIdle } from "./idle";
@@ -9,6 +10,7 @@ export type DrawArrowViewState = {
     startPoint: Point;
     endPoint: Point;
     startRelativeTo?: string;
+    endRelativeTo?: string;
 };
 
 export function useDrawArrowViewModel({
@@ -17,12 +19,45 @@ export function useDrawArrowViewModel({
     windowPositionModel,
     canvasRect,
 }: ViewModelParams) {
+    const addArrow = (
+        state: DrawArrowViewState,
+        endRelativeTo?: string,
+    ) => {
+        const relativeBase = createRelativeBase(
+            nodesModel.nodes,
+        );
+        nodesModel.addArrow({
+            start: state.startRelativeTo
+                ?
+                {
+                    ...diffPoints(
+                        relativeBase[state.startRelativeTo],
+                        state.startPoint,
+                    ),
+                    relativeTo: state.startRelativeTo,
+                }
+                :
+                state.startPoint,
+            end: endRelativeTo
+                ?
+                {
+                    ...diffPoints(
+                        relativeBase[endRelativeTo],
+                        state.endPoint,
+                    ),
+                    relativeTo: endRelativeTo,
+                }
+                : state.endPoint,
+        });
+    };
+
     return (state: DrawArrowViewState): ViewModel => {
         const newArrow = {
             id: 'drawing-arrow',
             type: 'arrow' as const,
             start: state.startPoint,
             end: state.endPoint,
+            noPointerEvents: true,
         };
 
         const newNodes = [
@@ -31,7 +66,27 @@ export function useDrawArrowViewModel({
         ];
 
         return {
-            nodes: newNodes,
+            nodes: newNodes.map(
+                (node) => {
+                    if (node.type === 'sticker') {
+                        return {
+                            ...node,
+                            onMouseUp: () => {
+                                addArrow(
+                                    state,
+                                    node.id,
+                                );
+                            },
+                        };
+                    };
+                    return node;
+                },
+            ),
+            overlay: {
+                onMouseUp: () => {
+                    addArrow(state);
+                }
+            },
             window: {
                 onMouseMove: (e) => {
                     const currentPoint
@@ -50,7 +105,6 @@ export function useDrawArrowViewModel({
                 },
                 onMouseUp: () => {
                     setViewState(goToIdle());
-                    nodesModel.addArrow(newArrow)
                 },
             },
             layout: {

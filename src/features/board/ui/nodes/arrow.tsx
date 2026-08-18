@@ -10,6 +10,7 @@ export function Arrow({
     end,
     ref,
     isSelected,
+    noPointerEvents,
     onClick,
     onMouseDown,
     onMouseUp,
@@ -18,6 +19,7 @@ export function Arrow({
     end: Point;
     ref: Ref<SVGPathElement>;
     isSelected?: boolean;
+    noPointerEvents?: boolean;
     onClick?: (
         e: React.MouseEvent<SVGPathElement>
     ) => void;
@@ -59,7 +61,9 @@ export function Arrow({
                 ref={ref}
                 className={
                     cn(
-                        'pointer-events-auto',
+                        noPointerEvents
+                            ? 'pointer-events-none'
+                            : 'pointer-events-auto',
                         isSelected && 'stroke-2 stroke-blue-500 fill-blue-500',
                     )
                 }
