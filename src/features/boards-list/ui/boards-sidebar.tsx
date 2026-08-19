@@ -24,19 +24,16 @@ export function BoardsSidebar({
                     Navigation
                 </div>
                 <Button
-                    variant='ghost'
+                    variant={
+                        location.pathname === ROUTES.BOARDS
+                            ? 'secondary'
+                            : 'ghost'
+                    }
                     className="w-full justify-start"
                     asChild
                 >
                     <Link
                         to={ROUTES.BOARDS}
-                        className={
-                            cn(
-                                location.pathname === ROUTES.BOARDS
-                                    ? 'bg-blue-500/10'
-                                    : 'bg-transparent'
-                            )
-                        }
                     >
                         <LayoutGridIcon
                             className="mr-2 h-4 w-4"
@@ -45,38 +42,32 @@ export function BoardsSidebar({
                     </Link>
                 </Button>
                 <Button
-                    variant="ghost"
+                    variant={
+                        location.pathname === ROUTES.FAVORITE_BOARDS
+                            ? 'secondary'
+                            : 'ghost'
+                    }
                     className="w-full justify-start"
                     asChild
                 >
                     <Link
                         to={ROUTES.FAVORITE_BOARDS}
-                        className={
-                            cn(
-                                location.pathname === ROUTES.FAVORITE_BOARDS
-                                    ? 'bg-blue-500/10'
-                                    : 'bg-transparent'
-                            )
-                        }
                     >
                         <StarIcon className="mr-2 h-4 w-4" />
                         Favorites
                     </Link>
                 </Button>
                 <Button
-                    variant="ghost"
+                    variant={
+                        location.pathname === ROUTES.RECENT_BOARDS
+                            ? 'secondary'
+                            : 'ghost'
+                    }
                     className="w-full justify-start"
                     asChild
                 >
                     <Link
                         to={ROUTES.RECENT_BOARDS}
-                        className={
-                            cn(
-                                location.pathname === ROUTES.RECENT_BOARDS
-                                    ? 'bg-blue-500/10'
-                                    : 'bg-transparent'
-                            )
-                        }
                     >
                         <ClockIcon className="mr-2 h-4 w-4" />
                         Recents

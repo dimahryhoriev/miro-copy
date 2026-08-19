@@ -43,7 +43,7 @@ export function TemplateCard({
                 <img
                     src={template.thumbnail}
                     alt={template.name}
-                    className="size-full object-cover"
+                    className="size-full object-contain"
                 />
             </div>
             <h3 className="font-medium mb-1">

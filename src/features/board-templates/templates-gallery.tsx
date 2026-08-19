@@ -4,27 +4,27 @@ import { TemplateCard } from './template-card'
 const templates = [
     {
         id: '1',
-        name: 'Template 1',
-        description: 'Template 1 description',
-        thumbnail: 'https://via.placeholder.com/150'
+        name: 'Kanban Framework',
+        description: 'Manage tasks and agile workflows visually',
+        thumbnail: '/images/templates/kanban-framework.svg'
     },
     {
         id: '2',
-        name: 'Template 2',
-        description: 'Template 2 description',
-        thumbnail: 'https://via.placeholder.com/150'
+        name: 'Brainstorming',
+        description: 'Capture ideas and structure complex thoughts',
+        thumbnail: '/images/templates/brainstorming.svg'
     },
     {
         id: '3',
-        name: 'Template 3',
-        description: 'Template 3 description',
-        thumbnail: 'https://via.placeholder.com/150'
+        name: 'Flowchart',
+        description: 'Map out system processes, user flows, and diagrams',
+        thumbnail: '/images/templates/flowchart.svg'
     },
     {
         id: '4',
-        name: 'Template 4',
-        description: 'Template 4 description',
-        thumbnail: 'https://via.placeholder.com/150'
+        name: 'Retro',
+        description: 'Reflect on team perfomance and plan improvements',
+        thumbnail: '/images/templates/retro.svg'
     },
 ]
 
