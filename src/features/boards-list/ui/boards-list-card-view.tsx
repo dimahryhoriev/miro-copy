@@ -27,14 +27,14 @@ export function BoardsListCard({
                 </div>
             )}
             <CardHeader>
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-2 min-w-0">
                     <Button
                         asChild
                         variant='link'
                         className="text-left justify-start h-auto p-0"
                     >
                         <Link to={href(ROUTES.BOARD, { boardId: board.id })}>
-                            <span className="text-xl font-medium">
+                            <span className="text-xl font-medium w-full truncate">
                                 {board.name}
                             </span>
                         </Link>
