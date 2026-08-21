@@ -1,5 +1,5 @@
 import { type Selection } from "../../../domain/selection";
-import { type ViewModelParams } from "../../view-model-params";
+import { type ViewModelParams } from "../../view-model-params.ts";
 import { type ViewModel } from "../../view-model-type";
 import { useSelection } from "./use-selection";
 import { useDeleteSelected } from "./use-delete-selected";

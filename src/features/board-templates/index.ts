@@ -1,3 +1,3 @@
-export { TemplatesGallery } from "./templates-gallery";
-export { TemplatesModal } from "./templates-modal";
-export { useTemplatesModal } from "./use-templates-modal";
+export { TemplatesGallery } from "./ui/templates-gallery";
+export { TemplatesModal } from "./ui/templates-modal";
+export { useTemplatesModal } from "./hooks/use-templates-modal";

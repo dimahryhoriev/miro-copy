@@ -6,7 +6,7 @@ import {
     DialogTitle,
 } from '@/shared/ui/kit/dialog';
 import { TemplatesGallery } from "./templates-gallery";
-import { useTemplatesModal } from './use-templates-modal';
+import { useTemplatesModal } from '../hooks/use-templates-modal';
 
 export function TemplatesModal() {
     const { isOpen, close } = useTemplatesModal();

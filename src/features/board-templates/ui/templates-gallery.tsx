@@ -1,7 +1,14 @@
 import { ScrollArea } from "@/shared/ui/kit/scroll-area";
 import { TemplateCard } from './template-card'
 
-const templates = [
+export type Template = {
+    id: string;
+    name: string;
+    description: string;
+    thumbnail: string;
+};
+
+const templates: Template[] = [
     {
         id: '1',
         name: 'Kanban Framework',
@@ -40,7 +47,13 @@ export function TemplatesGallery({
                     <TemplateCard
                         key={template.id}
                         template={template}
-                        onSelect={() => { }}
+                        onSelect={
+                            (
+
+                            ) => {
+
+                            }
+                        }
                     />
                 ))}
             </div>
