@@ -24,6 +24,9 @@ schemas:
         format: date-time
       isFavorite:
         type: boolean
+      nodes:
+        type: array
+        items: {}
   RenameBoard:
     type: object
     required:
@@ -130,6 +133,16 @@ createBoard:
   summary: Create a new board
   security:
     - bearerAuth: []
+  requestBody:
+    required: false
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            nodes:
+              type: array
+              items: {}
   responses:
     '201':
       description: Board created successfully

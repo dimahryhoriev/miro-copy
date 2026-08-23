@@ -1,13 +1,13 @@
 import { type Node } from "@/features/board";
 
-type TemplateNodes = {
-    relativeTo: string;
+export type TemplateNodesList = {
+    name: string;
     nodes: Node[];
 };
 
-export const templateNodesList: TemplateNodes[] = [
+export const templateNodesList: TemplateNodesList[] = [
     {
-        relativeTo: 'Kanban Framework',
+        name: 'Kanban Framework',
         nodes: [
             {
                 id: 'kb-1',
@@ -21,67 +21,67 @@ export const templateNodesList: TemplateNodes[] = [
                 type: 'sticker',
                 text: 'Plan project budget & resources',
                 x: 100,
-                y: 240,
+                y: 200,
             },
             {
                 id: 'kb-3',
                 type: 'sticker',
                 text: 'Gather client feedback & requirements',
                 x: 100,
-                y: 380,
+                y: 300,
             },
             {
                 id: 'kb-4',
                 type: 'sticker',
                 text: '⚡ IN PROGRESS',
-                x: 340,
+                x: 450,
                 y: 100,
             },
             {
                 id: 'kb-5',
                 type: 'sticker',
                 text: 'Prepare presentation for stakeholders',
-                x: 340,
-                y: 240,
+                x: 450,
+                y: 200,
             },
             {
                 id: 'kb-6',
                 type: 'sticker',
                 text: 'Review draft designs and copy',
-                x: 340,
-                y: 380,
+                x: 450,
+                y: 300,
             },
             {
                 id: 'kb-7',
                 type: 'sticker',
                 text: '✅ DONE',
-                x: 580,
+                x: 800,
                 y: 100,
             },
             {
                 id: 'kb-8',
                 type: 'sticker',
                 text: 'Initial team kickoff meeting',
-                x: 580,
-                y: 240,
+                x: 800,
+                y: 200,
             },
             {
                 id: 'kb-9',
                 type: 'sticker',
                 text: 'Sign contract and agreement',
-                x: 580,
-                y: 380,
+                x: 800,
+                y: 300,
             },
         ],
     },
     {
-        relativeTo: 'Brainstorming',
+        name: 'Brainstorming',
         nodes: [
             {
                 id: 'bs-1',
                 type: 'sticker',
                 text: '🎯 Main Goal / Central Idea',
-                x: 340,
+                x: 440,
                 y: 240,
             },
             {
@@ -95,7 +95,7 @@ export const templateNodesList: TemplateNodes[] = [
                 id: 'bs-3',
                 type: 'sticker',
                 text: '💡 Marketing channels & social media launch',
-                x: 580,
+                x: 780,
                 y: 100,
             },
             {
@@ -109,13 +109,69 @@ export const templateNodesList: TemplateNodes[] = [
                 id: 'bs-5',
                 type: 'sticker',
                 text: '💡 Key performance metrics & success indicators',
-                x: 580,
+                x: 780,
                 y: 380,
+            },
+            {
+                id: 'bs-arrow-1',
+                type: 'arrow',
+                start: {
+                    x: 0,
+                    y: 20,
+                    relativeTo: 'bs-1',
+                },
+                end: {
+                    x: 240,
+                    y: 40,
+                    relativeTo: 'bs-2',
+                },
+            },
+            {
+                id: 'bs-arrow-2',
+                type: 'arrow',
+                start: {
+                    x: 218.73,
+                    y: 20,
+                    relativeTo: 'bs-1',
+                },
+                end: {
+                    x: 0,
+                    y: 40,
+                    relativeTo: 'bs-3',
+                },
+            },
+            {
+                id: 'bs-arrow-3',
+                type: 'arrow',
+                start: {
+                    x: 0,
+                    y: 40,
+                    relativeTo: 'bs-1',
+                },
+                end: {
+                    x: 240,
+                    y: 20,
+                    relativeTo: 'bs-4',
+                },
+            },
+            {
+                id: 'bs-arrow-4',
+                type: 'arrow',
+                start: {
+                    x: 218.73,
+                    y: 40,
+                    relativeTo: 'bs-1',
+                },
+                end: {
+                    x: 0,
+                    y: 20,
+                    relativeTo: 'bs-5',
+                },
             },
         ],
     },
     {
-        relativeTo: 'Flowchart',
+        name: 'Flowchart',
         nodes: [
             {
                 id: 'fc-1',
@@ -128,97 +184,153 @@ export const templateNodesList: TemplateNodes[] = [
                 id: 'fc-2',
                 type: 'sticker',
                 text: '⚙️ Step 1: Research options & gather data',
-                x: 340,
+                x: 440,
                 y: 200,
             },
             {
                 id: 'fc-3',
                 type: 'sticker',
                 text: '🔍 Decision: Is the proposal approved?',
-                x: 580,
+                x: 830,
                 y: 200,
             },
             {
                 id: 'fc-4',
                 type: 'sticker',
                 text: '🎯 Step 2: Execute plan & deliver results',
-                x: 820,
+                x: 1195,
                 y: 200,
             },
             {
                 id: 'fc-5',
                 type: 'sticker',
                 text: '🏁 End: Measure outcome & celebrate',
-                x: 1060,
+                x: 1575,
                 y: 200,
+            },
+            {
+                id: 'fc-arrow-1',
+                type: 'arrow',
+                start: {
+                    x: 275,
+                    y: 30,
+                    relativeTo: 'fc-1',
+                },
+                end: {
+                    x: 0,
+                    y: 30,
+                    relativeTo: 'fc-2',
+                },
+            },
+            {
+                id: 'fc-arrow-2',
+                type: 'arrow',
+                start: {
+                    x: 330,
+                    y: 30,
+                    relativeTo: 'fc-2',
+                },
+                end: {
+                    x: 0,
+                    y: 30,
+                    relativeTo: 'fc-3',
+                },
+            },
+            {
+                id: 'fc-arrow-3',
+                type: 'arrow',
+                start: {
+                    x: 310,
+                    y: 30,
+                    relativeTo: 'fc-3',
+                },
+                end: {
+                    x: 0,
+                    y: 30,
+                    relativeTo: 'fc-4',
+                },
+            },
+            {
+                id: 'fc-arrow-4',
+                type: 'arrow',
+                start: {
+                    x: 320,
+                    y: 30,
+                    relativeTo: 'fc-4',
+                },
+                end: {
+                    x: 0,
+                    y: 30,
+                    relativeTo: 'fc-5',
+                },
             },
         ],
     },
     {
-        relativeTo: 'Retro',
+        name: 'Retro',
         nodes: [
             {
                 id: 'rt-1',
                 type: 'sticker',
                 text: '🎉 What went well?',
-                x: 100,
+                x: 10,
                 y: 100,
             },
             {
                 id: 'rt-2',
                 type: 'sticker',
                 text: 'Clear communication and smooth teamwork',
-                x: 100,
-                y: 240,
+                x: 10,
+                y: 200,
             },
             {
                 id: 'rt-3',
                 type: 'sticker',
                 text: 'Delivered all main goals on schedule',
-                x: 100,
-                y: 380,
+                x: 10,
+                y: 300,
             },
             {
                 id: 'rt-4',
                 type: 'sticker',
                 text: '🤔 What can be improved?',
-                x: 340,
+                x: 400,
                 y: 100,
             },
             {
                 id: 'rt-5',
                 type: 'sticker',
                 text: 'Better time estimation for unexpected tasks',
-                x: 340,
-                y: 240,
+                x: 400,
+                y: 200,
             },
             {
                 id: 'rt-6',
                 type: 'sticker',
                 text: 'Reduce unnecessary meetings and syncs',
-                x: 340,
-                y: 380,
+                x: 400,
+                y: 300,
             },
             {
                 id: 'rt-7',
                 type: 'sticker',
                 text: '🎯 Action items',
-                x: 580,
+                x: 785,
                 y: 100,
             },
             {
                 id: 'rt-8',
                 type: 'sticker',
                 text: 'Set up weekly progress check-ins',
-                x: 580,
-                y: 240,
+                x: 785,
+                y: 200,
             },
             {
                 id: 'rt-9',
                 type: 'sticker',
                 text: 'Create a shared folder for project assets',
-                x: 580,
-                y: 380,
+                x: 785,
+                y: 300,
             },
         ],
     },

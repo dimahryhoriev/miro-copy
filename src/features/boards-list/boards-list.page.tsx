@@ -58,7 +58,9 @@ function BoardsListPage() {
                                 </Button>
                                 <Button
                                     disabled={createBoard.isPending}
-                                    onClick={createBoard.createBoard}
+                                    onClick={
+                                        () => createBoard.createBoard()
+                                    }
                                 >
                                     <PlusIcon />
                                     Create board

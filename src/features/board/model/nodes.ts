@@ -21,37 +21,10 @@ type ArrowNode = {
 
 export type Node = StickerNode | ArrowNode;
 
-export function useNodes() {
-    const [nodes, setNodes] = useState<Node[]>([
-        {
-            id: '1',
-            type: 'sticker',
-            text: 'Hello 1',
-            x: 100,
-            y: 100,
-        },
-        {
-            id: '2',
-            type: 'sticker',
-            text: 'Hello 2',
-            x: 200,
-            y: 200,
-        },
-        {
-            id: '3',
-            type: 'arrow',
-            start: {
-                x: 50,
-                y: 50,
-                relativeTo: '1',
-            },
-            end: {
-                x: 50,
-                y: 50,
-                relativeTo: '2',
-            },
-        },
-    ]);
+export function useNodes(
+    initialNodes: Node[] = [],
+) {
+    const [nodes, setNodes] = useState<Node[]>(initialNodes);
 
     const addSticker = (data: {
         text: string;
@@ -198,6 +171,7 @@ export function useNodes() {
         deleteNodes,
         updateStickerText,
         updateNodesPositions,
+        setNodes,
     };
 }
 

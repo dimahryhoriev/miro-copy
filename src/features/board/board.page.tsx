@@ -18,9 +18,11 @@ import { Sticker } from "./ui/nodes/sticker";
 import { useNodesDimensions } from "./hooks/use-nodes-dimensions";
 import { useWindowPositionModel } from "./model/window-position";
 import { Arrow } from "./ui/nodes/arrow";
+import { useLocation } from "react-router";
 
 function BoardPage() {
-    const nodesModel = useNodes();
+    const location = useLocation();
+    const nodesModel = useNodes(location.state?.initialNodes);
     const windowPositionModel = useWindowPositionModel();
     const { canvasRef, canvasRect } = useCanvasRect();
     const focusLayoutRef = useLayoutFocus();

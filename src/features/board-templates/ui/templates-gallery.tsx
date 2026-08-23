@@ -1,5 +1,6 @@
 import { ScrollArea } from "@/shared/ui/kit/scroll-area";
 import { TemplateCard } from './template-card'
+import { useApplyTemplate } from "@/features/boards-list";
 
 export type Template = {
     id: string;
@@ -40,6 +41,8 @@ export function TemplatesGallery({
 }: {
     className?: string;
 }) {
+    const { applyTemplate } = useApplyTemplate();
+
     return (
         <ScrollArea className={className}>
             <div className="grid grid-cols-4 gap-4">
@@ -48,10 +51,8 @@ export function TemplatesGallery({
                         key={template.id}
                         template={template}
                         onSelect={
-                            (
-
-                            ) => {
-
+                            (template) => {
+                                applyTemplate(template);
                             }
                         }
                     />

@@ -1,1 +1,4 @@
-export { type Node } from './model/nodes.ts';
+export {
+    useNodes,
+    type Node,
+} from './model/nodes.ts';

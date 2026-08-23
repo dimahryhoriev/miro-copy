@@ -1,6 +1,6 @@
 import { delay, HttpResponse } from "msw";
 import { http } from "../http";
-import type { ApiSchemas } from "../../schema";
+import { type ApiSchemas } from "../../schema";
 import { verifyTokenOrThrow } from "../session";
 
 function randomDate() {
@@ -149,9 +149,9 @@ export const boardsHandlers = [
                 } else {
                     return (
                         new Date(
-                            b[sort as keyof ApiSchemas['Board']].toString(),
+                            b[sort as keyof Omit<ApiSchemas['Board'], 'nodes'>].toString(),
                         ).getTime() -
-                        new Date(a[sort as keyof ApiSchemas['Board']].toString(),
+                        new Date(a[sort as keyof Omit<ApiSchemas['Board'], 'nodes'>].toString(),
                         ).getTime()
                     );
                 };
@@ -195,6 +195,9 @@ export const boardsHandlers = [
     http.post('/boards', async (ctx) => {
         await verifyTokenOrThrow(ctx.request);
 
+        const body = (await ctx.request.json()) as { nodes?: unknown[] }
+        console.log(body);
+
         const now = new Date().toISOString();
         const board: ApiSchemas['Board'] = {
             id: crypto.randomUUID(),
@@ -203,6 +206,7 @@ export const boardsHandlers = [
             updatedAt: now,
             lastOpenedAt: now,
             isFavorite: false,
+            nodes: body?.nodes ?? [],
         }
 
         boards.push(board);

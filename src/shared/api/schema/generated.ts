@@ -169,7 +169,13 @@ export interface paths {
                 path?: never;
                 cookie?: never;
             };
-            requestBody?: never;
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        nodes?: unknown[];
+                    };
+                };
+            };
             responses: {
                 /** @description Board created successfully */
                 201: {
@@ -376,6 +382,7 @@ export interface components {
             /** Format: date-time */
             lastOpenedAt: string;
             isFavorite: boolean;
+            nodes?: unknown[];
         };
         BoardsList: {
             list: components["schemas"]["Board"][];

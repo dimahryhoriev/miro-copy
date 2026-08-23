@@ -1,3 +1,4 @@
+import { type Node } from "@/features/board";
 import { rqClient } from "@/shared/api/instance";
 import { ROUTES } from "@/shared/model/routes";
 import { useQueryClient } from "@tanstack/react-query";
@@ -13,13 +14,32 @@ export function useCreateBoard() {
                 rqClient.queryOptions("get", "/boards"),
             );
         },
-        onSuccess: (data) => {
-            navigate(href(ROUTES.BOARD, { boardId: data.id }));
+        onSuccess: (
+            data,
+            templates,
+        ) => {
+            navigate(
+                href(
+                    ROUTES.BOARD,
+                    { boardId: data.id },
+                ),
+                {
+                    state: {
+                        initialNodes: templates?.body?.nodes
+                    }
+                }
+            );
         },
     });
 
     return {
         isPending: createBoardMutation.isPending,
-        createBoard: () => createBoardMutation.mutate({}),
+        createBoard: (
+            nodes?: Node[]
+        ) => createBoardMutation.mutate({
+            body: {
+                nodes,
+            }
+        }),
     };
 }
