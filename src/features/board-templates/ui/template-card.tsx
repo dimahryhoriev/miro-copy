@@ -12,12 +12,14 @@ interface Template {
 interface TemplateCardProps {
     template: Template;
     onSelect: (template: Template) => void;
+    isModal: boolean;
     className?: string;
 }
 
 export function TemplateCard({
     template,
     onSelect,
+    isModal,
     className,
 }: TemplateCardProps) {
     return (
@@ -25,6 +27,10 @@ export function TemplateCard({
             className={
                 cn(
                     'group relative rounded-lg border p-4',
+                    'flex md:flex-col gap-4',
+                    isModal
+                        ? 'sm:flex-col sm:gap-0.5'
+                        : 'sm:flex',
                     'hover:border-primary transition-colors',
                     'cursor-pointer',
                     className,
@@ -37,7 +43,7 @@ export function TemplateCard({
             <div
                 className="
                         aspect-video rounded-md bg-gray-100
-                        mb-4 overflow-hidden
+                        mb-4 overflow-hidden w-40 max-w-40
                     "
             >
                 <img
@@ -46,12 +52,14 @@ export function TemplateCard({
                     className="size-full object-contain"
                 />
             </div>
-            <h3 className="font-medium mb-1">
-                {template.name}
-            </h3>
-            <p className="text-sm text-gray-500">
-                {template.description}
-            </p>
+            <div>
+                <h3 className="font-medium mb-1">
+                    {template.name}
+                </h3>
+                <p className="text-sm text-gray-500">
+                    {template.description}
+                </p>
+            </div>
             <Button
                 size='sm'
                 className="

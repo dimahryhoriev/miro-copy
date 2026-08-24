@@ -17,7 +17,7 @@ export function TemplatesModal() {
             onOpenChange={close}
         >
             <DialogContent
-                className="max-w-3xl"
+                className="max-w-[calc(100%-4rem)]"
             >
                 <DialogHeader>
                     <DialogTitle>
@@ -29,6 +29,7 @@ export function TemplatesModal() {
                 </DialogHeader>
                 <TemplatesGallery
                     className="h-[60vh] pr-4"
+                    isModal={true}
                 />
             </DialogContent>
         </Dialog>
