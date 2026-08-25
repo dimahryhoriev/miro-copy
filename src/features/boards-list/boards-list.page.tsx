@@ -49,6 +49,7 @@ function BoardsListPage() {
                         actions={
                             <>
                                 <Button
+                                    className="flex-1"
                                     variant='outline'
                                     onClick={
                                         () => templatesModal.open()
@@ -57,6 +58,7 @@ function BoardsListPage() {
                                     Choose a template
                                 </Button>
                                 <Button
+                                    className="flex-1"
                                     disabled={createBoard.isPending}
                                     onClick={
                                         () => createBoard.createBoard()

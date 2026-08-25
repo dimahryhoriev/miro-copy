@@ -18,7 +18,15 @@ export function BoardsSidebar({
     const location = useLocation();
 
     return (
-        <div className={cn('w-64 border-r p-4 space-y-4', className)}>
+        <div
+            className={
+                cn(
+                    'w-full border-b p-4 space-y-4 bg-background sm:h-[100vh]',
+                    'sm:border-r sm:border-b-0 sm:w-64 self-start sm:sticky top-[57px]',
+                    className,
+                )
+            }
+        >
             <div className="space-y-2">
                 <div className="text-sm font-medium text-gray-500 px-2">
                     Navigation

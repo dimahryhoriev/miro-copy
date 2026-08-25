@@ -16,7 +16,11 @@ export function BoardsListLayout({
 }) {
     return (
         <div className="container mx-auto">
-            <div className="flex gap-4">
+            <div
+                className="
+                    flex flex-col sm:gap-4 sm:flex-row
+                "
+            >
                 {sidebar}
                 <div className="flex-1 p-4 flex flex-col gap-6">
                     {
@@ -44,13 +48,24 @@ export function BoardsListLayoutHeader({
     actions?: React.ReactNode;
 }) {
     return (
-        <div className="flex justify-between items-center">
+        <div
+            className="
+                flex justify-between items-start
+                gap-6 display flex-col md:flex-row
+                md:items-center
+            "
+        >
             <div>
                 <h1 className="text-2xl font-bold">{title}</h1>
                 {description && <p className="text-gray-500">{description}</p>}
             </div>
 
-            <div className="flex gap-2">
+            <div
+                className="
+                        flex gap-2 w-full justify-between
+                        md:w-auto
+                    "
+            >
                 {actions}
             </div>
         </div>
@@ -67,24 +82,29 @@ export function BoardsListLayoutFilters({
     actions?: React.ReactNode;
 }) {
     return (
-        <div className="flex items-center gap-4">
+        <div
+            className="
+                    flex flex-col lg:flex-row items-center gap-4
+                    items-start w-full
+                "
+        >
             {filters && (
-                <div className="flex items-center gap-2">
-                    <div className="text-sm text-gray-500 whitespace-nowrap">
+                <div className="flex items-center gap-2 w-full lg:w-auto">
+                    <div className="w-18 text-sm text-gray-500 whitespace-nowrap">
                         Filter by
                     </div>
                     {filters}
                 </div>
             )}
             {sort && (
-                <div className="flex items-center gap-2">
-                    <div className="text-sm text-gray-500 whitespace-nowrap">
+                <div className="flex items-center gap-2 w-full lg:w-auto">
+                    <div className="w-18 text-sm text-gray-500 whitespace-nowrap">
                         Sort by
                     </div>
                     {sort}
                 </div>
             )}
-            {actions && <div className="ml-auto">{actions}</div>}
+            {actions && <div className="lg:ml-auto">{actions}</div>}
         </div>
     );
 }

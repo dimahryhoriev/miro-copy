@@ -26,7 +26,7 @@ export function TemplateCard({
         <div
             className={
                 cn(
-                    'group relative rounded-lg border p-4',
+                    'group relative rounded-lg border p-4 overflow-hidden',
                     'flex md:flex-col gap-4',
                     isModal
                         ? 'sm:flex-col sm:gap-0.5'

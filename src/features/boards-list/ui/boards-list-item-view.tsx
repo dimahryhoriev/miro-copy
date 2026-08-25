@@ -30,7 +30,7 @@ export function BoardsListItem({
                 <Button
                     asChild
                     variant='link'
-                    className="text-left justify-start h-auto p-0"
+                    className="text-left justify-start h-auto p-0 w-full"
                 >
                     <Link to={href(ROUTES.BOARD, { boardId: board.id })}>
                         <span className="text-lg font-medium truncate block">
