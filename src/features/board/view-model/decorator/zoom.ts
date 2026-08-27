@@ -1,4 +1,4 @@
-import { diffPoints } from "@/shared/lib/geometry";
+import { diffPoints, type Rect } from "@/shared/lib/geometry";
 import { pointOnScreenToCanvas } from "../../domain/screen-to-canvas";
 import { type ViewModelParams } from "../view-model-params";
 import { type ViewModel } from "../view-model-type";
@@ -55,3 +55,29 @@ export function useZoomDecorator({
         },
     });
 };
+
+export function getZoomToFit(
+    parentRect: Rect,
+    childRect: Rect,
+) {
+    if (
+        parentRect.width <= 0
+        ||
+        parentRect.height <= 0
+        ||
+        childRect.width <= 0
+        ||
+        childRect.height <= 0
+    ) return {
+        zoom: 1,
+    };
+
+    const ratio = {
+        width: parentRect.width / childRect.width,
+        height: parentRect.height / childRect.height,
+    };
+
+    return {
+        fittedZoom: Math.min(ratio.width, ratio.height) * 0.75,
+    };
+}
