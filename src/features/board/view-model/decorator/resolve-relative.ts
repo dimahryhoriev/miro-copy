@@ -4,7 +4,7 @@ import {
     isRelativePoint,
     resolveRelativePoint,
     type RelativeBase,
-} from "../../domain/point";
+} from "@/shared/lib/geometry";
 import { useMemo } from "react";
 
 export function createRelativeBase(

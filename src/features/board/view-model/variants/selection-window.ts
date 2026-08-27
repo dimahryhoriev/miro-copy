@@ -1,10 +1,10 @@
-import { resolveRelativePoint, type Point } from "../../domain/point";
+import { resolveRelativePoint, type Point } from "@/shared/lib/geometry";
 import {
     createRectFromDimensions,
     createRectFromPoints,
     isRectsIntersecting,
     type Rect,
-} from "../../domain/rect";
+} from "@/shared/lib/geometry";
 import { pointOnScreenToCanvas } from "../../domain/screen-to-canvas";
 import { selectItems } from "../../domain/selection";
 import { createRelativeBase } from "../decorator/resolve-relative";

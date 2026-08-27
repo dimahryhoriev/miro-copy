@@ -46,6 +46,7 @@ export const useCanvasRect = () => {
             }
         }, [])
 
+    console.log(canvasRect);
     return {
         canvasRef,
         canvasRect,

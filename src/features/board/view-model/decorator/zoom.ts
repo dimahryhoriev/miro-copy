@@ -1,4 +1,4 @@
-import { diffPoints } from "../../domain/point";
+import { diffPoints } from "@/shared/lib/geometry";
 import { pointOnScreenToCanvas } from "../../domain/screen-to-canvas";
 import { type ViewModelParams } from "../view-model-params";
 import { type ViewModel } from "../view-model-type";

@@ -7,7 +7,7 @@ import {
     isRelativePoint,
     diffPoints,
     type Point,
-} from "../../domain/point";
+} from "@/shared/lib/geometry";
 
 export type NodesDraggingViewState = {
     type: 'nodes-dragging';

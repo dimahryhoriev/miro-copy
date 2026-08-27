@@ -23,10 +23,14 @@ import { useLocation } from "react-router";
 function BoardPage() {
     const location = useLocation();
     const nodesModel = useNodes(location.state?.initialNodes);
-    const windowPositionModel = useWindowPositionModel();
     const { canvasRef, canvasRect } = useCanvasRect();
-    const focusLayoutRef = useLayoutFocus();
     const { nodeRef, nodesDimensions } = useNodesDimensions();
+    const windowPositionModel = useWindowPositionModel(
+        location.state?.initialNodes,
+        canvasRect ?? null,
+        nodesDimensions,
+    );
+    const focusLayoutRef = useLayoutFocus();
 
     const viewModel = useViewModel({
         nodesModel,

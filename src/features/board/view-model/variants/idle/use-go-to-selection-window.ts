@@ -1,6 +1,6 @@
 import { type ViewModelParams } from "../../view-model-params";
 import { type IdleViewState } from '.';
-import { distanceFromPoints } from "../../../domain/point";
+import { distanceFromPoints } from "@/shared/lib/geometry";
 import { pointOnScreenToCanvas } from "../../../domain/screen-to-canvas";
 import { goToSelectionWindow } from "../selection-window";
 

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { type Point } from "../domain/point";
+import { type Point } from "@/shared/lib/geometry";
 
 type NodeBase = {
     id: string;

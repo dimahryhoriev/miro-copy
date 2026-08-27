@@ -57,3 +57,23 @@ export function isRectsIntersecting(
         rect1.y + rect1.height >= rect2.y
     )
 }
+
+export function centerRect(
+    parentRect: Rect,
+    childRect: Rect,
+): Rect {
+    return {
+        x: parentRect.x + (
+            (parentRect.width - childRect.width)
+            /
+            2
+        ),
+        y: parentRect.y + (
+            (parentRect.height - childRect.height)
+            /
+            2
+        ),
+        width: childRect.width,
+        height: childRect.height,
+    }
+}

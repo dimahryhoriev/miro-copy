@@ -67,3 +67,55 @@ export function isRelativePoint(
 ): point is RelativePoint {
     return 'relativeTo' in point;
 };
+
+export function getMinMaxPoints(
+    points: Point[],
+) {
+    if (!points) return {
+        minPoint: {
+            x: 0,
+            y: 0,
+        },
+        maxPoint: {
+            x: 0,
+            y: 0,
+        },
+    };
+
+    const minPoint = {
+        x: Math.min(
+            ...points.map(
+                (point) => point.x
+            )
+        ),
+        y: Math.min(
+            ...points.map(
+                (point) => point.y
+            ),
+        )
+    };
+
+    const maxPoint = {
+        x: Math.max(
+            ...points.map(
+                (point) => point.x
+            )
+        ),
+        y: Math.max(
+            ...points.map(
+                (point) => point.y
+            ),
+        )
+    };
+
+    return {
+        minPoint: {
+            x: minPoint.x,
+            y: minPoint.y,
+        },
+        maxPoint: {
+            x: maxPoint.x,
+            y: maxPoint.y,
+        }
+    }
+};

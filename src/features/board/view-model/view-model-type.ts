@@ -1,5 +1,5 @@
-import { type Point } from "../domain/point";
-import { type Rect } from "../domain/rect";
+import { type Point } from "@/shared/lib/geometry";
+import { type Rect } from "@/shared/lib/geometry";
 import { type WindowPosition } from "../model/window-position";
 
 type ViewModelStickerNode = {

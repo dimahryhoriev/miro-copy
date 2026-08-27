@@ -1,4 +1,4 @@
-import { distanceFromPoints } from "@/features/board/domain/point";
+import { distanceFromPoints } from "@/shared/lib/geometry";
 import { pointOnScreenToCanvas } from "@/features/board/domain/screen-to-canvas";
 import { type IdleViewState } from ".";
 import { type ViewModelParams } from "../../view-model-params";

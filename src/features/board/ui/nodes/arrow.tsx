@@ -2,7 +2,7 @@ import { type Ref } from "react";
 import {
     type Point,
     diffPoints,
-} from "../../domain/point";
+} from "@/shared/lib/geometry";
 import { cn } from "@/shared/lib/css";
 
 export function Arrow({

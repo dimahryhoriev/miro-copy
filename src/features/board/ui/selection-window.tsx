@@ -1,4 +1,4 @@
-import { type Rect } from "../domain/rect";
+import { type Rect } from "@/shared/lib/geometry";
 
 export function SelectionWindow({
     x,

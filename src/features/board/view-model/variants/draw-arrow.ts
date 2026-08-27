@@ -1,4 +1,4 @@
-import { diffPoints, type Point } from "../../domain/point";
+import { diffPoints, type Point } from "@/shared/lib/geometry";
 import { pointOnScreenToCanvas } from "../../domain/screen-to-canvas";
 import { createRelativeBase } from "../decorator/resolve-relative";
 import { type ViewModelParams } from "../view-model-params";
