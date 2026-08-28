@@ -196,7 +196,6 @@ export const boardsHandlers = [
         await verifyTokenOrThrow(ctx.request);
 
         const body = (await ctx.request.json()) as { nodes?: unknown[] }
-        console.log(body);
 
         const now = new Date().toISOString();
         const board: ApiSchemas['Board'] = {

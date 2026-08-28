@@ -37,6 +37,7 @@ import {
     type DrawArrowViewState,
 } from "./variants/draw-arrow";
 import { useResolveRelativeStaticDecorator } from "./decorator/resolve-relative";
+import { getInitialWindowPosition } from "../model/window-position";
 
 export type ViewState =
     | AddArrowViewState
@@ -58,7 +59,9 @@ export function useViewModel(
     const newParams = {
         ...params,
         setViewState,
-    }
+    };
+
+    getInitialWindowPosition(newParams);
 
     const addArrowViewModel
         = useAddArrowViewModel(newParams);

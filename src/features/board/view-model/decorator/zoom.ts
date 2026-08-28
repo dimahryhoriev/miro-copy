@@ -12,10 +12,15 @@ export function useZoomDecorator({
         window: {
             ...viewModel.window,
             onMouseWheel: (e) => {
+                if (
+                    !windowPositionModel.position
+                    ||
+                    !canvasRect
+                ) return;
+
                 viewModel.window?.onMouseWheel?.(e);
 
                 const scale = e.deltaY > 0 ? 0.9 : 1.1;
-
                 const currentPoint = pointOnScreenToCanvas(
                     windowPositionModel.position,
                     {

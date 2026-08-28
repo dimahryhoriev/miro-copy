@@ -16,20 +16,16 @@ import { Layout } from "./ui/layout";
 import { Overlay } from "./ui/overlay";
 import { Sticker } from "./ui/nodes/sticker";
 import { useNodesDimensions } from "./hooks/use-nodes-dimensions";
-import { useWindowPositionModel } from "./model/window-position";
-import { Arrow } from "./ui/nodes/arrow";
 import { useLocation } from "react-router";
+import { Arrow } from "./ui/nodes/arrow";
+import { getInitialWindowPosition, useWindowPositionModel } from "./model/window-position";
 
 function BoardPage() {
     const location = useLocation();
     const nodesModel = useNodes(location.state?.initialNodes);
     const { canvasRef, canvasRect } = useCanvasRect();
     const { nodeRef, nodesDimensions } = useNodesDimensions();
-    const windowPositionModel = useWindowPositionModel(
-        location.state?.initialNodes,
-        canvasRect ?? null,
-        nodesDimensions,
-    );
+    const windowPositionModel = useWindowPositionModel();
     const focusLayoutRef = useLayoutFocus();
 
     const viewModel = useViewModel({
@@ -42,13 +38,31 @@ function BoardPage() {
 
     useWindowEvents(viewModel);
 
+    const initialWindowPosition = getInitialWindowPosition({
+        nodesModel,
+        canvasRect,
+        nodesDimensions,
+        windowPositionModel,
+    })
     const windowPosition =
-        viewModel.windowPosition ?? windowPositionModel.position
+        viewModel.windowPosition
+        ?? initialWindowPosition
+        ?? windowPositionModel.position
+        ?? {
+            x: 0,
+            y: 0,
+            zoom: 1,
+        }
+    console.log(initialWindowPosition);
 
     return (
         <Layout
             ref={focusLayoutRef}
             onKeyDown={viewModel.layout?.onKeyDown}
+            style={{
+                opacity: initialWindowPosition ? 1 : 0,
+                transition: initialWindowPosition ? "opacity 0.15s ease-out" : "none"
+            }}
         >
             <Dots
                 windowPosition={
@@ -65,9 +79,7 @@ function BoardPage() {
                     />
                 }
                 windowPosition={
-                    viewModel.windowPosition
-                    ??
-                    windowPositionModel.position
+                    windowPosition
                 }
                 onClick={
                     viewModel.canvas?.onClick
