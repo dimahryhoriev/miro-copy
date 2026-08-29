@@ -195,12 +195,15 @@ export const boardsHandlers = [
     http.post('/boards', async (ctx) => {
         await verifyTokenOrThrow(ctx.request);
 
-        const body = (await ctx.request.json()) as { nodes?: unknown[] }
+        const body = (await ctx.request.json()) as {
+            nodes?: unknown[];
+            boardName?: string;
+        }
 
         const now = new Date().toISOString();
         const board: ApiSchemas['Board'] = {
             id: crypto.randomUUID(),
-            name: 'New Board',
+            name: body.boardName?.trim() ? body.boardName : 'New board',
             createdAt: now,
             updatedAt: now,
             lastOpenedAt: now,

@@ -134,12 +134,14 @@ createBoard:
   security:
     - bearerAuth: []
   requestBody:
-    required: false
+    required: true
     content:
       application/json:
         schema:
           type: object
           properties:
+            boardName:
+              type: string
             nodes:
               type: array
               items: {}

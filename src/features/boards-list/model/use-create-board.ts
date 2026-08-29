@@ -35,9 +35,11 @@ export function useCreateBoard() {
     return {
         isPending: createBoardMutation.isPending,
         createBoard: (
-            nodes?: Node[]
+            boardName: string,
+            nodes?: Node[],
         ) => createBoardMutation.mutate({
             body: {
+                boardName,
                 nodes,
             }
         }),

@@ -40,7 +40,12 @@ export function BoardCreationModal() {
                     className="flex-1"
                     disabled={createBoard.isPending}
                     onClick={
-                        () => createBoard.createBoard()
+                        () => {
+                            createBoard.createBoard(
+                                boardNaming.name
+                            );
+                            close();
+                        }
                     }
                 >
                     Create board
