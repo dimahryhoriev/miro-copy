@@ -42,10 +42,8 @@ export function getInitialWindowPosition({
     if (
         windowPositionModel.position
     ) {
-        console.log(windowPositionModel);
         return windowPositionModel.position;
     }
-    console.log(windowPositionModel);
 
     if (nodesModel.nodes.length === 0) {
         return {

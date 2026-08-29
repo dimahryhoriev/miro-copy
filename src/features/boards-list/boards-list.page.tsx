@@ -22,6 +22,8 @@ import {
     TemplatesModal,
     useTemplatesModal
 } from "@/features/board-templates";
+import { useBoardNamingModal } from "./model/use-board-naming-modal";
+import { BoardCreationModal } from "./ui/board-naming-modal";
 
 function BoardsListPage() {
     const boardsFilters = useBoardsFilters();
@@ -31,6 +33,7 @@ function BoardsListPage() {
     });
 
     const templatesModal = useTemplatesModal();
+    const boardNamingModal = useBoardNamingModal();
 
     const createBoard = useCreateBoard();
 
@@ -39,6 +42,7 @@ function BoardsListPage() {
     return (
         <>
             <TemplatesModal />
+            <BoardCreationModal />
             <BoardsListLayout
                 templates={<TemplatesGallery />}
                 sidebar={<BoardsSidebar />}
@@ -61,7 +65,7 @@ function BoardsListPage() {
                                     className="flex-1"
                                     disabled={createBoard.isPending}
                                     onClick={
-                                        () => createBoard.createBoard()
+                                        () => boardNamingModal.open()
                                     }
                                 >
                                     <PlusIcon />
