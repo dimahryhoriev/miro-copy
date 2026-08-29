@@ -56,12 +56,18 @@ export function useViewModel(
         () => goToIdle()
     );
 
+    const initialWindowPosition = getInitialWindowPosition({
+        ...params
+    });
+
     const newParams = {
         ...params,
         setViewState,
+        windowPositionModel: {
+            position: initialWindowPosition,
+            setPosition: params.windowPositionModel.setPosition,
+        },
     };
-
-    getInitialWindowPosition(newParams);
 
     const addArrowViewModel
         = useAddArrowViewModel(newParams);

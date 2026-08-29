@@ -14,10 +14,10 @@ export function pointOnScreenToCanvas(
     if (!canvasRect) return point;
     return {
         x: (point.x - canvasRect.x)
-            / windowPosition.zoom
-            + windowPosition.x,
+            / (windowPosition?.zoom ?? 1)
+            + (windowPosition?.x ?? 0),
         y: (point.y - canvasRect.y)
-            / windowPosition.zoom
-            + windowPosition.y,
+            / (windowPosition?.zoom ?? 1)
+            + (windowPosition?.y ?? 0),
     };
 };

@@ -12,7 +12,7 @@ export type WindowPosition = {
     x: number;
     y: number;
     zoom: number;
-}
+} | null;
 
 export function useWindowPositionModel() {
     const [position, setPosition] = useState<WindowPosition | null>(
@@ -39,9 +39,13 @@ export function getInitialWindowPosition({
     nodesDimensions: NodesDimensionsMap;
     windowPositionModel: WindowPositionModel;
 }): WindowPosition | null {
-    if (windowPositionModel.position) {
+    if (
+        windowPositionModel.position
+    ) {
+        console.log(windowPositionModel);
         return windowPositionModel.position;
-    };
+    }
+    console.log(windowPositionModel);
 
     if (nodesModel.nodes.length === 0) {
         return {
@@ -59,15 +63,21 @@ export function getInitialWindowPosition({
         return null;
     };
 
-    return getWindowCenter({
+    const centeredWindow = getWindowCenter({
         nodesModel,
         canvasRect,
         nodesDimensions,
-    } as ViewModelParams) ?? {
-        x: 0,
-        y: 0,
-        zoom: 1,
-    };
+    } as ViewModelParams)
+
+    return (
+        centeredWindow
+        ??
+        {
+            x: 0,
+            y: 0,
+            zoom: 1,
+        }
+    );
 };
 
 function getWindowCenter({

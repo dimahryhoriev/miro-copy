@@ -18,7 +18,11 @@ import { Sticker } from "./ui/nodes/sticker";
 import { useNodesDimensions } from "./hooks/use-nodes-dimensions";
 import { useLocation } from "react-router";
 import { Arrow } from "./ui/nodes/arrow";
-import { getInitialWindowPosition, useWindowPositionModel } from "./model/window-position";
+import {
+    getInitialWindowPosition,
+    useWindowPositionModel,
+} from "./model/window-position";
+import { useEffect } from "react";
 
 function BoardPage() {
     const location = useLocation();
@@ -44,6 +48,18 @@ function BoardPage() {
         nodesDimensions,
         windowPositionModel,
     })
+    useEffect(() => {
+        if (
+            !windowPositionModel.position
+            &&
+            initialWindowPosition
+        ) {
+            windowPositionModel.setPosition(
+                initialWindowPosition
+            );
+        };
+    }, [initialWindowPosition, windowPositionModel]);
+
     const windowPosition =
         viewModel.windowPosition
         ?? initialWindowPosition
@@ -53,7 +69,6 @@ function BoardPage() {
             y: 0,
             zoom: 1,
         }
-    console.log(initialWindowPosition);
 
     return (
         <Layout

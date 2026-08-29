@@ -26,9 +26,9 @@ export function useWindowDraggingViewModel({
         return {
             nodes: nodesModel.nodes,
             windowPosition: {
-                x: windowPositionModel.position.x - diff.x,
-                y: windowPositionModel.position.y - diff.y,
-                zoom: windowPositionModel.position.zoom,
+                x: (windowPositionModel.position?.x ?? 0) - diff.x,
+                y: (windowPositionModel.position?.y ?? 0) - diff.y,
+                zoom: windowPositionModel.position?.zoom ?? 1,
             },
             window: {
                 onMouseMove: (e) => {
@@ -48,9 +48,9 @@ export function useWindowDraggingViewModel({
                 },
                 onMouseUp: () => {
                     windowPositionModel.setPosition({
-                        x: windowPositionModel.position.x - diff.x,
-                        y: windowPositionModel.position.y - diff.y,
-                        zoom: windowPositionModel.position.zoom,
+                        x: (windowPositionModel.position?.x ?? 0) - diff.x,
+                        y: (windowPositionModel.position?.y ?? 0) - diff.y,
+                        zoom: windowPositionModel.position?.zoom ?? 1,
                     });
                     setViewState(
                         goToIdle({}),

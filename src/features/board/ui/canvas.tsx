@@ -28,10 +28,10 @@ export function Canvas({
                     transformOrigin: 'left top',
                     transform:
                         `
-                        scale(${windowPosition.zoom})
+                        scale(${windowPosition?.zoom})
                         translate(
-                        ${-windowPosition.x}px,
-                        ${-windowPosition.y}px
+                        ${-(windowPosition?.x ?? 0)}px,
+                        ${-(windowPosition?.y ?? 0)}px
                         )
                         `
                 }}

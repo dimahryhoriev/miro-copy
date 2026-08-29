@@ -9,9 +9,9 @@ export function Dots({
         <div
             style={
                 {
-                    '--zoom': windowPosition.zoom,
-                    '--x': -windowPosition.x * windowPosition.zoom + 'px',
-                    '--y': -windowPosition.y * windowPosition.zoom + 'px',
+                    '--zoom': windowPosition?.zoom,
+                    '--x': -(windowPosition?.x ?? 0) * (windowPosition?.zoom ?? 1) + 'px',
+                    '--y': -(windowPosition?.y ?? 0) * (windowPosition?.zoom ?? 1) + 'px',
                 } as React.CSSProperties
             }
             className="
