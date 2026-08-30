@@ -23,7 +23,7 @@ import {
     useTemplatesModal
 } from "@/features/board-templates";
 import { useBoardNamingModal } from "./model/use-board-naming-modal";
-import { BoardCreationModal } from "./ui/board-naming-modal";
+import { BoardNamingModal } from "./ui/board-naming-modal";
 
 function BoardsListPage() {
     const boardsFilters = useBoardsFilters();
@@ -42,7 +42,7 @@ function BoardsListPage() {
     return (
         <>
             <TemplatesModal />
-            <BoardCreationModal />
+            <BoardNamingModal />
             <BoardsListLayout
                 templates={<TemplatesGallery />}
                 sidebar={<BoardsSidebar />}

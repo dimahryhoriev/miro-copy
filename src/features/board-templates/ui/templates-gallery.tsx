@@ -1,8 +1,8 @@
 import { ScrollArea } from "@/shared/ui/kit/scroll-area";
 import { TemplateCard } from './template-card'
-import { useApplyTemplate } from "@/features/boards-list";
 import { useTemplatesModal } from "../hooks/use-templates-modal";
 import { cn } from "@/shared/lib/css";
+import { useBoardNamingModal } from "@/features/boards-list";
 
 export type Template = {
     id: string;
@@ -45,8 +45,8 @@ export function TemplatesGallery({
     className?: string;
     isModal?: boolean;
 }) {
-    const { applyTemplate } = useApplyTemplate();
     const { isOpen } = useTemplatesModal();
+    const boardNamingModal = useBoardNamingModal();
 
     return (
         <ScrollArea className={className}>
@@ -64,8 +64,9 @@ export function TemplatesGallery({
                         template={template}
                         isModal={isModal}
                         onSelect={
-                            (template) => {
-                                applyTemplate(template);
+                            () => {
+                                boardNamingModal.setTemplate(template)
+                                boardNamingModal.open()
                             }
                         }
                     />

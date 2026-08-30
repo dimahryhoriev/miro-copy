@@ -10,9 +10,13 @@ export function useCreateTemplateBoard() {
     return {
         isPending,
         createTemplateBoard: (
+            boardName: string,
             templateNodes: Node[],
         ) => {
-            createBoard(templateNodes);
+            createBoard(
+                boardName,
+                templateNodes,
+            );
         },
     };
 }

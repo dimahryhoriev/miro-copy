@@ -1,9 +1,6 @@
 import { type Node } from "@/features/board";
 import { useCreateTemplateBoard } from "./use-create-template-board";
-import {
-    templateNodesList,
-    type Template,
-} from "@/features/board-templates";
+import { templateNodesList } from "@/features/board-templates";
 
 export function useApplyTemplate() {
     const {
@@ -11,12 +8,13 @@ export function useApplyTemplate() {
         createTemplateBoard,
     } = useCreateTemplateBoard();
 
-    const applyTemplate = ({
-        name,
-    }: Template) => {
+    const applyTemplate = (
+        boardName: string,
+        templateName: string,
+    ) => {
         const template = templateNodesList.find(
             (template) => (
-                template.name === name
+                template.name === templateName
             )
         )
         const templateNodes: Node[] =
@@ -24,7 +22,8 @@ export function useApplyTemplate() {
                 ? template.nodes
                 : []
         createTemplateBoard(
-            templateNodes
+            boardName,
+            templateNodes,
         );
     };
 

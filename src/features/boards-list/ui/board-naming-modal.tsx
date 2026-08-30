@@ -10,11 +10,18 @@ import { Button } from '@/shared/ui/kit/button';
 import { useCreateBoard } from '../model/use-create-board';
 import { BoardNamingInput } from './board-naming-input';
 import { useBoardNaming } from '../model/use-board-naming';
+import { useApplyTemplate } from "@/features/boards-list";
 
-export function BoardCreationModal() {
-    const { isOpen, close } = useBoardNamingModal();
+export function BoardNamingModal() {
+    const {
+        isOpen,
+        close,
+        template,
+        setTemplate,
+    } = useBoardNamingModal();
     const createBoard = useCreateBoard();
     const boardNaming = useBoardNaming();
+    const { applyTemplate } = useApplyTemplate();
 
     return (
         <Dialog
@@ -41,9 +48,17 @@ export function BoardCreationModal() {
                     disabled={createBoard.isPending}
                     onClick={
                         () => {
-                            createBoard.createBoard(
-                                boardNaming.name
-                            );
+                            if (template) {
+                                applyTemplate(
+                                    boardNaming.name,
+                                    template.name,
+                                );
+                                setTemplate(null);
+                            } else {
+                                createBoard.createBoard(
+                                    boardNaming.name
+                                );
+                            }
                             close();
                         }
                     }
