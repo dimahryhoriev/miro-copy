@@ -32,8 +32,8 @@ function BoardsListPage() {
         search: useDebouncedValue(boardsFilters.search, 300),
     });
 
-    const templatesModal = useTemplatesModal();
     const boardNamingModal = useBoardNamingModal();
+    const templatesModal = useTemplatesModal();
 
     const createBoard = useCreateBoard();
 
