@@ -5,6 +5,7 @@ import { Input } from "@/shared/ui/kit/input";
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { useRegister } from "../model/use-register";
+import { ConfirmEmailForm } from "./confirm-email-form";
 
 
 const registerSchema = z.object({
@@ -34,73 +35,84 @@ export function RegisterForm() {
         defaultValues: {
             email: '',
             password: '',
+            confirmPassword: '',
         }
     })
 
-    const { errorMessage, isPending, register } = useRegister();
+    const {
+        errorMessage,
+        isPending,
+        isSuccess,
+        register,
+        registeredEmail,
+    } = useRegister();
 
     const onSubmit = form.handleSubmit(register);
 
     return (
-        <form className="flex flex-col gap-4" onSubmit={onSubmit}>
-            <Controller
-                name="email"
-                control={form.control}
-                render={({ field, fieldState }) => (
-                    <Field data-invalid={fieldState.invalid}>
-                        <FieldLabel htmlFor={field.name}>Email</FieldLabel>
-                        <Input
-                            {...field}
-                            id={field.name}
-                            aria-invalid={fieldState.invalid}
-                            placeholder="admin@gmail.com"
-                            autoComplete="off"
-                        />
-                        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                    </Field>
-                )}
+        isSuccess && registeredEmail
+            ? <ConfirmEmailForm
+                email={registeredEmail}
             />
-            <Controller
-                name="password"
-                control={form.control}
-                render={({ field, fieldState }) => (
-                    <Field data-invalid={fieldState.invalid}>
-                        <FieldLabel htmlFor={field.name}>Password</FieldLabel>
-                        <Input
-                            {...field}
-                            id={field.name}
-                            aria-invalid={fieldState.invalid}
-                            placeholder="******"
-                            autoComplete="off"
-                            type="password"
-                        />
-                        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                    </Field>
-                )}
-            />
-            <Controller
-                name="confirmPassword"
-                control={form.control}
-                render={({ field, fieldState }) => (
-                    <Field data-invalid={fieldState.invalid}>
-                        <FieldLabel htmlFor={field.name}>Confirm password</FieldLabel>
-                        <Input
-                            {...field}
-                            id={field.name}
-                            aria-invalid={fieldState.invalid}
-                            autoComplete="off"
-                            type="password"
-                        />
-                        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                    </Field>
-                )}
-            />
+            : <form className="flex flex-col gap-4" onSubmit={onSubmit}>
+                <Controller
+                    name="email"
+                    control={form.control}
+                    render={({ field, fieldState }) => (
+                        <Field data-invalid={fieldState.invalid}>
+                            <FieldLabel htmlFor={field.name}>Email</FieldLabel>
+                            <Input
+                                {...field}
+                                id={field.name}
+                                aria-invalid={fieldState.invalid}
+                                placeholder="admin@gmail.com"
+                                autoComplete="off"
+                            />
+                            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                        </Field>
+                    )}
+                />
+                <Controller
+                    name="password"
+                    control={form.control}
+                    render={({ field, fieldState }) => (
+                        <Field data-invalid={fieldState.invalid}>
+                            <FieldLabel htmlFor={field.name}>Password</FieldLabel>
+                            <Input
+                                {...field}
+                                id={field.name}
+                                aria-invalid={fieldState.invalid}
+                                placeholder="******"
+                                autoComplete="off"
+                                type="password"
+                            />
+                            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                        </Field>
+                    )}
+                />
+                <Controller
+                    name="confirmPassword"
+                    control={form.control}
+                    render={({ field, fieldState }) => (
+                        <Field data-invalid={fieldState.invalid}>
+                            <FieldLabel htmlFor={field.name}>Confirm password</FieldLabel>
+                            <Input
+                                {...field}
+                                id={field.name}
+                                aria-invalid={fieldState.invalid}
+                                autoComplete="off"
+                                type="password"
+                            />
+                            {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                        </Field>
+                    )}
+                />
 
-            {errorMessage && <p className="text-destructive text-sm">{errorMessage}</p>}
+                {errorMessage && <p className="text-destructive text-sm">{errorMessage}</p>}
 
-            <Button disabled={isPending} type="submit">
-                Sign Up
-            </Button>
-        </form>
+                <Button disabled={isPending} type="submit">
+                    Sign Up
+                </Button>
+            </form>
     )
 }
