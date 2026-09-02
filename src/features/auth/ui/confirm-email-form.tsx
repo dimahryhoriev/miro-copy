@@ -2,21 +2,21 @@ import { Field, FieldLabel, FieldError } from "@/shared/ui/kit/field";
 import { Button } from "@/shared/ui/kit/button";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Controller, useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { useConfirmEmail } from "../model/use-confirm-email";
+import { cn } from "@/shared/lib/css";
 import {
     type SlotProps,
     OTPInput,
     REGEXP_ONLY_DIGITS
 } from 'input-otp';
-import { z } from 'zod';
-import { useConfirmEmail } from "../model/use-confirm-email";
-import { cn } from "@/shared/lib/css";
 
 
 const confirmOtpSchema = z.object({
     token: z
         .string()
         .min(1, 'Code is required')
-        .min(6, 'Code must be at least 6 characters')
+        .length(8, 'Code must be an 8-digit number')
 });
 
 type ConfirmOtpFormValues = z.infer<typeof confirmOtpSchema>;
@@ -66,7 +66,7 @@ export function ConfirmEmailForm({
                             value={field.value}
                             onChange={field.onChange}
                             pattern={REGEXP_ONLY_DIGITS}
-                            containerClassName="flex justify-between w-full gap-2"
+                            containerClassName="flex justify-between w-full gap-1 sm:gap-2"
                             render={
                                 ({
                                     slots
@@ -109,8 +109,9 @@ function OtpSlot(
         <div
             className={
                 cn(
-                    'flex flex-1 h-12 text-xl font-mono font-semibold items-center',
-                    'justify-center border rounded-md transition-all',
+                    'flex flex-1 h-10 sm:h-12',
+                    'text-l sm:text-xl font-mono font-semibold items-center',
+                    'justify-center border rounded-sm sm:rounded-md transition-all',
                     props.isActive
                         ? 'border-primary ring-2 ring-primary/20'
                         : 'border-input'

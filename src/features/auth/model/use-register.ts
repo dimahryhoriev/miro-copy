@@ -1,5 +1,5 @@
 import { type ApiSchemas } from "@/shared/api/schema";
-import { supabase } from "@/shared/api/supabase";
+import { supabase } from "@/shared/api/supabase/client";
 import { useMutation } from "@tanstack/react-query";
 
 export function useRegister() {
