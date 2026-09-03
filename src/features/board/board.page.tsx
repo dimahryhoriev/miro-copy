@@ -22,44 +22,16 @@ import {
     useWindowPositionModel,
 } from "./model/window-position";
 import { useEffect } from "react";
-import { supabase } from "@/shared/api/supabase";
-import { useParams } from "react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useLoaderData } from "react-router-dom";
 
 function BoardPage() {
-    const { boardId } = useParams();
     const { canvasRef, canvasRect } = useCanvasRect();
     const { nodeRef, nodesDimensions } = useNodesDimensions();
     const windowPositionModel = useWindowPositionModel();
     const focusLayoutRef = useLayoutFocus();
-
-    const {
-        data: initialNodes,
-    } = useQuery({
-        queryKey: ['board', boardId, 'nodes'],
-        queryFn: async () => {
-            const {
-                data,
-                error,
-            } = await supabase
-                .from('boards')
-                .select('nodes')
-                .eq('id', boardId)
-                .single()
-
-            if (error) throw error;
-            return data.nodes;
-        },
-        enabled: !!boardId,
-    })
+    const initialNodes = useLoaderData();
 
     const nodesModel = useNodes(initialNodes);
-    useEffect(() => {
-        if (initialNodes) {
-            nodesModel.setNodes(initialNodes);
-        }
-    }, [initialNodes, nodesModel]);
-
     const viewModel = useViewModel({
         nodesModel,
         canvasRect,
@@ -103,7 +75,7 @@ function BoardPage() {
             ref={focusLayoutRef}
             onKeyDown={viewModel.layout?.onKeyDown}
             style={{
-                opacity: initialNodes && initialWindowPosition ? 1 : 0,
+                opacity: initialWindowPosition ? 1 : 0,
                 transition: "opacity 0.15s ease-out",
             }}
         >
@@ -177,3 +149,4 @@ function BoardPage() {
 }
 
 export const Component = BoardPage;
+export { boardLoader as loader } from './model/board-loader';

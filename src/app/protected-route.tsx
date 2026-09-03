@@ -1,21 +1,8 @@
 import { ROUTES } from "@/shared/model/routes";
-import { supabase, useSession } from "@/shared/api/supabase";
-import { Navigate, Outlet, redirect } from "react-router-dom";
+import { supabase } from "@/shared/api/supabase";
+import { Outlet, redirect } from "react-router-dom";
 
 export function ProtectedRoute() {
-    const {
-        session,
-        isLoading,
-    } = useSession();
-
-    if (isLoading) {
-        return null
-    };
-
-    if (!session) {
-        return <Navigate replace to={ROUTES.LOGIN} />
-    };
-
     return <Outlet />;
 }
 
