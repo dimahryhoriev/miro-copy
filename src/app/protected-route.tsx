@@ -1,26 +1,32 @@
-import { enableMocking } from "@/shared/api/mocks";
 import { ROUTES } from "@/shared/model/routes";
-import { useSession } from "@/shared/model/session";
+import { supabase, useSession } from "@/shared/api/supabase";
 import { Navigate, Outlet, redirect } from "react-router-dom";
 
 export function ProtectedRoute() {
-    const { session } = useSession();
+    const {
+        session,
+        isLoading,
+    } = useSession();
+
+    if (isLoading) {
+        return null
+    };
 
     if (!session) {
-        return <Navigate to={ROUTES.LOGIN} />
-    }
+        return <Navigate replace to={ROUTES.LOGIN} />
+    };
 
-    return <Outlet />
+    return <Outlet />;
 }
 
 export async function protectedLoader() {
-    await enableMocking();
+    const {
+        data: { session }
+    } = await supabase.auth.getSession();
 
-    const token = await useSession.getState().refreshToken();
-
-    if (!token) {
+    if (!session) {
         return redirect(ROUTES.LOGIN);
-    }
+    };
 
     return null;
 }

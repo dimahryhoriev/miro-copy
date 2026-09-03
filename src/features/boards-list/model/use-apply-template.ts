@@ -16,7 +16,7 @@ export function useApplyTemplate() {
             (template) => (
                 template.name === templateName
             )
-        )
+        );
         const templateNodes: Node[] =
             template
                 ? template.nodes

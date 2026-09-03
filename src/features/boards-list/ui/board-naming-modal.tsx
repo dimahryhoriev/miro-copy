@@ -56,7 +56,7 @@ export function BoardNamingModal() {
                                 setTemplate(null);
                             } else {
                                 createBoard.createBoard(
-                                    boardNaming.name
+                                    boardNaming.name,
                                 );
                             }
                             close();

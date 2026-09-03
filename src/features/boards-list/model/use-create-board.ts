@@ -1,34 +1,56 @@
 import { type Node } from "@/features/board";
-import { rqClient } from "@/shared/api/instance";
+import { queryClient } from "@/shared/api/query-client";
+import { supabase, useSession } from "@/shared/api/supabase";
 import { ROUTES } from "@/shared/model/routes";
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { href, useNavigate } from "react-router";
+
+type CreateBoardParams = {
+    boardName: string;
+    nodes?: Node[]
+}
 
 export function useCreateBoard() {
     const navigate = useNavigate();
-    const queryClient = useQueryClient()
+    const { session } = useSession();
 
-    const createBoardMutation = rqClient.useMutation("post", "/boards", {
-        onSettled: async () => {
-            await queryClient.invalidateQueries(
-                rqClient.queryOptions("get", "/boards"),
-            );
+    const createBoardMutation = useMutation({
+        mutationFn: async ({
+            boardName,
+            nodes,
+        }: CreateBoardParams) => {
+            if (!session?.user?.id) {
+                throw new Error('User not authenticated');
+            };
+
+            const {
+                data,
+                error
+            } = await supabase
+                .from('boards')
+                .insert({
+                    name: boardName,
+                    nodes: nodes ?? [],
+                    user_id: session.user.id,
+                })
+                .select()
+                .single()
+
+            if (error) throw error;
+            return data;
         },
-        onSuccess: (
-            data,
-            templates,
-        ) => {
+        onSuccess(data) {
             navigate(
                 href(
                     ROUTES.BOARD,
-                    { boardId: data.id },
+                    {
+                        boardId: data?.id,
+                    },
                 ),
-                {
-                    state: {
-                        initialNodes: templates?.body?.nodes
-                    }
-                }
             );
+            queryClient.invalidateQueries({
+                queryKey: ['boards'],
+            });
         },
     });
 
@@ -38,10 +60,8 @@ export function useCreateBoard() {
             boardName: string,
             nodes?: Node[],
         ) => createBoardMutation.mutate({
-            body: {
-                boardName,
-                nodes,
-            }
+            boardName,
+            nodes,
         }),
     };
 }

@@ -16,21 +16,49 @@ import { Layout } from "./ui/layout";
 import { Overlay } from "./ui/overlay";
 import { Sticker } from "./ui/nodes/sticker";
 import { useNodesDimensions } from "./hooks/use-nodes-dimensions";
-import { useLocation } from "react-router";
 import { Arrow } from "./ui/nodes/arrow";
 import {
     getInitialWindowPosition,
     useWindowPositionModel,
 } from "./model/window-position";
 import { useEffect } from "react";
+import { supabase } from "@/shared/api/supabase";
+import { useParams } from "react-router";
+import { useQuery } from "@tanstack/react-query";
 
 function BoardPage() {
-    const location = useLocation();
-    const nodesModel = useNodes(location.state?.initialNodes);
+    const { boardId } = useParams();
     const { canvasRef, canvasRect } = useCanvasRect();
     const { nodeRef, nodesDimensions } = useNodesDimensions();
     const windowPositionModel = useWindowPositionModel();
     const focusLayoutRef = useLayoutFocus();
+
+    const {
+        data: initialNodes,
+    } = useQuery({
+        queryKey: ['board', boardId, 'nodes'],
+        queryFn: async () => {
+            const {
+                data,
+                error,
+            } = await supabase
+                .from('boards')
+                .select('nodes')
+                .eq('id', boardId)
+                .single()
+
+            if (error) throw error;
+            return data.nodes;
+        },
+        enabled: !!boardId,
+    })
+
+    const nodesModel = useNodes(initialNodes);
+    useEffect(() => {
+        if (initialNodes) {
+            nodesModel.setNodes(initialNodes);
+        }
+    }, [initialNodes, nodesModel]);
 
     const viewModel = useViewModel({
         nodesModel,
@@ -41,13 +69,13 @@ function BoardPage() {
     });
 
     useWindowEvents(viewModel);
-
     const initialWindowPosition = getInitialWindowPosition({
         nodesModel,
         canvasRect,
         nodesDimensions,
         windowPositionModel,
     })
+
     useEffect(() => {
         if (
             !windowPositionModel.position
@@ -68,15 +96,15 @@ function BoardPage() {
             x: 0,
             y: 0,
             zoom: 1,
-        }
+        };
 
     return (
         <Layout
             ref={focusLayoutRef}
             onKeyDown={viewModel.layout?.onKeyDown}
             style={{
-                opacity: initialWindowPosition ? 1 : 0,
-                transition: initialWindowPosition ? "opacity 0.15s ease-out" : "none"
+                opacity: initialNodes && initialWindowPosition ? 1 : 0,
+                transition: "opacity 0.15s ease-out",
             }}
         >
             <Dots
