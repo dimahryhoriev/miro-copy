@@ -1,15 +1,31 @@
-import { rqClient } from "@/shared/api/instance";
-import { useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/shared/api/supabase";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export function useDeleteBoard() {
     const queryClient = useQueryClient();
-    const deleteBoardMutation = rqClient.useMutation(
-        'delete',
-        '/boards/{boardId}',
+    const deleteBoardMutation = useMutation(
         {
+            mutationFn: async (
+                boardId: string,
+            ) => {
+                const {
+                    error,
+                } = await supabase
+                    .from('boards')
+                    .delete()
+                    .eq('id', boardId)
+
+                if (error) throw error;
+
+                return {
+                    error,
+                };
+            },
             onSettled: async () => {
                 await queryClient.invalidateQueries(
-                    rqClient.queryOptions('get', '/boards'),
+                    {
+                        queryKey: ['boards'],
+                    },
                 );
             },
         },
@@ -17,15 +33,11 @@ export function useDeleteBoard() {
 
     return {
         deleteBoard: (boardId: string) =>
-            deleteBoardMutation.mutate({
-                params: {
-                    path: {
-                        boardId,
-                    },
-                },
-            }),
+            deleteBoardMutation.mutate(
+                boardId,
+            ),
         getIsPending: (boardId: string) =>
             deleteBoardMutation.isPending &&
-            deleteBoardMutation.variables?.params?.path?.boardId === boardId,
+            deleteBoardMutation?.variables === boardId,
     };
 };
