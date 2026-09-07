@@ -1,20 +1,85 @@
-import { rqClient } from "@/shared/api/instance";
-import { useQueryClient } from "@tanstack/react-query";
-import { startTransition, useOptimistic } from "react";
+import type { ApiSchemas } from "@/shared/api/schema";
+import { supabase } from "@/shared/api/supabase";
+import { useMutation, useQueryClient, type InfiniteData } from "@tanstack/react-query";
 
 export function useUpdateFavorite() {
     const queryClient = useQueryClient();
 
-    const [favorite, setFavorite] = useOptimistic<Record<string, boolean>>({});
-
-    const updateFavoriteMutation = rqClient.useMutation(
-        'put',
-        '/boards/{boardId}/favorite',
+    const updateFavoriteMutation = useMutation(
         {
-            onSettled: async () => {
-                await queryClient.invalidateQueries(
-                    rqClient.queryOptions('get', '/boards'),
+            mutationFn: async ({
+                boardId,
+                isFavorite,
+            }: {
+                boardId: string;
+                isFavorite: boolean;
+            }) => {
+                const { error } = await supabase
+                    .from('boards')
+                    .update({ is_favorite: isFavorite })
+                    .eq('id', boardId)
+
+                if (error) throw error;
+            },
+            onMutate: async (newBoard) => {
+                await queryClient.cancelQueries({
+                    queryKey: ['boards']
+                })
+
+                const prevState = queryClient.getQueriesData<
+                    ApiSchemas['Board'][]
+                >({ queryKey: ['boards'] })
+
+                queryClient.setQueriesData<
+                    InfiniteData<
+                        {
+                            data: ApiSchemas['Board'][]
+                        }
+                    >
+                >(
+                    { queryKey: ['boards'] },
+                    (prevQuery) => {
+                        if (!prevQuery?.pages) return prevQuery;
+
+                        return {
+                            ...prevQuery,
+                            pages: prevQuery.pages.map((page) => ({
+                                ...page,
+                                data: page.data.map(
+                                    (board) => (
+                                        board.id === newBoard.boardId
+                                            ? {
+                                                ...board,
+                                                isFavorite: newBoard.isFavorite,
+                                            }
+                                            : board
+                                    )
+                                ),
+                            })),
+                        };
+                    },
                 );
+
+                return {
+                    prevState,
+                };
+            },
+            onError: (
+                _error, __variables, context,
+            ) => {
+                context?.prevState?.forEach(
+                    ([queryKey, data]) => {
+                        queryClient.setQueryData(
+                            queryKey,
+                            data,
+                        );
+                    },
+                );
+            },
+            onSettled: async () => {
+                await queryClient.invalidateQueries({
+                    queryKey: ['boards'],
+                });
             },
         },
     );
@@ -22,30 +87,13 @@ export function useUpdateFavorite() {
     const toggle = (
         board: { id: string, isFavorite: boolean }
     ) => {
-        startTransition(async () => {
-            setFavorite((prev) => ({
-                ...prev,
-                [board.id]: !board.isFavorite,
-            }));
-
-            await updateFavoriteMutation.mutateAsync({
-                params: {
-                    path: {
-                        boardId: board.id,
-                    },
-                },
-                body: {
-                    isFavorite: !board.isFavorite,
-                },
-            });
+        updateFavoriteMutation.mutate({
+            boardId: board.id,
+            isFavorite: !board.isFavorite,
         });
     };
 
-    const isOptimisticFavorite = (board: { id: string, isFavorite: boolean }) =>
-        favorite[board.id] ?? board.isFavorite;
-
     return {
         toggle,
-        isOptimisticFavorite,
     };
 };

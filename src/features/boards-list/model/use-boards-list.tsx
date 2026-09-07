@@ -95,6 +95,7 @@ export function useBoardsList({
             const data = unformattedData.map(
                 (item) => ({
                     ...item,
+                    isFavorite: item.is_favorite,
                     createdAt: item.created_at,
                     updatedAt: item.updated_at,
                     lastOpenedAt: item.last_opened_at,

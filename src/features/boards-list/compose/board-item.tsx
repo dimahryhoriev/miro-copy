@@ -19,7 +19,7 @@ export function BoardItem({
             board={board}
             rightActions={
                 <BoardsFavoriteToggle
-                    isFavorite={updateFavorite.isOptimisticFavorite(board)}
+                    isFavorite={board.isFavorite}
                     onToggle={() => updateFavorite.toggle(board)}
                 />
             }
