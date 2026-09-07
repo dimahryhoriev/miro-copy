@@ -45,7 +45,7 @@ export function TemplatesGallery({
     className?: string;
     isModal?: boolean;
 }) {
-    const { isOpen } = useTemplatesModal();
+    const { isOpen, close } = useTemplatesModal();
     const boardNamingModal = useBoardNamingModal();
 
     return (
@@ -65,8 +65,9 @@ export function TemplatesGallery({
                         isModal={isModal}
                         onSelect={
                             () => {
-                                boardNamingModal.setTemplate(template)
-                                boardNamingModal.open()
+                                boardNamingModal.setTemplate(template);
+                                boardNamingModal.open();
+                                close();
                             }
                         }
                     />
