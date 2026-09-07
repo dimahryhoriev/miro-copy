@@ -22,14 +22,23 @@ import {
     useWindowPositionModel,
 } from "./model/window-position";
 import { useEffect } from "react";
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData, useParams } from "react-router-dom";
+import { useUpdateLastOpened } from "../boards-list";
 
 function BoardPage() {
+    const { boardId } = useParams<{ boardId: string }>();
+    const { updateLastOpened } = useUpdateLastOpened();
     const { canvasRef, canvasRect } = useCanvasRect();
     const { nodeRef, nodesDimensions } = useNodesDimensions();
     const windowPositionModel = useWindowPositionModel();
     const focusLayoutRef = useLayoutFocus();
     const initialNodes = useLoaderData();
+
+    useEffect(() => {
+        if (boardId) {
+            updateLastOpened(boardId)
+        }
+    }, [boardId, updateLastOpened])
 
     const nodesModel = useNodes(initialNodes);
     const viewModel = useViewModel({

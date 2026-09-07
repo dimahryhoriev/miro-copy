@@ -2,3 +2,4 @@ export { useCreateBoard } from './model/use-create-board';
 export { useCreateTemplateBoard } from './model/use-create-template-board';
 export { useApplyTemplate } from './model/use-apply-template';
 export { useBoardNamingModal } from './model/use-board-naming-modal';
+export { useUpdateLastOpened } from './model/use-update-last-opened';
