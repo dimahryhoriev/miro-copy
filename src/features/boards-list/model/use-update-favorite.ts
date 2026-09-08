@@ -1,6 +1,10 @@
 import type { ApiSchemas } from "@/shared/api/schema";
 import { supabase } from "@/shared/api/supabase";
-import { useMutation, useQueryClient, type InfiniteData } from "@tanstack/react-query";
+import {
+    useMutation,
+    useQueryClient,
+    type InfiniteData,
+} from "@tanstack/react-query";
 
 export function useUpdateFavorite() {
     const queryClient = useQueryClient();

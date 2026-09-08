@@ -1,5 +1,7 @@
 import { useState } from "react";
+import { saveNodes } from "./save-nodes";
 import { type Point } from "@/shared/lib/geometry";
+import { useParams } from "react-router";
 
 type NodeBase = {
     id: string;
@@ -25,34 +27,48 @@ export function useNodes(
     initialNodes: Node[] = [],
 ) {
     const [nodes, setNodes] = useState<Node[]>(initialNodes);
+    const { boardId } = useParams<{ boardId: string }>();
+
+    const updateAndSaveNodes = (updater: (prev: Node[]) => Node[]) => {
+        if (!boardId) return;
+
+        const newNodes = updater(nodes);
+        setNodes(newNodes);
+        saveNodes({
+            boardId,
+            nodes: newNodes,
+        });
+
+        return newNodes;
+    };
 
     const addSticker = (data: {
         text: string;
         x: number;
         y: number;
     }) => {
-        setNodes(
+        updateAndSaveNodes(
             (prevNodes: Node[]) => [
                 ...prevNodes,
                 {
                     id: crypto.randomUUID(),
-                    type: 'sticker',
+                    type: 'sticker' as const,
                     ...data,
                 }
             ]
-        )
+        );
     };
 
     const addArrow = (data: {
         start: Point;
         end: Point
     }) => {
-        setNodes(
-            (prevNodes) => [
+        updateAndSaveNodes(
+            (prevNodes: Node[]) => [
                 ...prevNodes,
                 {
                     id: crypto.randomUUID(),
-                    type: 'arrow',
+                    type: 'arrow' as const,
                     ...data,
                 }
             ]
@@ -63,19 +79,19 @@ export function useNodes(
         id: string,
         text: string,
     ) => {
-        setNodes(
-            (lastNodes) => (
-                lastNodes.map((node) => (
+        updateAndSaveNodes(
+            (prevNodes) => (
+                prevNodes.map((node) => (
                     node.id === id
                         ? { ...node, text }
                         : node
                 ))
             )
-        )
-    }
+        );
+    };
 
     const deleteNodes = (ids: string[]) => {
-        setNodes(
+        updateAndSaveNodes(
             (prevNodes) => {
                 const arrowsRelativeIds = prevNodes
                     .filter(
@@ -131,9 +147,9 @@ export function useNodes(
             ),
         );
 
-        setNodes(
-            (lastNodes) => (
-                lastNodes.map(
+        updateAndSaveNodes(
+            (prevNodes) => {
+                return prevNodes.map(
                     (node) => {
                         if (node.type === 'arrow') {
                             const newStartPosition = record[
@@ -159,8 +175,8 @@ export function useNodes(
                         };
                         return node;
                     },
-                )
-            ),
+                );
+            },
         );
     };
 
