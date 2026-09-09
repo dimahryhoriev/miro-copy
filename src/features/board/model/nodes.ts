@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { saveNodes } from "./save-nodes";
+import { setAndSaveNodes, type NodesUpdater } from "./sync-nodes";
 import { type Point } from "@/shared/lib/geometry";
 import { useParams } from "react-router";
 
@@ -29,17 +29,13 @@ export function useNodes(
     const [nodes, setNodes] = useState<Node[]>(initialNodes);
     const { boardId } = useParams<{ boardId: string }>();
 
-    const updateAndSaveNodes = (updater: (prev: Node[]) => Node[]) => {
-        if (!boardId) return;
-
-        const newNodes = updater(nodes);
-        setNodes(newNodes);
-        saveNodes({
+    const applyNodes = (updateNodes: NodesUpdater) => {
+        setAndSaveNodes({
+            setNodes,
+            updateNodes,
             boardId,
-            nodes: newNodes,
+            nodes,
         });
-
-        return newNodes;
     };
 
     const addSticker = (data: {
@@ -47,7 +43,7 @@ export function useNodes(
         x: number;
         y: number;
     }) => {
-        updateAndSaveNodes(
+        applyNodes(
             (prevNodes: Node[]) => [
                 ...prevNodes,
                 {
@@ -55,7 +51,7 @@ export function useNodes(
                     type: 'sticker' as const,
                     ...data,
                 }
-            ]
+            ],
         );
     };
 
@@ -63,7 +59,7 @@ export function useNodes(
         start: Point;
         end: Point
     }) => {
-        updateAndSaveNodes(
+        applyNodes(
             (prevNodes: Node[]) => [
                 ...prevNodes,
                 {
@@ -71,7 +67,7 @@ export function useNodes(
                     type: 'arrow' as const,
                     ...data,
                 }
-            ]
+            ],
         )
     };
 
@@ -79,19 +75,19 @@ export function useNodes(
         id: string,
         text: string,
     ) => {
-        updateAndSaveNodes(
+        applyNodes(
             (prevNodes) => (
                 prevNodes.map((node) => (
                     node.id === id
                         ? { ...node, text }
                         : node
                 ))
-            )
+            ),
         );
     };
 
     const deleteNodes = (ids: string[]) => {
-        updateAndSaveNodes(
+        applyNodes(
             (prevNodes) => {
                 const arrowsRelativeIds = prevNodes
                     .filter(
@@ -147,7 +143,7 @@ export function useNodes(
             ),
         );
 
-        updateAndSaveNodes(
+        applyNodes(
             (prevNodes) => {
                 return prevNodes.map(
                     (node) => {
