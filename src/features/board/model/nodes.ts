@@ -1,7 +1,11 @@
-import { useState } from "react";
-import { setAndSaveNodes, type NodesUpdater } from "./sync-nodes";
+import { useMemo, useState } from "react";
 import { type Point } from "@/shared/lib/geometry";
 import { useParams } from "react-router";
+import {
+    debounceNodes,
+    setAndSaveNodes,
+    type NodesUpdater,
+} from "./sync-nodes";
 
 type NodeBase = {
     id: string;
@@ -37,6 +41,10 @@ export function useNodes(
             nodes,
         });
     };
+
+    const debouncedSave = useMemo(() => (
+        debounceNodes()
+    ), []);
 
     const addSticker = (data: {
         text: string;
@@ -143,37 +151,42 @@ export function useNodes(
             ),
         );
 
-        applyNodes(
-            (prevNodes) => {
-                return prevNodes.map(
-                    (node) => {
-                        if (node.type === 'arrow') {
-                            const newStartPosition = record[
-                                `${node.id}start`
-                            ];
-                            const newEndPosition = record[
-                                `${node.id}end`
-                            ];
-                            return {
-                                ...node,
-                                start: newStartPosition?.point ?? node.start,
-                                end: newEndPosition?.point ?? node.end,
-                            };
+        const newNodes = nodes.map(
+            (node) => {
+                if (node.type === 'arrow') {
+                    const newStartPosition = record[
+                        `${node.id}start`
+                    ];
+                    const newEndPosition = record[
+                        `${node.id}end`
+                    ];
+                    return {
+                        ...node,
+                        start: newStartPosition?.point ?? node.start,
+                        end: newEndPosition?.point ?? node.end,
+                    };
+                };
+                if (node.type === 'sticker') {
+                    const newPosition = record[node.id];
+                    if (newPosition) {
+                        return {
+                            ...node,
+                            ...newPosition.point,
                         };
-                        if (node.type === 'sticker') {
-                            const newPosition = record[node.id];
-                            if (newPosition) {
-                                return {
-                                    ...node,
-                                    ...newPosition.point,
-                                };
-                            };
-                        };
-                        return node;
-                    },
-                );
+                    };
+                };
+                return node;
             },
         );
+
+        setNodes(
+            newNodes
+        );
+
+        debouncedSave({
+            boardId,
+            nodes: newNodes,
+        });
     };
 
     return {
