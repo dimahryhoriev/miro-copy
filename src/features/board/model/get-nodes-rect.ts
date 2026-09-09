@@ -11,11 +11,7 @@ export function getNodesRect(
     nodes: Node[],
     nodeDimensions: NodesDimensionsMap,
 ): Rect {
-    const stickers = nodes.filter(
-        (node) => node.type === 'sticker'
-    );
-
-    if (stickers.length === 0) {
+    if (nodes.length === 0) {
         return {
             x: 0,
             y: 0,
@@ -24,23 +20,36 @@ export function getNodesRect(
         }
     }
 
-    const points: Point[] = stickers.flatMap(
-        (sticker) => {
-            const dimensions = nodeDimensions[sticker.id];
+    const points: Point[] = nodes.flatMap(
+        (node) => {
+            const dimensions = nodeDimensions[node.id];
 
             const width = dimensions?.width ?? 0;
             const height = dimensions?.height ?? 0;
 
-            return [
+            if (node.type === 'sticker') return [
                 {
-                    x: sticker.x,
-                    y: sticker.y,
+                    x: node.x,
+                    y: node.y,
                 },
                 {
-                    x: sticker.x + width,
-                    y: sticker.y + height,
+                    x: node.x + width,
+                    y: node.y + height,
                 },
             ];
+
+            if (node.type === 'arrow') return [
+                {
+                    x: node.start.x,
+                    y: node.start.y,
+                },
+                {
+                    x: node.end.x,
+                    y: node.end.y,
+                },
+            ];
+
+            return [];
         }
     );
 
@@ -56,4 +65,4 @@ export function getNodesRect(
             y: minMaxPoints.maxPoint.y,
         },
     );
-}
+};
