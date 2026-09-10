@@ -3,7 +3,7 @@ import { Button } from "@/shared/ui/kit/button";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { useConfirmEmail } from "../model/use-confirm-email";
+import { useVerifyOtp } from "../model/use-verify-otp";
 import { cn } from "@/shared/lib/css";
 import {
     type SlotProps,
@@ -12,36 +12,39 @@ import {
 } from 'input-otp';
 
 
-const confirmOtpSchema = z.object({
+const verifyOtpSchema = z.object({
     token: z
         .string()
         .min(1, 'Code is required')
         .length(8, 'Code must be an 8-digit number')
 });
 
-type ConfirmOtpFormValues = z.infer<typeof confirmOtpSchema>;
+type VerifyOtpFormValues = z.infer<typeof verifyOtpSchema>;
 
-interface ConfirmEmailFormProps {
+interface VerifyOtpFormProps {
     email: string;
+    type: 'signup' | 'recovery';
 };
 
-export function ConfirmEmailForm({
-    email
-}: ConfirmEmailFormProps) {
-    const form = useForm<ConfirmOtpFormValues>({
-        resolver: zodResolver(confirmOtpSchema),
+export function VerifyOtpForm({
+    email,
+    type,
+}: VerifyOtpFormProps) {
+    const form = useForm<VerifyOtpFormValues>({
+        resolver: zodResolver(verifyOtpSchema),
         defaultValues: {
             token: '',
         },
     });
 
-    const { confirmEmail, isPending, errorMessage } = useConfirmEmail();
+    const { verifyOtp, isPending, errorMessage } = useVerifyOtp();
 
     const onSubmit = form.handleSubmit(
         (data) => {
-            confirmEmail({
+            verifyOtp({
                 email,
                 token: data.token.trim(),
+                type,
             });
         },
     );

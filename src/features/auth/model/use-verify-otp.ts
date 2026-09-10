@@ -1,24 +1,24 @@
 import { supabase } from "@/shared/api/supabase/client";
 import { ROUTES } from "@/shared/model/routes";
-import { useSession } from "@/shared/model/session";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router";
 
-interface ConfirmEmailParams {
+export interface VerifyOtpParams {
     email: string;
     token: string;
+    type: 'signup' | 'recovery';
 };
 
-export function useConfirmEmail() {
+export function useVerifyOtp() {
     const navigate = useNavigate();
-    const session = useSession();
 
     const verifyMutation = useMutation(
         {
             mutationFn: async ({
                 email,
                 token,
-            }: ConfirmEmailParams) => {
+                type,
+            }: VerifyOtpParams) => {
                 const {
                     data,
                     error,
@@ -26,24 +26,25 @@ export function useConfirmEmail() {
                     {
                         email,
                         token,
-                        type: 'signup',
+                        type,
                     },
                 );
 
                 if (error) throw error;
-                return data;
-            },
-            onSuccess(data) {
-                if (data.session?.access_token) {
-                    session.login(data.session.access_token);
-                    navigate(ROUTES.HOME);
+                return {
+                    data,
+                    type,
                 };
+            },
+            onSuccess({ type }) {
+                if (type === 'signup') navigate(ROUTES.HOME);
+                if (type === 'recovery') navigate(ROUTES.HOME);
             },
         },
     );
 
     return {
-        confirmEmail: verifyMutation.mutate,
+        verifyOtp: verifyMutation.mutate,
         isPending: verifyMutation.isPending,
         errorMessage: verifyMutation.error?.message,
     };

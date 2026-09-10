@@ -1,13 +1,11 @@
 import { type ApiSchemas } from "@/shared/api/schema";
 import { supabase } from "@/shared/api/supabase/client";
 import { ROUTES } from "@/shared/model/routes";
-import { useSession } from "@/shared/model/session";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 
 export function useLogin() {
     const navigate = useNavigate();
-    const session = useSession();
 
     const loginMutation = useMutation(
         {
@@ -27,10 +25,7 @@ export function useLogin() {
                 if (error) throw error;
                 return authData;
             },
-            onSuccess(authData) {
-                if (authData.session?.access_token) {
-                    session.login(authData.session.access_token)
-                };
+            onSuccess() {
                 navigate(ROUTES.HOME);
             },
         },

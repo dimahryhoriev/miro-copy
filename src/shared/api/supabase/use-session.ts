@@ -1,10 +1,13 @@
-import { useEffect, useState } from "react";
 import { type Session } from "@supabase/supabase-js";
+import { useEffect, useState } from "react";
 import { supabase } from "./client";
+import { useNavigate } from "react-router";
+import { ROUTES } from "@/shared/model/routes";
 
 export function useSession() {
     const [session, setSession] = useState<Session | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const {
@@ -36,8 +39,15 @@ export function useSession() {
         };
     }, []);
 
+    const logout = async () => {
+        await supabase.auth.signOut();
+        setSession(null);
+        navigate(ROUTES.LOGIN);
+    };
+
     return {
         session,
         isLoading,
+        logout,
     };
 };

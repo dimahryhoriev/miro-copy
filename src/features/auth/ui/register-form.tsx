@@ -5,7 +5,7 @@ import { Input } from "@/shared/ui/kit/input";
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { useRegister } from "../model/use-register";
-import { ConfirmEmailForm } from "./confirm-email-form";
+import { VerifyOtpForm } from "./verify-otp-form";
 
 
 const registerSchema = z.object({
@@ -51,8 +51,9 @@ export function RegisterForm() {
 
     return (
         isSuccess && registeredEmail
-            ? <ConfirmEmailForm
+            ? <VerifyOtpForm
                 email={registeredEmail}
+                type='signup'
             />
             : <form className="flex flex-col gap-4" onSubmit={onSubmit}>
                 <Controller

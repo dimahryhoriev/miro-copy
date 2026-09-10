@@ -1,5 +1,5 @@
 import { ROUTES } from "@/shared/model/routes";
-import { useSession } from "@/shared/model/session";
+import { useSession } from "@/shared/api/supabase/use-session";
 import { Button } from "@/shared/ui/kit/button";
 import { Link } from "react-router-dom";
 
@@ -30,7 +30,7 @@ export function AppHeader() {
 
                 <div className="flex items-center gap-4">
                     <span className="text-sm text-muted-foreground">
-                        {session.email}
+                        {session.user.email}
                     </span>
                     <Button
                         variant="outline"
