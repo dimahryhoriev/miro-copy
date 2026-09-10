@@ -38,16 +38,24 @@ export function getNodesRect(
                 },
             ];
 
-            if (node.type === 'arrow') return [
-                {
-                    x: node.start.x,
-                    y: node.start.y,
-                },
-                {
-                    x: node.end.x,
-                    y: node.end.y,
-                },
-            ];
+            if (node.type === 'arrow') {
+                return [
+                    !node.start.relativeTo
+                        ? {
+                            x: node.start.x,
+                            y: node.start.y,
+                        }
+                        : null,
+                    !node.end.relativeTo
+                        ? {
+                            x: node.end.x,
+                            y: node.end.y,
+                        }
+                        : null,
+                ].filter(
+                    (point): point is Point => point !== null
+                );
+            }
 
             return [];
         }
