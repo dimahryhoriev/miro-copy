@@ -49,6 +49,14 @@ export const router = createBrowserRouter([
                 lazy: () => import('@/features/auth/register.page'),
             },
             {
+                path: ROUTES.RESET_PASSWORD,
+                lazy: () => import('@/features/auth/reset-password.page'),
+            },
+            {
+                path: ROUTES.UPDATE_PASSWORD,
+                lazy: () => import('@/features/auth/update-password.page'),
+            },
+            {
                 path: ROUTES.HOME,
                 loader: () => redirect(ROUTES.BOARDS),
             },

@@ -24,10 +24,17 @@ paths:
     post:
       $ref: './endpoints/auth.yaml#/refresh'
 
+  /auth/reset-password:
+    post:
+      $ref: './endpoints/auth.yaml#/reset-password'
+
+  /auth/update-password:
+    post:
+      $ref: './endpoints/auth.yaml#/update-password'
+
   /boards:
     get:
       $ref: './endpoints/boards.yaml#/getAllBoards'
-
     post:
       $ref: './endpoints/boards.yaml#/createBoard'
 

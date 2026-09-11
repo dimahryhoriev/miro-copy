@@ -5,6 +5,8 @@ import { Input } from "@/shared/ui/kit/input";
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { useLogin } from "../model/use-login";
+import { Link } from "react-router";
+import { ROUTES } from "@/shared/model/routes";
 
 const loginSchema = z.object({
     email: z
@@ -43,7 +45,7 @@ export function LoginForm() {
                             {...field}
                             id={field.name}
                             aria-invalid={fieldState.invalid}
-                            placeholder="admin@gmail.com"
+                            placeholder="user@gmail.com"
                             autoComplete="off"
                         />
                         {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
@@ -55,7 +57,20 @@ export function LoginForm() {
                 control={form.control}
                 render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid}>
-                        <FieldLabel htmlFor={field.name}>Password</FieldLabel>
+                        <div
+                            className="flex justify-between"
+                        >
+                            <FieldLabel htmlFor={field.name}>Password</FieldLabel>
+                            <Link
+                                to={ROUTES.RESET_PASSWORD}
+                                className="
+                                    text-sm text-muted-foreground
+                                    hover:text-primary
+                                "
+                            >
+                                Forgot Password?
+                            </Link>
+                        </div>
                         <Input
                             {...field}
                             id={field.name}

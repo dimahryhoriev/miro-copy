@@ -38,7 +38,7 @@ export function useVerifyOtp() {
             },
             onSuccess({ type }) {
                 if (type === 'signup') navigate(ROUTES.HOME);
-                if (type === 'recovery') navigate(ROUTES.HOME);
+                if (type === 'recovery') navigate(ROUTES.UPDATE_PASSWORD);
             },
         },
     );

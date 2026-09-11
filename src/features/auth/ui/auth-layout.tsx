@@ -33,7 +33,12 @@ export function AuthLayout({
                 </CardHeader>
                 <CardContent>{form}</CardContent>
                 <CardFooter>
-                    <p className="text-sm text-muted-foreground [&_a]:underline [&_a]:text-primary">
+                    <p
+                        className="
+                            text-sm text-muted-foreground
+                            [&_a]:underline [&_a]:text-primary
+                        "
+                    >
                         {footerText}
                     </p>
                 </CardFooter>

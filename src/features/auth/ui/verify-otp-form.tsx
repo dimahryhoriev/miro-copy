@@ -51,13 +51,18 @@ export function VerifyOtpForm({
 
     return (
         <form className="flex flex-col gap-4" onSubmit={onSubmit}>
-            <p className="text-sm text-muted-foreground">
-                We sent a verification code to:{" "}
-                <span className="font-semibold text-foreground">
-                    {email}
-                </span>
-            </p>
-
+            {
+                type === 'signup'
+                &&
+                (
+                    <p className="text-sm text-muted-foreground">
+                        We sent a verification code to:{" "}
+                        <span className="font-semibold text-foreground">
+                            {email}
+                        </span>
+                    </p>
+                )
+            }
             <Controller
                 name="token"
                 control={form.control}
@@ -102,8 +107,8 @@ export function VerifyOtpForm({
                 }
             </Button>
         </form>
-    )
-}
+    );
+};
 
 function OtpSlot(
     props: SlotProps
@@ -132,5 +137,5 @@ function OtpSlot(
                 />
             }
         </div>
-    )
-}
+    );
+};

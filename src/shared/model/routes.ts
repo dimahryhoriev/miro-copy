@@ -8,6 +8,8 @@ export const ROUTES = {
     BOARD: '/boards/:boardId',
     FAVORITE_BOARDS: '/boards/favorite',
     RECENT_BOARDS: '/boards/recent',
+    RESET_PASSWORD: '/reset-password',
+    UPDATE_PASSWORD: '/update-password',
 } as const;
 
 export type PathParams = {

@@ -66,7 +66,7 @@ export function RegisterForm() {
                                 {...field}
                                 id={field.name}
                                 aria-invalid={fieldState.invalid}
-                                placeholder="admin@gmail.com"
+                                placeholder="user@gmail.com"
                                 autoComplete="off"
                             />
                             {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
