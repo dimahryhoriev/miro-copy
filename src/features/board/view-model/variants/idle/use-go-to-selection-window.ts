@@ -41,7 +41,7 @@ export function useGoToSelectionWindow({
                         startPoint: idleState.mouseDown,
                         endPoint: currentPoint,
                         initialSelectedIds:
-                            e.shiftKey
+                            e.ctrlKey || e.shiftKey || e.metaKey
                                 ? idleState.selectedIds
                                 : undefined
                     }),

@@ -50,13 +50,19 @@ export function useIdleViewModel(
         nodes: nodesModel.nodes.map(node => ({
             ...node,
             isSelected: selection.isSelected(idleState, node.id),
-            onMouseDown: (e: React.MouseEvent) => (
-                mouseDown.handleNodeMouseDown(
-                    idleState,
-                    e,
-                    node.id,
+            onMouseDown: (e: React.MouseEvent) => {
+                const isModifierPressed = e.shiftKey || e.ctrlKey || e.metaKey;
+
+                return (
+                    mouseDown.handleNodeMouseDown(
+                        !idleState.selectedIds.has(node.id) && !isModifierPressed
+                            ? { ...idleState, selectedIds: new Set() }
+                            : idleState,
+                        e,
+                        node.id,
+                    )
                 )
-            ),
+            },
             onMouseUp: (e: React.MouseEvent) => {
                 if (
                     !mouseDown.getIsStickerMouseDown(
