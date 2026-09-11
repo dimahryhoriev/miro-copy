@@ -56,6 +56,8 @@ export function getInitialWindowPosition({
     if (
         !canvasRect
         ||
+        canvasRect.y === 0
+        ||
         Object.keys(nodesDimensions).length === 0
     ) {
         return null;

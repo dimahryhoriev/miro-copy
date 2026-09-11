@@ -64,7 +64,10 @@ export function useViewModel(
         ...params,
         setViewState,
         windowPositionModel: {
-            position: initialWindowPosition,
+            position:
+                params.windowPositionModel.position
+                ??
+                initialWindowPosition,
             setPosition: params.windowPositionModel.setPosition,
         },
     };
