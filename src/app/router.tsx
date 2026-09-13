@@ -1,9 +1,10 @@
 import { ROUTES } from '@/shared/model/routes';
-import { createBrowserRouter, redirect } from 'react-router-dom';
+import { createBrowserRouter, Outlet, redirect } from 'react-router-dom';
 import { App } from './app';
 import { Providers } from './providers';
 import { protectedLoader, ProtectedRoute } from './protected-route';
 import { AppHeader } from '@/features/header';
+import { NotFound } from '@/shared/ui/states/not-found';
 
 export const router = createBrowserRouter([
     {
@@ -14,31 +15,40 @@ export const router = createBrowserRouter([
         ),
         children: [
             {
-                loader: protectedLoader,
                 element: (
                     <>
                         <AppHeader />
-                        <ProtectedRoute />
+                        <Outlet />
                     </>
                 ),
                 children: [
                     {
-                        path: ROUTES.BOARDS,
-                        lazy: () => import('@/features/boards-list/boards-list.page'),
+                        loader: protectedLoader,
+                        element: <ProtectedRoute />,
+                        children: [
+                            {
+                                path: ROUTES.BOARDS,
+                                lazy: () => import('@/features/boards-list/boards-list.page'),
+                            },
+                            {
+                                path: ROUTES.FAVORITE_BOARDS,
+                                lazy: () => import('@/features/boards-list/boards-list-favorite.page'),
+                            },
+                            {
+                                path: ROUTES.RECENT_BOARDS,
+                                lazy: () => import('@/features/boards-list/boards-list-recent.page'),
+                            },
+                            {
+                                path: ROUTES.BOARD,
+                                lazy: () => import('@/features/board/board.page'),
+                            },
+                        ],
                     },
                     {
-                        path: ROUTES.FAVORITE_BOARDS,
-                        lazy: () => import('@/features/boards-list/boards-list-favorite.page'),
+                        path: '*',
+                        element: <NotFound />,
                     },
-                    {
-                        path: ROUTES.RECENT_BOARDS,
-                        lazy: () => import('@/features/boards-list/boards-list-recent.page'),
-                    },
-                    {
-                        path: ROUTES.BOARD,
-                        lazy: () => import('@/features/board/board.page'),
-                    },
-                ]
+                ],
             },
             {
                 path: ROUTES.LOGIN,
