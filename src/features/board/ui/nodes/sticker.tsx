@@ -44,7 +44,7 @@ export function Sticker({
             className={
                 cn(
                     'absolute bg-yellow-300 px-2 py-4',
-                    'rounded-xs shadow-md text-left',
+                    'rounded-xs shadow-md text-left touch-none',
                     isSelected && 'outline outline-2 outline-blue-500',
                 )
             }
@@ -52,8 +52,8 @@ export function Sticker({
                 transform: `translate(${x}px, ${y}px)`
             }}
             onClick={onClick}
-            onMouseDown={onMouseDown}
-            onMouseUp={onMouseUp}
+            onPointerDown={onMouseDown}
+            onPointerUp={onMouseUp}
         >
             <TextareaAutoSize
                 isEditing={isEditing ?? false}

@@ -54,7 +54,7 @@ export function Arrow({
             className="
                 absolute left-0 top-0
                 pointer-events-none
-                overflow-visible
+                overflow-visible touch-none
             "
         >
             <path
@@ -73,8 +73,8 @@ export function Arrow({
                 strokeLinejoin="round"
                 fill="black"
                 onClick={onClick}
-                onMouseDown={onMouseDown}
-                onMouseUp={onMouseUp}
+                onPointerDown={onMouseDown}
+                onPointerUp={onMouseUp}
                 d={
                     `
                     M ${start.x} ${start.y}

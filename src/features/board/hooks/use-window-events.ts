@@ -26,13 +26,15 @@ export function useWindowEvents(
         const onMouseWheel = (e: WheelEvent) => {
             viewModelRef.current.window?.onMouseWheel?.(e);
         };
-        window.addEventListener('mousemove', onMouseMove);
-        window.addEventListener('mouseup', onMouseUp);
+        window.addEventListener('pointermove', onMouseMove);
+        window.addEventListener('pointerup', onMouseUp);
+        window.addEventListener('pointercancel', onMouseUp);
         window.addEventListener('wheel', onMouseWheel);
         return () => {
-            window.removeEventListener('mousemove', onMouseMove);
-            window.removeEventListener('mouseup', onMouseUp);
+            window.removeEventListener('pointermove', onMouseMove);
+            window.removeEventListener('pointerup', onMouseUp);
+            window.removeEventListener('pointercancel', onMouseUp);
             window.removeEventListener('wheel', onMouseWheel);
         };
     }, []);
-}
+};

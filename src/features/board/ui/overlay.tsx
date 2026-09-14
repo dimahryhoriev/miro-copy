@@ -15,10 +15,10 @@ export function Overlay({
 }) {
     return (
         <div
-            className="absolute inset-0"
+            className="absolute inset-0 touch-none"
             onClick={onClick}
-            onMouseDown={onMouseDown}
-            onMouseUp={onMouseUp}
+            onPointerDown={onMouseDown}
+            onPointerUp={onMouseUp}
         >
         </div>
     )
