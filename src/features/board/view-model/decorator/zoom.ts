@@ -1,61 +1,68 @@
-import { diffPoints, type Rect } from "@/shared/lib/geometry";
+import { diffPoints, type Point, type Rect } from "@/shared/lib/geometry";
 import { pointOnScreenToCanvas } from "../../domain/screen-to-canvas";
 import { type ViewModelParams } from "../view-model-params";
 import { type ViewModel } from "../view-model-type";
+import { type WindowPositionModel } from "../../model/window-position";
+import { type CanvasRect } from "../../hooks/use-canvas-rect";
+import { useRef } from "react";
 
 export function useZoomDecorator({
     windowPositionModel,
     canvasRect,
 }: ViewModelParams) {
+    const touchesDiffRef = useRef<number | null>(null);
+
     return (viewModel: ViewModel): ViewModel => ({
         ...viewModel,
         window: {
             ...viewModel.window,
             onMouseWheel: (e) => {
-                if (
-                    !windowPositionModel.position
-                    ||
-                    !canvasRect
-                ) return;
-
-                viewModel.window?.onMouseWheel?.(e);
-
                 const scale = e.deltaY > 0 ? 0.9 : 1.1;
-                const currentPoint = pointOnScreenToCanvas(
-                    windowPositionModel.position,
-                    {
-                        x: e.clientX,
-                        y: e.clientY,
-                    },
+                viewModel.window?.onMouseWheel?.(e);
+                applyZoom({
+                    point: { x: e.clientX, y: e.clientY },
+                    scale,
+                    windowPositionModel,
                     canvasRect,
-                );
-
-                const newZoom
-                    = windowPositionModel.position.zoom
-                    * scale
-
-                const newPoint = pointOnScreenToCanvas(
-                    {
-                        ...windowPositionModel.position,
-                        zoom: newZoom,
-                    },
-                    {
-                        x: e.clientX,
-                        y: e.clientY,
-                    },
-                    canvasRect,
-                );
-
-                const mouseDiff = diffPoints(
-                    currentPoint,
-                    newPoint,
-                );
-
-                windowPositionModel.setPosition({
-                    x: windowPositionModel.position.x - mouseDiff.x,
-                    y: windowPositionModel.position.y - mouseDiff.y,
-                    zoom: newZoom,
                 });
+            },
+            onTouchMove: (e) => {
+                viewModel.window?.onTouchMove?.(e);
+
+                if (e.touches.length !== 2) {
+                    touchesDiffRef.current = null;
+                    return;
+                };
+
+                const t1 = e.touches[0];
+                const t2 = e.touches[1];
+                const point = {
+                    x: (t1.clientX + t2.clientX) / 2,
+                    y: (t1.clientY + t2.clientY) / 2,
+                };
+
+                const currentDiff = Math.hypot(
+                    t1.clientX - t2.clientX,
+                    t1.clientY - t2.clientY,
+                );
+
+                if (touchesDiffRef.current !== null) {
+                    applyZoom({
+                        point,
+                        scale: currentDiff / touchesDiffRef.current,
+                        windowPositionModel,
+                        canvasRect,
+                    });
+                };
+
+                touchesDiffRef.current = currentDiff;
+            },
+            onTouchEnd: (e) => {
+                viewModel.window?.onTouchEnd?.(e);
+                if (e.touches.length !== 2) {
+                    touchesDiffRef.current = null;
+                    return;
+                };
             },
         },
     });
@@ -86,3 +93,48 @@ export function getZoomToFit(
         fittedZoom: Math.min(ratio.width, ratio.height) * 0.75,
     };
 }
+
+export function applyZoom({
+    point,
+    scale,
+    windowPositionModel,
+    canvasRect,
+}: {
+    point: Point;
+    scale: number;
+    windowPositionModel: WindowPositionModel;
+    canvasRect: CanvasRect | undefined;
+}) {
+    if (
+        !windowPositionModel.position
+        ||
+        !canvasRect
+    ) return;
+
+    const currentZoom = windowPositionModel.position.zoom;
+    const newZoom = currentZoom * scale;
+
+    const currentPoint = pointOnScreenToCanvas(
+        windowPositionModel.position,
+        point,
+        canvasRect,
+    );
+    const newPoint = pointOnScreenToCanvas(
+        {
+            ...windowPositionModel.position,
+            zoom: newZoom,
+        },
+        point,
+        canvasRect,
+    );
+    const diff = diffPoints(
+        currentPoint,
+        newPoint,
+    );
+
+    windowPositionModel.setPosition({
+        x: windowPositionModel.position.x - diff.x,
+        y: windowPositionModel.position.y - diff.y,
+        zoom: newZoom,
+    });
+};

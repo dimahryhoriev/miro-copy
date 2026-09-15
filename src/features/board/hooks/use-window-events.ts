@@ -26,15 +26,29 @@ export function useWindowEvents(
         const onMouseWheel = (e: WheelEvent) => {
             viewModelRef.current.window?.onMouseWheel?.(e);
         };
+        const onTouchMove = (e: TouchEvent) => {
+            viewModelRef.current.window?.onTouchMove?.(e);
+        };
+        const onTouchEnd = (e: TouchEvent) => {
+            viewModelRef.current.window?.onTouchEnd?.(e);
+        };
+
         window.addEventListener('pointermove', onMouseMove);
         window.addEventListener('pointerup', onMouseUp);
         window.addEventListener('pointercancel', onMouseUp);
-        window.addEventListener('wheel', onMouseWheel);
+        window.addEventListener('wheel', onMouseWheel, { passive: false });
+        window.addEventListener('touchmove', onTouchMove, { passive: false });
+        window.addEventListener('touchend', onTouchEnd);
+        window.addEventListener('touchcancel', onTouchEnd);
+
         return () => {
             window.removeEventListener('pointermove', onMouseMove);
             window.removeEventListener('pointerup', onMouseUp);
             window.removeEventListener('pointercancel', onMouseUp);
             window.removeEventListener('wheel', onMouseWheel);
+            window.removeEventListener('touchmove', onTouchMove);
+            window.removeEventListener('touchend', onTouchEnd);
+            window.removeEventListener('touchcancel', onTouchEnd);
         };
     }, []);
 };

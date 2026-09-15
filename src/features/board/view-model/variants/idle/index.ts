@@ -4,7 +4,6 @@ import { type ViewModel } from "../../view-model-type";
 import { useSelection } from "./use-selection";
 import { useDeleteSelected } from "./use-delete-selected";
 import { useGoToEditSticker } from "./use-go-to-edit-sticker";
-import { useGoToSelectionWindow } from "./use-go-to-selection-window.ts";
 import { useMouseDown } from "./use-mouse-down";
 import { useGoToNodesDragging } from "./use-go-to-nodes-dragging.ts";
 import { useGoToWindowDragging } from "./use-go-to-window-dragging.ts";
@@ -41,7 +40,6 @@ export function useIdleViewModel(
 
     const deleteSelected = useDeleteSelected(params);
     const goToEditSticker = useGoToEditSticker(params);
-    const goToSelectionWindow = useGoToSelectionWindow(params);
     const goToNodesDragging = useGoToNodesDragging(params);
     const goToWindowDragging = useGoToWindowDragging(params);
     const mouseDown = useMouseDown(params);
@@ -107,10 +105,6 @@ export function useIdleViewModel(
         window: {
             onMouseMove: (e) => {
                 goToNodesDragging.handleWindowMouseMove(
-                    idleState,
-                    e,
-                );
-                goToSelectionWindow.handleWindowMouseMove(
                     idleState,
                     e,
                 );

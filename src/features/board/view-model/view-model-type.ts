@@ -63,6 +63,8 @@ export type ViewModel = {
         onMouseUp?: (e: MouseEvent) => void;
         onMouseMove?: (e: MouseEvent) => void;
         onMouseWheel?: (e: WheelEvent) => void;
+        onTouchMove?: (e: TouchEvent) => void;
+        onTouchEnd?: (e: TouchEvent) => void;
     };
     actions?: {
         addSticker?: ViewModelAction;
