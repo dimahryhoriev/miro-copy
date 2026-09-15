@@ -1,7 +1,8 @@
 import {
     ArrowRightIcon,
     BoxSelectIcon,
-    StickerIcon
+    StickerIcon,
+    Trash2Icon
 } from "lucide-react";
 import { useNodes } from "./model/nodes";
 import { useCanvasRect } from "./hooks/use-canvas-rect";
@@ -69,6 +70,10 @@ function BoardPage() {
             );
         };
     }, [initialWindowPosition, windowPositionModel]);
+
+    const selectedIds = viewModel.nodes
+        .filter((node) => node.isSelected)
+        .map((node) => node.id);
 
     const windowPosition =
         viewModel.windowPosition
@@ -159,6 +164,20 @@ function BoardPage() {
                     className="hidden [@media(pointer:coarse)]:flex"
                 >
                     <BoxSelectIcon />
+                </ActionButton>
+                <ActionButton
+                    isDisabled={!selectedIds.length}
+                    isDestructive={true}
+                    onClick={
+                        () => {
+                            nodesModel.deleteNodes(
+                                selectedIds
+                            );
+                            focusLayoutRef.current?.focus();
+                        }
+                    }
+                >
+                    <Trash2Icon />
                 </ActionButton>
             </Actions>
         </Layout >
