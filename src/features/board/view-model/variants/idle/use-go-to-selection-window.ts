@@ -13,6 +13,7 @@ export function useGoToSelectionWindow({
         idleState: IdleViewState,
         e: MouseEvent,
     ) => {
+        if ((e as PointerEvent).pointerType === 'touch') return;
         if (
             idleState.mouseDown
             &&

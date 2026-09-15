@@ -7,6 +7,7 @@ import { useGoToEditSticker } from "./use-go-to-edit-sticker";
 import { useMouseDown } from "./use-mouse-down";
 import { useGoToNodesDragging } from "./use-go-to-nodes-dragging.ts";
 import { useGoToWindowDragging } from "./use-go-to-window-dragging.ts";
+import { useGoToSelectionWindow } from "./use-go-to-selection-window.ts";
 
 
 export type IdleViewState = {
@@ -42,6 +43,7 @@ export function useIdleViewModel(
     const goToEditSticker = useGoToEditSticker(params);
     const goToNodesDragging = useGoToNodesDragging(params);
     const goToWindowDragging = useGoToWindowDragging(params);
+    const goToSelectionWindow = useGoToSelectionWindow(params);
     const mouseDown = useMouseDown(params);
     const selection = useSelection(params);
 
@@ -105,6 +107,10 @@ export function useIdleViewModel(
         window: {
             onMouseMove: (e) => {
                 goToNodesDragging.handleWindowMouseMove(
+                    idleState,
+                    e,
+                );
+                goToSelectionWindow.handleWindowMouseMove(
                     idleState,
                     e,
                 );

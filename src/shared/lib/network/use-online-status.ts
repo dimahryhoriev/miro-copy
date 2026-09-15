@@ -4,8 +4,6 @@ export function useOnlineStatus() {
     const [isOnline, setIsOnline] = useState<boolean>(
         navigator.onLine
     );
-    console.log(navigator.onLine);
-    console.log(isOnline);
 
     useEffect(() => {
         const handleOnline = () => setIsOnline(true);
