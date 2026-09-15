@@ -11,9 +11,9 @@ import {
 import { type ViewModelParams } from "./view-model-params";
 import { type ViewModel } from "./view-model-type";
 import {
-    useSelectionWindowViewModel,
-    type SelectionWindowViewState,
-} from "./variants/selection-window";
+    useDrawSelectionWindowViewModel,
+    type DrawSelectionWindowViewState,
+} from "./variants/draw-selection-window";
 import {
     useEditStickerViewModel,
     type EditStickerViewState,
@@ -38,13 +38,18 @@ import {
 } from "./variants/draw-arrow";
 import { useResolveRelativeStaticDecorator } from "./decorator/resolve-relative";
 import { getInitialWindowPosition } from "../model/window-position";
+import {
+    type AddSelectionWindowViewState,
+    useAddSelectionWindowViewModel,
+} from "./variants/add-selection-window";
 
 export type ViewState =
     | AddArrowViewState
     | AddStickerViewState
     | EditStickerViewState
     | IdleViewState
-    | SelectionWindowViewState
+    | AddSelectionWindowViewState
+    | DrawSelectionWindowViewState
     | NodesDraggingViewState
     | WindowDraggingViewState
     | DrawArrowViewState
@@ -87,8 +92,11 @@ export function useViewModel(
     const idleViewModel
         = useIdleViewModel(newParams);
 
-    const selectionWindowViewModel
-        = useSelectionWindowViewModel(newParams);
+    const addSelectionWindowViewModel
+        = useAddSelectionWindowViewModel(newParams);
+
+    const drawSelectionWindowViewModel
+        = useDrawSelectionWindowViewModel(newParams);
 
     const nodesDraggingViewModel
         = useNodesDraggingViewModel(newParams);
@@ -123,8 +131,12 @@ export function useViewModel(
         case 'edit-sticker':
             viewModel = editStickerViewModel(viewState);
             break;
-        case 'selection-window':
-            viewModel = selectionWindowViewModel(viewState);
+        case 'add-selection-window':
+            viewModel = addSelectionWindowViewModel();
+            viewModel = commonActionsDecorator(viewModel);
+            break;
+        case 'draw-selection-window':
+            viewModel = drawSelectionWindowViewModel(viewState);
             break;
         case 'nodes-dragging':
             viewModel = nodesDraggingViewModel(viewState);
@@ -143,4 +155,4 @@ export function useViewModel(
         viewModel,
     );
     return viewModel;
-}
+};

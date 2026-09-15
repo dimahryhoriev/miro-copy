@@ -75,6 +75,7 @@ export type ViewModel = {
     actions?: {
         addSticker?: ViewModelAction;
         addArrow?: ViewModelAction;
+        toggleSelection?: ViewModelAction;
     };
 };
 

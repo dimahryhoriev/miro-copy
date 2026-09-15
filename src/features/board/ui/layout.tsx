@@ -18,5 +18,5 @@ export function Layout({
         >
             {children}
         </div>
-    )
-}
+    );
+};

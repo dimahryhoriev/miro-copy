@@ -15,6 +15,7 @@ export function AppHeader() {
             className="
                 bg-background border-b border-border/40
                 shadow-sm py-3 px-4 sticky top-0 z-50
+                touch-none select-none
             "
         >
             <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">

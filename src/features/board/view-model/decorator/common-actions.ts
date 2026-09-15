@@ -2,6 +2,7 @@ import { type ViewModelParams } from "../view-model-params";
 import { type ViewModel } from "../view-model-type";
 import { goToAddSticker } from "../variants/add-sticker";
 import { goToAddArrow } from "../variants/add-arrow";
+import { goToAddSelectionWindow } from "../variants/add-selection-window";
 
 export function useCommonActionsDecorator({
     setViewState,
@@ -28,6 +29,10 @@ export function useCommonActionsDecorator({
             addSticker: {
                 isActive: false,
                 onClick: () => setViewState(goToAddSticker()),
+            },
+            toggleSelection: {
+                isActive: false,
+                onClick: () => setViewState(goToAddSelectionWindow()),
             },
             ...viewModel.actions,
         },

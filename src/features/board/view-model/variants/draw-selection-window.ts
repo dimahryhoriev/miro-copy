@@ -8,18 +8,18 @@ import {
 import { pointOnScreenToCanvas } from "../../domain/screen-to-canvas";
 import { selectItems } from "../../domain/selection";
 import { createRelativeBase } from "../decorator/resolve-relative";
-import type { ViewModelParams } from "../view-model-params";
-import type { ViewModel } from "../view-model-type";
+import { type ViewModelParams } from "../view-model-params";
+import { type ViewModel } from "../view-model-type";
 import { goToIdle } from "./idle";
 
-export type SelectionWindowViewState = {
-    type: 'selection-window';
+export type DrawSelectionWindowViewState = {
+    type: 'draw-selection-window';
     startPoint: Point;
     endPoint: Point;
     initialSelectedIds: Set<string>;
 };
 
-export function useSelectionWindowViewModel({
+export function useDrawSelectionWindowViewModel({
     setViewState,
     nodesModel,
     canvasRect,
@@ -27,7 +27,7 @@ export function useSelectionWindowViewModel({
     windowPositionModel,
 }: ViewModelParams) {
     const getNodes = (
-        state: SelectionWindowViewState,
+        state: DrawSelectionWindowViewState,
         selectionRect: Rect,
     ) => {
         const relativeBase = createRelativeBase(
@@ -69,7 +69,7 @@ export function useSelectionWindowViewModel({
     };
 
     return (
-        state: SelectionWindowViewState,
+        state: DrawSelectionWindowViewState,
     ): ViewModel => {
         const rect = createRectFromPoints(
             state.startPoint,
@@ -119,20 +119,19 @@ export function useSelectionWindowViewModel({
     };
 };
 
-
-export function goToSelectionWindow({
+export function goToDrawSelectionWindow({
     startPoint,
     endPoint,
     initialSelectedIds,
 }: {
-    startPoint: { x: number, y: number },
-    endPoint: { x: number, y: number },
-    initialSelectedIds?: Set<string>,
-}): SelectionWindowViewState {
+    startPoint: Point;
+    endPoint?: Point;
+    initialSelectedIds?: Set<string>;
+}): DrawSelectionWindowViewState {
     return {
-        type: 'selection-window',
+        type: 'draw-selection-window',
         startPoint,
-        endPoint,
+        endPoint: endPoint ?? startPoint,
         initialSelectedIds:
             initialSelectedIds ?? new Set(),
     };

@@ -2,7 +2,7 @@ import { type ViewModelParams } from "../../view-model-params";
 import { type IdleViewState } from '.';
 import { distanceFromPoints } from "@/shared/lib/geometry";
 import { pointOnScreenToCanvas } from "../../../domain/screen-to-canvas";
-import { goToSelectionWindow } from "../selection-window";
+import { goToDrawSelectionWindow } from "../draw-selection-window";
 
 export function useGoToSelectionWindow({
     windowPositionModel,
@@ -37,7 +37,7 @@ export function useGoToSelectionWindow({
                 5
             ) {
                 setViewState(
-                    goToSelectionWindow({
+                    goToDrawSelectionWindow({
                         startPoint: idleState.mouseDown,
                         endPoint: currentPoint,
                         initialSelectedIds:

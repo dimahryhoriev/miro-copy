@@ -1,5 +1,6 @@
 import {
     ArrowRightIcon,
+    BoxSelectIcon,
     StickerIcon
 } from "lucide-react";
 import { useNodes } from "./model/nodes";
@@ -152,10 +153,17 @@ function BoardPage() {
                 >
                     <ArrowRightIcon />
                 </ActionButton>
+                <ActionButton
+                    isActive={viewModel.actions?.toggleSelection?.isActive}
+                    onClick={viewModel.actions?.toggleSelection?.onClick}
+                    className="hidden [@media(pointer:coarse)]:flex"
+                >
+                    <BoxSelectIcon />
+                </ActionButton>
             </Actions>
         </Layout >
-    )
-}
+    );
+};
 
 export const Component = BoardPage;
 export { boardLoader as loader } from './model/board-loader';

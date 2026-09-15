@@ -1,16 +1,22 @@
 import { ROUTES } from '@/shared/model/routes';
-import { createBrowserRouter, Outlet, redirect } from 'react-router-dom';
 import { App } from './app';
 import { Providers } from './providers';
 import { protectedLoader, ProtectedRoute } from './protected-route';
 import { AppHeader } from '@/features/header';
 import { NotFound } from '@/shared/ui/states/not-found';
+import {
+    createBrowserRouter,
+    Outlet,
+    redirect,
+    ScrollRestoration,
+} from 'react-router-dom';
 
 export const router = createBrowserRouter([
     {
         element: (
             <Providers>
                 <App />
+                <ScrollRestoration />
             </Providers>
         ),
         children: [
