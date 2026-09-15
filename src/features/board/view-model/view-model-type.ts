@@ -17,9 +17,6 @@ type ViewModelStickerNode = {
     onMouseDown?: (
         e: React.MouseEvent<HTMLButtonElement>
     ) => void;
-    onMouseUp?: (
-        e: React.MouseEvent<HTMLButtonElement>
-    ) => void;
 }
 
 type ViewModelArrowNode = {
@@ -33,9 +30,6 @@ type ViewModelArrowNode = {
         e: React.MouseEvent<SVGPathElement>
     ) => void;
     onMouseDown?: (
-        e: React.MouseEvent<SVGPathElement>
-    ) => void;
-    onMouseUp?: (
         e: React.MouseEvent<SVGPathElement>
     ) => void;
 }
@@ -63,9 +57,7 @@ export type ViewModel = {
         onMouseDown?: (
             e: React.MouseEvent<HTMLDivElement>
         ) => void;
-        onMouseUp?: (
-            e: React.MouseEvent<HTMLDivElement>
-        ) => void;
+        onMouseUp?: () => void;
     };
     window?: {
         onMouseUp?: (e: MouseEvent) => void;

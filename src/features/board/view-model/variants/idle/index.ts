@@ -36,6 +36,7 @@ export function useIdleViewModel(
     const {
         nodesModel,
         canvasRef,
+        setViewState,
     } = params;
 
     const deleteSelected = useDeleteSelected(params);
@@ -99,9 +100,9 @@ export function useIdleViewModel(
                     e,
                 )
             ),
-            onMouseUp: () => (
-                selection.handleOverlayMouseUp(idleState)
-            ),
+            onMouseUp: () => {
+                setViewState(goToIdle());
+            },
         },
         window: {
             onMouseMove: (e) => {

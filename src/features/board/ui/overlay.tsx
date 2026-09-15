@@ -8,10 +8,10 @@ export function Overlay({
     ) => void;
     onMouseDown?: (
         e: React.MouseEvent<HTMLDivElement>
-    ) => void
+    ) => void;
     onMouseUp?: (
         e: React.MouseEvent<HTMLDivElement>
-    ) => void
+    ) => void;
 }) {
     return (
         <div

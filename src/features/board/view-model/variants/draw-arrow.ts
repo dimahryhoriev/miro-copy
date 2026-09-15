@@ -66,27 +66,7 @@ export function useDrawArrowViewModel({
         ];
 
         return {
-            nodes: newNodes.map(
-                (node) => {
-                    if (node.type === 'sticker') {
-                        return {
-                            ...node,
-                            onMouseUp: () => {
-                                addArrow(
-                                    state,
-                                    node.id,
-                                );
-                            },
-                        };
-                    };
-                    return node;
-                },
-            ),
-            overlay: {
-                onMouseUp: () => {
-                    addArrow(state);
-                }
-            },
+            nodes: newNodes,
             window: {
                 onMouseMove: (e) => {
                     const currentPoint
@@ -103,7 +83,15 @@ export function useDrawArrowViewModel({
                         endPoint: currentPoint,
                     });
                 },
-                onMouseUp: () => {
+                onMouseUp: (e) => {
+                    const endRelativeTo = document
+                        .elementsFromPoint(e.clientX, e.clientY)
+                        ?.map((el) => el.closest('[data-id]'))
+                        ?.find(Boolean)
+                        ?.getAttribute('data-id')
+                    console.log(endRelativeTo);
+
+                    addArrow(state, endRelativeTo ?? undefined)
                     setViewState(goToIdle());
                 },
             },
