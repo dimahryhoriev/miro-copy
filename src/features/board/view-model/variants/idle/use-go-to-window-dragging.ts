@@ -13,38 +13,70 @@ export function useGoToWindowDragging({
         idleState: IdleViewState,
         e: MouseEvent,
     ) => {
+        if (idleState.mouseDown?.type !== 'overlay') return;
+        if (!idleState.mouseDown?.isRightClick) return;
+
+        const currentPoint = pointOnScreenToCanvas(
+            windowPositionModel.position,
+            {
+                x: e.clientX,
+                y: e.clientY,
+            },
+            canvasRect,
+        );
         if (
-            idleState.mouseDown
-            &&
-            idleState.mouseDown.isRightClick
+            distanceFromPoints(
+                idleState.mouseDown,
+                currentPoint,
+            )
+            >
+            5
         ) {
-            const currentPoint = pointOnScreenToCanvas(
-                windowPositionModel.position,
-                {
-                    x: e.clientX,
-                    y: e.clientY,
-                },
-                canvasRect,
+            setViewState(
+                goToWindowDragging({
+                    startPoint: idleState.mouseDown,
+                    endPoint: currentPoint,
+                }),
             );
-            if (
-                distanceFromPoints(
-                    idleState.mouseDown,
-                    currentPoint,
-                )
-                >
-                5
-            ) {
-                setViewState(
-                    goToWindowDragging({
-                        startPoint: idleState.mouseDown,
-                        endPoint: currentPoint,
-                    }),
-                );
-            };
+        };
+    };
+
+    const handleWindowTouchMove = (
+        idleState: IdleViewState,
+        e: TouchEvent,
+    ) => {
+        if (e.touches.length !== 1) return;
+        if (idleState.touchStart?.type !== 'overlay') return;
+
+        const touch = e.touches[0];
+
+        const currentPoint = pointOnScreenToCanvas(
+            windowPositionModel.position,
+            {
+                x: touch.clientX,
+                y: touch.clientY,
+            },
+            canvasRect,
+        );
+        if (
+            distanceFromPoints(
+                idleState.touchStart,
+                currentPoint,
+            )
+            >
+            5
+        ) {
+            setViewState(
+                goToWindowDragging({
+                    startPoint: idleState.touchStart,
+                    endPoint: currentPoint,
+                }),
+            );
         };
     };
 
     return {
         handleWindowMouseMove,
+        handleWindowTouchMove,
     };
 };

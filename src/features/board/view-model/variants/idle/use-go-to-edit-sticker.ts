@@ -28,7 +28,28 @@ export function useGoToEditSticker(
         };
     };
 
+    const handleNodeTouch = (
+        idleState: IdleViewState,
+        nodeId: string,
+        e: React.TouchEvent,
+    ) => {
+        if (
+            e.changedTouches.length === 1
+            && idleState.selectedIds.size === 1
+            && idleState.selectedIds.has(nodeId)
+        ) {
+            setViewState(goToEditSticker(nodeId));
+            return {
+                preventNext: true,
+            };
+        }
+        return {
+            preventNext: false,
+        };
+    };
+
     return {
         handleNodeClick,
+        handleNodeTouch,
     };
 };

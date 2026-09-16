@@ -17,7 +17,10 @@ type ViewModelStickerNode = {
     onMouseDown?: (
         e: React.MouseEvent<HTMLButtonElement>
     ) => void;
-}
+    onTouchStart?: (
+        e: React.TouchEvent<HTMLButtonElement>
+    ) => void;
+};
 
 type ViewModelArrowNode = {
     id: string;
@@ -31,6 +34,9 @@ type ViewModelArrowNode = {
     ) => void;
     onMouseDown?: (
         e: React.MouseEvent<SVGPathElement>
+    ) => void;
+    onTouchStart?: (
+        e: React.TouchEvent<SVGPathElement>
     ) => void;
 }
 
@@ -58,6 +64,10 @@ export type ViewModel = {
             e: React.MouseEvent<HTMLDivElement>
         ) => void;
         onMouseUp?: () => void;
+        onTouchStart?: (
+            e: React.TouchEvent<HTMLDivElement>
+        ) => void;
+        onTouchEnd?: () => void;
     };
     window?: {
         onMouseUp?: (e: MouseEvent) => void;

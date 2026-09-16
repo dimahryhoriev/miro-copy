@@ -8,26 +8,28 @@ import { useMouseDown } from "./use-mouse-down";
 import { useGoToNodesDragging } from "./use-go-to-nodes-dragging.ts";
 import { useGoToWindowDragging } from "./use-go-to-window-dragging.ts";
 import { useGoToSelectionWindow } from "./use-go-to-selection-window.ts";
+import { useTouchStart } from "./use-touch-start.ts";
 
 
-export type IdleViewState = {
-    type: 'idle';
-    selectedIds: Set<string>;
-    mouseDown?:
+export type BasePointerState =
     {
         type: 'overlay';
         x: number;
         y: number;
-        isRightClick: boolean;
     }
     |
     {
         type: 'node';
         nodeId: string;
         x: number;
-        y: number;
-        isRightClick: boolean;
+        y: number
     };
+
+export type IdleViewState = {
+    type: 'idle';
+    selectedIds: Set<string>;
+    mouseDown?: BasePointerState & { isRightClick: boolean };
+    touchStart?: BasePointerState;
 };
 
 export function useIdleViewModel(
@@ -45,6 +47,7 @@ export function useIdleViewModel(
     const goToWindowDragging = useGoToWindowDragging(params);
     const goToSelectionWindow = useGoToSelectionWindow(params);
     const mouseDown = useMouseDown(params);
+    const touchStart = useTouchStart(params);
     const selection = useSelection(params);
 
     return (idleState: IdleViewState): ViewModel => ({
@@ -84,7 +87,42 @@ export function useIdleViewModel(
                     idleState,
                     node.id,
                     e,
-                )
+                );
+            },
+            onTouchStart: (e: React.TouchEvent) => {
+                if (e.touches.length !== 1) return;
+
+                return (
+                    touchStart.handleNodeTouchStart(
+                        !idleState.selectedIds.has(node.id)
+                            ? { ...idleState, selectedIds: new Set() }
+                            : idleState,
+                        e,
+                        node.id,
+                    )
+                );
+            },
+            onTouchEnd: (e: React.TouchEvent) => {
+                if (
+                    !touchStart.getIsStickerTouchStart(
+                        idleState,
+                        node.id,
+                    )
+                ) return;
+
+                const touchResult =
+                    goToEditSticker.handleNodeTouch(
+                        idleState,
+                        node.id,
+                        e,
+                    );
+
+                if (touchResult.preventNext) return;
+                selection.handleNodeTouch(
+                    idleState,
+                    node.id,
+                    e,
+                );
             },
         })),
         layout: {
@@ -101,7 +139,20 @@ export function useIdleViewModel(
                 )
             ),
             onMouseUp: () => {
-                setViewState(goToIdle());
+                if (idleState.mouseDown?.type === 'overlay') {
+                    setViewState(goToIdle());
+                };
+            },
+            onTouchStart: (e) => (
+                touchStart.handleOverlayTouchStart(
+                    idleState,
+                    e,
+                )
+            ),
+            onTouchEnd: () => {
+                if (idleState.mouseDown?.type === 'overlay') {
+                    setViewState(goToIdle());
+                };
             },
         },
         window: {
@@ -120,8 +171,29 @@ export function useIdleViewModel(
                 );
             },
             onMouseUp: () => {
-                mouseDown.handleWindowMouseUp(idleState);
+                if (
+                    idleState.mouseDown?.type === 'overlay'
+                    &&
+                    !idleState.mouseDown.isRightClick
+                ) {
+                    setViewState(goToIdle());
+                    return;
+                };
             },
+            onTouchMove: (e) => {
+                goToNodesDragging.handleWindowTouchMove(
+                    idleState,
+                    e,
+                );
+                goToSelectionWindow.handleWindowTouchMove(
+                    idleState,
+                    e,
+                );
+                goToWindowDragging.handleWindowTouchMove(
+                    idleState,
+                    e,
+                );
+            }
         },
     });
 };

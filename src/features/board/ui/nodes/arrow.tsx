@@ -14,6 +14,8 @@ export function Arrow({
     onClick,
     onMouseDown,
     onMouseUp,
+    onTouchStart,
+    onTouchEnd,
 }: {
     start: Point;
     end: Point;
@@ -28,6 +30,12 @@ export function Arrow({
     ) => void;
     onMouseUp?: (
         e: React.MouseEvent<SVGPathElement>
+    ) => void;
+    onTouchStart?: (
+        e: React.TouchEvent<SVGPathElement>
+    ) => void;
+    onTouchEnd?: (
+        e: React.TouchEvent<SVGPathElement>
     ) => void;
 }) {
     const diff = diffPoints(
@@ -73,8 +81,10 @@ export function Arrow({
                 strokeLinejoin="round"
                 fill="black"
                 onClick={onClick}
-                onPointerDown={onMouseDown}
-                onPointerUp={onMouseUp}
+                onMouseDown={onMouseDown}
+                onMouseUp={onMouseUp}
+                onTouchStart={onTouchStart}
+                onTouchEnd={onTouchEnd}
                 d={
                     `
                     M ${start.x} ${start.y}

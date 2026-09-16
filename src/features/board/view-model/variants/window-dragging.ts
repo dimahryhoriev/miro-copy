@@ -56,6 +56,40 @@ export function useWindowDraggingViewModel({
                         goToIdle({}),
                     );
                 },
+                onTouchMove: (e) => {
+                    if (e.touches.length > 1) {
+                        windowPositionModel.setPosition({
+                            x: (windowPositionModel.position?.x ?? 0) - diff.x,
+                            y: (windowPositionModel.position?.y ?? 0) - diff.y,
+                            zoom: windowPositionModel.position?.zoom ?? 1,
+                        });
+                        setViewState(goToIdle({}));
+                        return;
+                    };
+                    const currentPoint
+                        = pointOnScreenToCanvas(
+                            windowPositionModel.position,
+                            {
+                                x: e.touches[0].clientX,
+                                y: e.touches[0].clientY,
+                            },
+                            canvasRect,
+                        );
+                    setViewState({
+                        ...state,
+                        endPoint: currentPoint,
+                    });
+                },
+                onTouchEnd: () => {
+                    windowPositionModel.setPosition({
+                        x: (windowPositionModel.position?.x ?? 0) - diff.x,
+                        y: (windowPositionModel.position?.y ?? 0) - diff.y,
+                        zoom: windowPositionModel.position?.zoom ?? 1,
+                    });
+                    setViewState(
+                        goToIdle({}),
+                    );
+                },
             },
         };
     };

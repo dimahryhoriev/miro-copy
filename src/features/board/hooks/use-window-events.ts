@@ -33,7 +33,7 @@ export function useWindowEvents(
             viewModelRef.current.window?.onTouchEnd?.(e);
         };
 
-        window.addEventListener('pointermove', onMouseMove);
+        window.addEventListener('mousemove', onMouseMove);
         window.addEventListener('pointerup', onMouseUp);
         window.addEventListener('pointercancel', onMouseUp);
         window.addEventListener('wheel', onMouseWheel, { passive: false });
@@ -42,7 +42,7 @@ export function useWindowEvents(
         window.addEventListener('touchcancel', onTouchEnd);
 
         return () => {
-            window.removeEventListener('pointermove', onMouseMove);
+            window.removeEventListener('mousemove', onMouseMove);
             window.removeEventListener('pointerup', onMouseUp);
             window.removeEventListener('pointercancel', onMouseUp);
             window.removeEventListener('wheel', onMouseWheel);

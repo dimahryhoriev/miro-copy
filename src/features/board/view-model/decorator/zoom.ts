@@ -6,11 +6,22 @@ import { type WindowPositionModel } from "../../model/window-position";
 import { type CanvasRect } from "../../hooks/use-canvas-rect";
 import { useRef } from "react";
 
+
 export function useZoomDecorator({
     windowPositionModel,
     canvasRect,
 }: ViewModelParams) {
-    const touchesDiffRef = useRef<number | null>(null);
+    const pinchRef = useRef<
+        {
+            point: Point;
+            diff: number;
+        }
+        |
+        null
+    >(null);
+    const lastPinchEndTime = useRef<
+        number
+    >(0);
 
     return (viewModel: ViewModel): ViewModel => ({
         ...viewModel,
@@ -27,10 +38,16 @@ export function useZoomDecorator({
                 });
             },
             onTouchMove: (e) => {
-                viewModel.window?.onTouchMove?.(e);
-
                 if (e.touches.length !== 2) {
-                    touchesDiffRef.current = null;
+                    if (pinchRef.current !== null) {
+                        lastPinchEndTime.current = Date.now();
+                        pinchRef.current = null;
+                    };
+
+                    if (Date.now() - lastPinchEndTime.current > 150) {
+                        viewModel.window?.onTouchMove?.(e);
+                    };
+
                     return;
                 };
 
@@ -46,23 +63,42 @@ export function useZoomDecorator({
                     t1.clientY - t2.clientY,
                 );
 
-                if (touchesDiffRef.current !== null) {
-                    applyZoom({
+                if (currentDiff < 20) {
+                    pinchRef.current = {
+                        diff: currentDiff,
                         point,
-                        scale: currentDiff / touchesDiffRef.current,
+                    };
+                    return;
+                };
+
+                if (pinchRef.current) {
+                    applyZoom({
+                        point: pinchRef.current.point,
+                        scale: currentDiff / pinchRef.current.diff,
+                        pan: {
+                            x: point.x - pinchRef.current.point.x,
+                            y: point.y - pinchRef.current.point.y,
+                        },
                         windowPositionModel,
                         canvasRect,
                     });
                 };
 
-                touchesDiffRef.current = currentDiff;
+                pinchRef.current = {
+                    diff: currentDiff,
+                    point,
+                };
             },
             onTouchEnd: (e) => {
-                viewModel.window?.onTouchEnd?.(e);
-                if (e.touches.length !== 2) {
-                    touchesDiffRef.current = null;
+                if (pinchRef.current !== null) {
+                    pinchRef.current = null;
+                    lastPinchEndTime.current = Date.now();
                     return;
                 };
+                if (Date.now() - lastPinchEndTime.current < 150) {
+                    return;
+                };
+                viewModel.window?.onTouchEnd?.(e);
             },
         },
     });
@@ -97,11 +133,13 @@ export function getZoomToFit(
 export function applyZoom({
     point,
     scale,
+    pan,
     windowPositionModel,
     canvasRect,
 }: {
     point: Point;
     scale: number;
+    pan?: Point;
     windowPositionModel: WindowPositionModel;
     canvasRect: CanvasRect | undefined;
 }) {
@@ -113,6 +151,9 @@ export function applyZoom({
 
     const currentZoom = windowPositionModel.position.zoom;
     const newZoom = currentZoom * scale;
+    const clampedZoom = Math.min(Math.max(newZoom, 0.1), 5);
+
+    if (clampedZoom === currentZoom && !pan) return;
 
     const currentPoint = pointOnScreenToCanvas(
         windowPositionModel.position,
@@ -122,7 +163,7 @@ export function applyZoom({
     const newPoint = pointOnScreenToCanvas(
         {
             ...windowPositionModel.position,
-            zoom: newZoom,
+            zoom: clampedZoom,
         },
         point,
         canvasRect,
@@ -132,9 +173,12 @@ export function applyZoom({
         newPoint,
     );
 
+    const panX = pan ? pan.x / clampedZoom : 0;
+    const panY = pan ? pan.y / clampedZoom : 0;
+
     windowPositionModel.setPosition({
-        x: windowPositionModel.position.x - diff.x,
-        y: windowPositionModel.position.y - diff.y,
-        zoom: newZoom,
+        x: windowPositionModel.position.x - diff.x - panX,
+        y: windowPositionModel.position.y - diff.y - panY,
+        zoom: clampedZoom,
     });
 };

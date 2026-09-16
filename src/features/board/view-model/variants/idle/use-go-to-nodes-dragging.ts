@@ -50,7 +50,49 @@ export function useGoToNodesDragging({
         };
     };
 
+    const handleWindowTouchMove = (
+        idleState: IdleViewState,
+        e: TouchEvent,
+    ) => {
+        const touch = e.touches[0];
+
+        if (
+            idleState.touchStart
+            &&
+            idleState.touchStart.type === 'node'
+        ) {
+            const currentPoint = pointOnScreenToCanvas(
+                windowPositionModel.position,
+                {
+                    x: touch.clientX,
+                    y: touch.clientY,
+                },
+                canvasRect,
+            );
+            if (
+                distanceFromPoints(
+                    idleState.touchStart,
+                    currentPoint,
+                )
+                >
+                5
+            ) {
+                setViewState(
+                    goToNodesDragging({
+                        startPoint: idleState.touchStart,
+                        endPoint: currentPoint,
+                        nodesToMove: new Set([
+                            ...idleState.selectedIds,
+                            idleState.touchStart.nodeId,
+                        ]),
+                    }),
+                );
+            };
+        };
+    };
+
     return {
         handleWindowMouseMove,
+        handleWindowTouchMove,
     };
 };

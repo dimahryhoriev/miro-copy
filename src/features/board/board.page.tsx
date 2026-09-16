@@ -106,6 +106,8 @@ function BoardPage() {
                         onClick={viewModel.overlay?.onClick}
                         onMouseDown={viewModel.overlay?.onMouseDown}
                         onMouseUp={viewModel.overlay?.onMouseUp}
+                        onTouchStart={viewModel.overlay?.onTouchStart}
+                        onTouchEnd={viewModel.overlay?.onTouchEnd}
                     />
                 }
                 windowPosition={

@@ -114,6 +114,42 @@ export function useDrawSelectionWindowViewModel({
                         })
                     );
                 },
+                onTouchMove: (e) => {
+                    if (e.touches.length !== 1) return;
+                    const touch = e.touches[0];
+
+                    const currentPoint
+                        = pointOnScreenToCanvas(
+                            windowPositionModel.position,
+                            {
+                                x: touch.clientX,
+                                y: touch.clientY,
+                            },
+                            canvasRect,
+                        );
+                    setViewState({
+                        ...state,
+                        endPoint: currentPoint,
+                    });
+                },
+                onTouchEnd: () => {
+                    const nodesIdsInRect
+                        = nodes
+                            .filter(
+                                node => node.isSelected
+                            ).map(
+                                node => node.id
+                            );
+                    setViewState(
+                        goToIdle({
+                            selectedIds: selectItems(
+                                state.initialSelectedIds,
+                                nodesIdsInRect,
+                                'add',
+                            ),
+                        })
+                    );
+                },
             },
         };
     };

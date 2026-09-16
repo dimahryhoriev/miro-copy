@@ -118,6 +118,62 @@ export function useNodesDraggingViewModel({
                         }),
                     );
                 },
+                onTouchMove: (e) => {
+                    const touch = e.touches[0];
+                    const currentPoint
+                        = pointOnScreenToCanvas(
+                            windowPositionModel.position,
+                            {
+                                x: touch.clientX,
+                                y: touch.clientY,
+                            },
+                            canvasRect,
+                        );
+                    setViewState({
+                        ...state,
+                        endPoint: currentPoint,
+                    });
+                },
+                onTouchEnd: () => {
+                    const nodesToMove = nodes
+                        .filter(
+                            (node) => state.nodesToMove.has(node.id),
+                        ).flatMap(
+                            (node) => {
+                                if (node.type === 'arrow') {
+                                    return [
+                                        {
+                                            id: node.id,
+                                            point: node.start,
+                                            type: 'start' as const,
+                                        },
+                                        {
+                                            id: node.id,
+                                            point: node.end,
+                                            type: 'end' as const,
+                                        },
+                                    ];
+                                };
+                                return [
+                                    {
+                                        id: node.id,
+                                        point: {
+                                            x: node.x,
+                                            y: node.y,
+                                        },
+                                    },
+                                ];
+                            },
+                        );
+
+                    nodesModel.updateNodesPositions(nodesToMove);
+
+                    setViewState(
+                        goToIdle({
+                            selectedIds: state.nodesToMove,
+                        }),
+                    );
+                },
             },
         };
     };

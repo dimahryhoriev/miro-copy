@@ -33,6 +33,25 @@ export function useAddSelectionWindowViewModel({
                     }),
                 )
             },
+            onTouchStart: (e) => {
+                if (e.touches.length !== 1) return;
+                const touch = e.touches[0];
+
+                setViewState(
+                    goToDrawSelectionWindow({
+                        startPoint:
+                            pointOnScreenToCanvas(
+                                windowPositionModel.position,
+                                {
+                                    x: touch.clientX,
+                                    y: touch.clientY,
+                                },
+                                canvasRect,
+                            ),
+                        initialSelectedIds: new Set(),
+                    }),
+                )
+            },
         },
         actions: {
             toggleSelection: {

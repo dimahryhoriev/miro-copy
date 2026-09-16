@@ -66,9 +66,40 @@ export function useSelection({
         };
     };
 
+    const handleNodeTouch = (
+        idleState: IdleViewState,
+        nodeId: string,
+        e: React.TouchEvent,
+    ) => {
+        if (e.changedTouches.length !== 1) return;
+
+        select(
+            idleState,
+            [nodeId],
+            'replace',
+        );
+    };
+
+    const handleOverlayTouchEnd = (
+        idleState: IdleViewState,
+    ) => {
+        if (idleState.touchStart) {
+            setViewState({
+                ...idleState,
+                selectedIds: selectItems(
+                    idleState.selectedIds,
+                    [],
+                    'replace',
+                ),
+            });
+        };
+    };
+
     return {
         handleNodeClick,
         handleOverlayMouseUp,
+        handleNodeTouch,
+        handleOverlayTouchEnd,
         isSelected,
     };
 };

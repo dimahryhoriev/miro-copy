@@ -51,7 +51,48 @@ export function useGoToSelectionWindow({
         };
     };
 
+    const handleWindowTouchMove = (
+        idleState: IdleViewState,
+        e: TouchEvent,
+    ) => {
+        if (e.touches.length !== 1) return;
+
+        const touch = e.touches[0];
+
+        if (
+            idleState.touchStart
+            &&
+            idleState.touchStart.type === 'overlay'
+        ) {
+            const currentPoint = pointOnScreenToCanvas(
+                windowPositionModel.position,
+                {
+                    x: touch.clientX,
+                    y: touch.clientY,
+                },
+                canvasRect,
+            );
+            if (
+                distanceFromPoints(
+                    idleState.touchStart,
+                    currentPoint,
+                )
+                >
+                5
+            ) {
+                setViewState(
+                    goToDrawSelectionWindow({
+                        startPoint: idleState.touchStart,
+                        endPoint: currentPoint,
+                        initialSelectedIds: undefined
+                    }),
+                );
+            };
+        };
+    };
+
     return {
         handleWindowMouseMove,
+        handleWindowTouchMove,
     };
 };
