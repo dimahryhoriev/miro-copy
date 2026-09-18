@@ -53,6 +53,7 @@ export function Sticker({
                 cn(
                     'absolute bg-yellow-300 px-2 py-4',
                     'rounded-xs shadow-md text-left touch-none',
+                    'flex flex-col justify-start items-start',
                     isSelected && 'outline outline-2 outline-blue-500',
                 )
             }
