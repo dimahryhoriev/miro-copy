@@ -1,3 +1,5 @@
+import type { NodesDimensionsMap } from "../../hooks/use-nodes-dimensions";
+import { getAnchorPoint } from "../../model/get-anchor-point";
 import { type Node } from "../../model/nodes";
 import { type ViewModel } from "../view-model-type";
 import {
@@ -28,6 +30,7 @@ export function createRelativeBase(
 export function resolveRelativePoints(
     nodes: Node[],
     relativeBase: RelativeBase,
+    nodesDimensions: NodesDimensionsMap,
 ): Node[] {
     return nodes.map(
         (node) => {
@@ -37,12 +40,22 @@ export function resolveRelativePoints(
                 newNode.type === 'arrow'
                 &&
                 isRelativePoint(newNode.start)
+                &&
+                nodesDimensions[newNode.start.relativeTo]
             ) {
+                const anchor = getAnchorPoint(
+                    newNode.start,
+                    nodesDimensions[newNode.start.relativeTo]
+                );
+
                 newNode = {
                     ...newNode,
                     start: resolveRelativePoint(
                         relativeBase,
-                        newNode.start,
+                        {
+                            ...anchor,
+                            relativeTo: newNode.start.relativeTo,
+                        },
                     ),
                 };
             };
@@ -51,12 +64,22 @@ export function resolveRelativePoints(
                 newNode.type === 'arrow'
                 &&
                 isRelativePoint(newNode.end)
+                &&
+                nodesDimensions[newNode.end.relativeTo]
             ) {
+                const anchor = getAnchorPoint(
+                    newNode.end,
+                    nodesDimensions[newNode.end.relativeTo]
+                );
+
                 newNode = {
                     ...newNode,
                     end: resolveRelativePoint(
                         relativeBase,
-                        newNode.end,
+                        {
+                            ...anchor,
+                            relativeTo: newNode.end.relativeTo,
+                        },
                     ),
                 };
             };
@@ -68,6 +91,7 @@ export function resolveRelativePoints(
 
 export function useResolveRelativeStaticDecorator(
     viewModel: ViewModel,
+    nodesDimensions: NodesDimensionsMap,
 ): ViewModel {
     const nodes = useMemo(
         () => {
@@ -78,10 +102,11 @@ export function useResolveRelativeStaticDecorator(
                 resolveRelativePoints(
                     viewModel.nodes,
                     relativeBase,
+                    nodesDimensions,
                 )
             );
         },
-        [viewModel.nodes]
+        [viewModel.nodes, nodesDimensions]
     );
     return {
         ...viewModel,

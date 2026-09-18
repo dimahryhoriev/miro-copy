@@ -153,6 +153,7 @@ export function useViewModel(
     );
     viewModel = useResolveRelativeStaticDecorator(
         viewModel,
+        params.nodesDimensions,
     );
     return viewModel;
 };
