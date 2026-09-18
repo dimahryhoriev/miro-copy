@@ -13,6 +13,8 @@ export function useGoToNodesDragging({
         idleState: IdleViewState,
         e: MouseEvent,
     ) => {
+        if ((e.buttons & 1) !== 1) return;
+
         if (
             idleState.mouseDown
             &&
