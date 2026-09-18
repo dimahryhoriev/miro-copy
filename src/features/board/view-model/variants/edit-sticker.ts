@@ -61,6 +61,24 @@ export function useEditStickerViewModel({
                 }
                 setViewState(goToIdle());
             },
+            onMouseDown: () => {
+                if (viewState.newText) {
+                    nodesModel.updateStickerText(
+                        viewState.stickerId,
+                        viewState.newText,
+                    );
+                }
+                setViewState(goToIdle());
+            },
+            onTouchStart: () => {
+                if (viewState.newText) {
+                    nodesModel.updateStickerText(
+                        viewState.stickerId,
+                        viewState.newText,
+                    );
+                }
+                setViewState(goToIdle());
+            },
         },
     });
 }

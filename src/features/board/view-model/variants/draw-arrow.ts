@@ -89,7 +89,6 @@ export function useDrawArrowViewModel({
                         ?.map((el) => el.closest('[data-id]'))
                         ?.find(Boolean)
                         ?.getAttribute('data-id')
-                    console.log(endRelativeTo);
 
                     addArrow(state, endRelativeTo ?? undefined)
                     setViewState(goToIdle());
