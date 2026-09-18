@@ -94,6 +94,37 @@ export function useDrawArrowViewModel({
                     addArrow(state, endRelativeTo ?? undefined)
                     setViewState(goToIdle());
                 },
+                onTouchMove: (e) => {
+                    if (e.touches.length !== 1) return;
+                    const touch = e.touches[0];
+
+                    const currentPoint
+                        = pointOnScreenToCanvas(
+                            windowPositionModel.position,
+                            {
+                                x: touch.clientX,
+                                y: touch.clientY,
+                            },
+                            canvasRect,
+                        );
+                    setViewState({
+                        ...state,
+                        endPoint: currentPoint,
+                    });
+                },
+                onTouchEnd: (e) => {
+                    if (e.touches.length !== 1) return;
+                    const touch = e.touches[0];
+
+                    const endRelativeTo = document
+                        .elementsFromPoint(touch.clientX, touch.clientY)
+                        ?.map((el) => el.closest('[data-id]'))
+                        ?.find(Boolean)
+                        ?.getAttribute('data-id')
+
+                    addArrow(state, endRelativeTo ?? undefined)
+                    setViewState(goToIdle());
+                }
             },
             layout: {
                 onKeyDown: (e) => {

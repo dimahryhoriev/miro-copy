@@ -37,6 +37,25 @@ export function useAddArrowViewModel({
                                     ),
                                 );
                             },
+                            onTouchStart: (e: React.TouchEvent) => {
+                                if (e.touches.length !== 1) return;
+                                const touch = e.touches[0];
+
+                                const point = pointOnScreenToCanvas(
+                                    windowPositionModel.position,
+                                    {
+                                        x: touch.clientX,
+                                        y: touch.clientY,
+                                    },
+                                    canvasRect,
+                                );
+                                setViewState(
+                                    goToDrawArrow(
+                                        point,
+                                        node.id,
+                                    ),
+                                );
+                            }
                         };
                     };
                     return node;
